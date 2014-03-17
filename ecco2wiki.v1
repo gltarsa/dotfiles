@@ -1,0 +1,18 @@
+#! /bin/sh
+level="===="
+sed "
+    /^Agenda Adjustments/d
+    /^Attendance:/{
+		s/^Attendance:[ ]*/${level}Attendance${level}\\
+*/
+        b
+    }
+    /	=/{
+	  s/	=\(.*\)$/${level}=\1${level}=/
+	  b
+	  }
+    /^	/!s/.*/${level}&${level}/
+    s/	/*/g"
+
+
+

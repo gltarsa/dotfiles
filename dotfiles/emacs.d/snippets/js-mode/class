@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: Class
+# key: class
+# --
+function ${1:ClassName}() {
+    // instance variables
+    this._${2:varName};
+
+    // initialization code
+    $0
+}
+$1.prototype.$2 = function() { return this._$2; }

@@ -1,0 +1,86 @@
+#!/bin/sh
+#
+# script to substitute out long constant strings in favor of more generic
+# "user-readable" variables.
+#
+Usage="
+	sub-log [-sb sandbox] file
+
+	-sb specifies the sandbox in which "file" was produced.
+"
+
+cr='
+'
+error=""
+sandbox=""
+file=""
+tmpfile="/tmp/sub-log$$"
+
+# Process all the flags
+while :
+do
+    case $1 in
+	-sb) shift; sandbox=$1 ;;
+	-*)  echo 1>&2 "?Invalid switch specified$cr$Usage"; error="exit" ;;
+	*) break ;;
+    esac
+    shift
+done
+
+#exit, if specified
+eval $error
+
+case $# in
+    0) echo 1>&2 "?No file name specified$cr$Usage"; exit ;;
+    1) file=$1 ;;
+    *) echo 1>&2 "?Too many files spevied$cr$Usage"; exit ;;
+esac
+
+case $WORKON in
+    1) ;;
+    *)	echo 1>&2 "?Not in a sandbox."
+	echo 1>&2 " Must be run in the sandbox in which $file was created"
+	echo 1>&2 "$Usage"
+	exit;
+	;;
+esac
+
+sed "
+   0s** Create shorthand values for the following *
+	1i\\
+[\\
+    COMP_HOST_ROOT=${COMP_HOST_ROOT}\\
+    SOURCEDIR=${SOURCEDIR}\\
+    INCDIRS=${INCDIRS}\\
+]\\
+
+	s=${COMP_HOST_ROOT}=\${COMP_HOST_ROOT}=g
+	s=${SOURCEDIR}=\${SOURCEDIR}=g
+	s=${INCDIRS}=\${INCDIRS}=g
+
+    0s** Clean up the appearance of the MAKE commands *
+	s/LD=/\\
+			LD=/
+	s/AWK=/\\
+			AWK=/
+	s/AR=/\\
+			AR=/
+	s/RANLIB=/\\
+			RANLIB=/
+	s/SHELL=/\\
+			SHELL=/
+	s/EGREP=/\\
+			EGREP=/
+	s/CONFIG=/\\
+			CONFIG=/
+	s/^ksh/\\
+ksh/
+	0s** Blank line around lines containing the specified search strings *
+	/^for i in/s=^=\\
+=
+	0s** Blank line after lines containing the specified search strings *
+	/\${COMP_HOST_ROOT}\/usr\/lib\/cmplrs\/cc\/objZ/s=$=\\
+=
+
+" $file
+

@@ -1,0 +1,93 @@
+#ifdef COLOR
+*customization: -color
+#endif
+
+*Background: Beige
+*Foreground: Black
+
+!emacs*Background: Wheat
+!emacs*Foreground: Black
+emacs*Background: Beige
+emacs*Foreground: Black
+emacs*pointerColor: DarkViolet
+emacs*cursorColor: DarkViolet
+emacs*bitmapIcon: on
+!emacs*font: fixed
+emacs.geometry: 80x45
+
+gnome-terminal*background:Beige
+gnome-terminal*foreground:black
+
+!++
+! set the Xterm font family and default size
+! the CTRL-mouse3 menu will adjust accordingly
+XTerm*faceName: consolas
+XTerm*faceSize: 12
+
+! other Xterm options
+xterm*background: Beige
+xterm*foreground: Black
+xterm*.geometry: 80x40
+xterm*saveLines: 10000
+
+xterm*cursorColor: Blue
+xterm*reverseVideo: false
+xterm*scrollBar: true
+xterm*reverseWrap: true
+xterm*fullCursor: true
+xterm*scrollTtyOutput: off
+xterm*scrollKey: on
+xterm*VT100.Translations: #override\n\
+	<KeyPress>Prior : scroll-back(1,page)\n\
+	<KeyPress>Next : scroll-forw(1,page)
+!xterm*titleBar: false
+
+!--
+
+xman*bothShown: true
+xman*verticalList: true
+
+
+! wide screen, assume slow network (labrack from house)
+#if (WIDTH > 1900)
+xosview*geometry: 225x300+0-0
+! define all the known resources, comment out those that were causing trouble
+! see the man page for details
+xosview*load: True
+xosview*cpu: True
+xosview*Mem: True
+xosview*swap: True
+xosview*page: True
+xosview*gfx: True
+xosview*interrupts: True
+xosview*disk: True
+xosview*net: True
+#else
+! Xosview monitoring of labrack from the house
+xosview*geometry: 225x700+0-0
+xosview*load: False
+xosview*cpu: True
+xosview*Mem: True
+xosview*net: True
+xosview*swap: False
+xosview*page: False
+xosview*gfx: False
+xosview*interrupts: False
+#endif
+
+xosview*NFSStats: False
+xosview*NFSDStats: False
+xosview*serial: False
+xosview*lmstemp: False
+xosview*battery: False
+xosview*int rate: False
+xosview*RAID: False
+!xosview*netBandwidth: 1000000
+! 1,000,000 is for 100Mbits/sec ethernet
+! 100,000 is for 10Mbits /sec
+! 5000 is for 57.6Kbaud modem
+!xosview*netBandwidth:  500000
+xosview*netBandwidth: 1000000
+!xosview*netBandwidth: 5000
+! disk bandwidth is set to 10M bits per second
+xosview*diskBandwidth: 10000000

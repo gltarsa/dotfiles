@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: afterEach
+# key: AE
+# --
+afterEach(function() {
+    $0
+});

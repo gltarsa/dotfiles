@@ -1,0 +1,62 @@
+#! /usr/local/bin/perl
+## Generates outline notation based on level of indentation. 
+## written by Ben Smith -- 6/96 at DEC
+
+$indent = "\t";			# the input indent string
+$outdent = "   ";		# the output indent string
+
+# the outline prefixes -- notice that they don't have a big range
+@prefix = ( 
+	   [(1..100)], 
+	   [(a..z)],
+	   [(1..100)],
+	   [(a..z)],
+	   [(1..100)], 
+	   [(a..z)],
+	   [(1..100)],
+	   [(a..z)],
+	   [(1..100)],
+	   [(a..z)]
+	   );
+# put period after the elements of the first two
+grep(s/(.*)/$1./, @{$prefix[0]});
+grep(s/(.*)/$1./, @{$prefix[1]});
+# put parenthesis after the elements of the next two
+grep(s/(.*)/$1)/, @{$prefix[2]});
+grep(s/(.*)/$1)/, @{$prefix[3]});
+# put period after the elements of the next two
+grep(s/(.*)/$1./, @{$prefix[4]});
+grep(s/(.*)/$1./, @{$prefix[5]});
+# put parenthesis after the elements of the next two
+grep(s/(.*)/$1)/, @{$prefix[6]});
+grep(s/(.*)/$1)/, @{$prefix[7]});
+# put period after the elements of the next two
+grep(s/(.*)/$1./, @{$prefix[8]});
+grep(s/(.*)/$1./, @{$prefix[9]});
+
+
+# initialize some variables
+$curLevel = 0;			# current indent level
+$prevLevel = -1;		# previous indent level- starts less than cur
+@levelCounter = (0,0,0,0,0);	# counters for each level
+
+
+while(<>) {
+    chop;
+    next if /^$/;
+    # find the indent level by counting from begining of line
+    while(s/^$indent//) { ++ $curLevel; }
+    if($curLevel > $prevLevel) {
+	$levelCounter[$curLevel] = 0; # reinitialize this level's counter
+    } else { 
+	# increment the counter for this level
+	++ $levelCounter[$curLevel];
+    }
+
+    $output = ($outdent x $curLevel) . 
+	$prefix[$curLevel][$levelCounter[$curLevel]] .
+	" $_\n";
+    print $output . "\n";
+    $prevLevel = $curLevel;
+    $curLevel = 0;
+}

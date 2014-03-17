@@ -1,0 +1,2 @@
+#! /bin/sh
+~/bin/ecco2txt.pl $@ | sed 's/[ ]*[]*$//'

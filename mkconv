@@ -1,0 +1,182 @@
+#!/bin/sh
+
+# convert
+#    shell script to convert CMU Makefiles into a form that ODE 3.1 pmake
+#    can accept.  It is not meant to be a complete conversion tool, only
+#    an automation of recognized manual procedures.
+
+Usage='
+	convert [-recurse] [-pattern pat] dirname [dirname...]
+
+	dirname is the name of directory in which the Makefile(s) are
+	to be converted.  The default makefile pattern is "Makefile".
+
+	-recurse	indicates that all subdirectories beneath the
+			specified directories are to be processed.
+
+	-pattern pat	indicates that "pat" should be used as the file
+			expression to be converted.
+
+	If the original file is a symbolic link, it is renamed to have
+	an extension of ".olnk", otherwise, it is renamed to have an extension
+	of ".old".
+'
+nl='
+'
+tmpfile=/tmp/mkconv$$.list
+sedfile=/tmp/mkconf$$.sed
+sedfile2=/tmp/mkconf$$.sed2
+
+do_recurse=n
+file_name="Makefile"
+
+# Process any flags
+while : true
+do
+    case $1 in
+	-recurse|-r*)
+	    do_recurse="y"
+	    ;;
+	-pattern|-p*)
+	    shift
+	    file_name="$1"
+	    ;;
+	-*) echo 1>&2 "? Unrecognized flag: $1$nl$Usage"
+	    exit 1
+	    ;;
+	""|*)  break
+	    ;;
+    esac
+    shift
+done
+
+case $file_name in
+    "") echo 1>&2 "?No file pattern specified$nl$Usage"; exit 1 ;;
+esac
+
+#
+# Check for no arguments
+# If building, but no args, flag an error.
+case $# in
+    0) echo 1>&2 "?No argument specified$nl$Usage"; exit 1 ;;
+esac
+
+# enable cleanup
+trap 'rm -f $tmpfile $sedfile $sedfile2; exit' 0 1 2 3 4 10 12
+
+# Create the sed conversion file.  We create a temporary file so that
+# this script can look prettier, technically we could stuff all this into
+# a quoted string.  Pushing it into a file minimizes the quoting hassles.
+#
+# The first script:
+#   - Adds a dot to includes that lack it
+#   - Changes any inclusion of something that uses MAKEFILEPATH
+#     into an include of <${RULES_MK}>
+#   - Adds quotation marks to the include file name, if they are missing
+#
+# If the productions of the first script produce duplicate RULES_MK inclusions
+# then the second script will remove the duplicates.
+#
+# The conversion of any files prefixed by ${MAKEFILEPATH}/ is predicated on the
+# notion that only a single inclusion of ${RULES_MK} is needed these days and
+# multiple inclusions of that file are no-ops.  Prior to the end of the
+# project, an awk script should be written to remove all superfluous inclusions
+# of ${RUILES_MK}.
+cat > $sedfile <<- 'endSED'
+	0s** Conversion #1:	convert 'include file' to '.include "file"' *
+	0s**      or 'include ${MAKEFILEPATH}file' to '.include <file>' *
+	/^\.*include/{
+		s/^\.include/include/
+		/MAKEFILEPATH/!{
+		    /"/!{
+			/</!{
+			    s/^include[ 	][ 	]*\(.*\)/include "\1"/
+			}
+		    }
+		}			
+		/MAKEFILEPATH/{
+		    s/^include[ 	].*/include <${RULES_MK}>/
+		}
+	}
+	/^\.*include[ 	]/s/^\.*include[ 	][ 	]*/.include /
+endSED
+cat > $sedfile2 <<- 'endSED2'
+	0s** If multiple .includes of the rules exist *
+	0s** eliminate all but the first *
+	/^\.include/{
+	    p
+	    :elimdup
+	    /^\.include <\${RULES_MK}>/{
+		s/.*//
+		N
+		s/^.//
+		belimdup
+	    }
+	}
+endSED2
+
+
+
+# There could, potentially, be a LOT of names, so we don't want to bank on
+# them all fitting into a Unix command line.  Hence we will
+# create a file containing all of the candidate makefile names
+#
+rm -f $tmpfile		# delete any previous version
+for dir
+do
+    case $do_recurse in
+	# recursive search: let find locate all the directories
+	y) find $dir -type d -print >> $tmpfile ;;
+
+	# local search: save the specified directory name
+	# which indicates that no file name matched
+	n) echo $dir >> $tmpfile ;;
+
+	# should not happen
+	*) echo 1>&2 "?INTERNAL ERROR.  do_recurse = $do_recurse"; exit 1 ;;
+    esac
+done
+
+#
+# At this point, we should have a file full of candidate Makefile names
+#
+while read lcldir
+do
+    file=$lcldir/$file_name
+    lclfile=$file
+
+    case "$file" in
+	$lcldir/$file_name) file=`genpath -locate $lclfile` ;;
+    esac
+	
+    test -f $file ||
+	{
+	echo "$file not found"
+	continue
+	}
+
+    echo "Processing $file"
+
+    rm -f ${lclfile}.new
+    sed -f $sedfile $file | sed -f $sedfile2 > ${lclfile}.new
+
+    cmp ${lclfile}.new ${file} > /dev/null 2>&1
+    status=$?
+
+    case $status in
+	# files match, no conversion performed
+	0)  echo "No changes made to $file"
+	    rm -f ${lclfile}.new
+	    ;;
+
+	# files don't match, rename the original
+	1)  test -L ${lclfile} && mv -f ${lclfile} ${lclfile}.olnk
+	    test -f ${lclfile} && mv -f ${lclfile} ${lclfile}.old
+	    mv -f ${lclfile}.new ${lclfile}
+	    ;;
+	*)  echo 1>&2 "?Unknown status from cmp ${lclfile}.new ${file}: $status"
+	    rm -f ${lclfile}.new
+	    ;;	    
+    esac
+done < $tmpfile
+

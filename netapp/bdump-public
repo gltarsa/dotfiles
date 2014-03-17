@@ -1,0 +1,174 @@
+#! /bin/sh
+#
+# public-dump
+#
+# script to notify a specified user that there are BURTs matching 
+# the specified search that have PUBLIC fields set to REVIEW or ON_HOLD.
+#
+USAGE='Usage: public-dump <addr>
+<addr> is the e-mail address to which to send the report, if there are
+       matching BURTs.
+
+       flags:
+         -d[ebug]   Display debugging info and put output on stdout instead
+		    of e-mailing to <addr>
+	 -m[gr] unixname
+                    Scan BURTs whose mgr_owner is <unixname>     
+'
+# Modification History
+# ~~~~~~~~~~~~~~~~~~~~
+# 04	Mar-2008, Greg Tarsa
+#	Fixed bug in "no output" code; replaced earlier workround.
+#
+# 03	Jul-2007, Greg Tarsa
+#	Removed "&fz=934" from BURT string as extraneous.  Less chance of
+#	line wrapping now.
+#
+# 02	Mar-2007, Greg Tarsa
+#	added ability to override manager default
+#
+# 01	Feb-2007, Greg Tarsa
+#	Munged from public-dump
+#
+
+# ensure that burt cmd can be found in cron runs
+PATH="$PATH"":/usr/local/bin:/usr/ucb"
+export PATH
+
+mgr_name=`whoami`	# get manager's default unixname
+debugflag=""
+addr=""
+xtraburts=""
+nl="
+"
+
+# process switches
+while :
+do
+    # No more arguments?  All Done.
+    case $# in
+       0) break ;;
+    esac
+
+    # process the switches
+    case $1 in
+       # debug mode?
+       -debug|-d*) debugflag=yes ;;
+
+       # override manager default?
+       -mgr|-manager|-m*)
+	    shift
+	    case $# in
+	       0) echo 1>&2 "?no manager name specified${nl}$USAGE"
+	           exit 1
+		   ;;
+	    esac
+	    mgr_name=$1
+	    ;;
+
+       # not a recognized switch string...
+       -*) echo 1>&2 "?Invalid switch: $1$nl$USAGE"; exit 1 ;;
+       
+       # not a switch? Then move on...
+       *) break ;;
+    esac
+
+    shift # get next word to process
+done
+
+# process argument(s)
+case $# in
+  1) addr=$1;;
+  *) echo 1>&2 "?No e-mail address specified.$nl$USAGE"; exit 1 ;;
+esac
+
+# define the tmp file and setup the trap to cleanup at script completion
+tmpfile=/tmp/publicdump$$
+trap 'rm -f $tmpfile' 0 INT KILL
+
+# BURT search = PUBLIC BURTs in progress for mgr & people reporting to him/her
+burt_scope='$public =~ /^ON_HOLD|YES|REVIEW/ && ($mgr_owner =~ /'"$mgr_name"'/ || $owner =~ /'"$mgr_name"'/ )'
+subject="Action needed: PUBLIC=ON_HOLD,YES,REVIEW BURTs"
+burt_area=''
+burt_area_exclude=''
+
+
+# combine BURT search criteria into a single spec string (straight concatenate doesn't 
+# work if any criteria are null, so only put && for non-null criteria)
+#
+# i.e.: burt_scope && burt_area && burt_area_exclude
+#
+burtspec="$burt_scope"
+for crit in "$burt_area" "$burt_area_exclude"
+do
+    case $crit in
+      "" ) continue ;;
+      *) burtspec="$burtspec && $crit" ;;
+    esac
+done
+
+case $debugflag
+in
+   y*) echo "${nl}burtspec=$burtspec${nl}" ;;
+esac
+
+# list out the qualified BURTs
+burt report -q"($burtspec)" \
+     -f':id sev pri public state:5 rel_state owner:8 subtype:8 target_release:11 title date_new:9 cnt_call_rec' \
+     -s'-call_rec public subtype id state pri sev' |
+	sed 's%^ *[1-9][0-9]*% http://burtweb.eng.netapp.com:8080/burt-bin/start?id=&\&btn=edit\  &%' > $tmpfile
+
+#munge the count to remove the wc-inflicted filename
+burtcount=`wc -l $tmpfile | fmt -w 1 | head -1| sed 's/ //g'`
+
+# burt does not return a predictable completion code, so we
+# have to look inside to see if we had any matches.
+# no match, then exit
+#/usr/bin/grep "^No matching records" $tmpfile > /dev/null && exit 0
+
+case $burtcount in
+    # 1 line means "no records found"; fyi, 1st BURT = 2, 1 for titles, 1 for BURT
+    1) exit 0 ;;
+esac
+
+#decrement to remove title from the count; add count to subject
+burtcount=`expr $burtcount - 1`
+subject="$subject (total=$burtcount)"
+
+# double space the BURT report,
+# filter the output for prettiness and either e-mail or
+# display as debug output
+#
+# Note: this takes advantage of a side-effect of the fmt cmd.  The long BURT
+# link will not be broken by fmt unless it contains a blank, which it
+# currently doesn't.  So we know if we use sed to expand the BURT number into
+# the http link & the BURT number and separate them by two spaces, fmt
+# will break the line at the first space and align the link with the
+# BURT data.
+#
+sed G < $tmpfile | 
+	sed 's/|title//' |
+	sed 's/|/\
+    |/' |
+	fmt -72 |
+	    case $debugflag in
+		# mail the filtered report...
+		"") mailx -s "$subject" $addr
+		    ;;
+
+		#...or display it on stdout
+		 y*)
+		    echo "The following would be sent to $addr"":"
+		    echo "Subject: $subject"
+		    cat
+		    ;;
+	    esac
+case $debugflag in
+    "") ;;
+    y*) echo "$tmpfile contents:"
+       cat $tmpfile
+       ;;
+esac
+exit 0
+
+

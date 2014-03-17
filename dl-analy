@@ -1,0 +1,83 @@
+#! /bin/sh
+#
+# dl-analy
+#
+# script to scan a list of members of a dl and determine how many are in
+# Engineering, Support, Sales, etc.
+#
+USAGE='Usage: dl-analy -flags in-file > out-file
+
+       in-file      file containing e-mail addressed from a majordomo list
+
+       flags:
+         -d[ebug]   Display debugging info and put output on stdout instead
+		    of e-mailing to <addr>
+'
+# Modification History
+# ~~~~~~~~~~~~~~~~~~~~
+# 01	Feb-2007 Greg Tarsa
+#	Wrote original code.
+#
+
+# ensure that burt cmd can be found in cron runs
+PATH="$PATH"":/usr/local/bin"
+export PATH
+
+debugflag=""
+tmpfile="/tmp/dl-analy$$"
+org_chart_file="/x/eng/utils/share/Eng_Org_Chart.org.corp"
+nl="
+"
+
+# process switches
+while :
+do
+    # No more arguments?  All Done.
+    case $# in
+       0) break ;;
+    esac
+
+    # process the switches
+    case $1 in
+       # debug mode?
+       -debug|-d*) debugflag=yes ;;
+
+       # not a recognized switch string...
+       -*) echo 1>&2 "?Invalid switch: $1"; errflag=yes ;;
+       
+       # not a switch? Then move on...
+       *) break ;;
+    esac
+
+    shift # get next word to process
+done
+
+# process argument(s)
+case $# in
+  1) in_file=$1;;
+  *) echo 1>&2 "?Invalid number of arguments$nl$USAGE"; exit 1 ;;
+esac
+
+# define the tmp file and setup the trap to cleanup at script completion
+trap 'rm -f $tmpfile' 0 INT KILL
+
+# convert each entry into a canonical unix user name
+# this is gross approximation; it searches the corp org chart file for
+# the e-mail addr string in the dl- list and processes the first
+# record that matches.  This might result in false positives (i.e., multiple
+# records containing "smith," but it should be accurate enough for this
+# analysis.
+#
+# It is assumed that the unix username is the 2nd field of the orgchart
+# record.
+#
+for i in `cat $in_file`
+do 
+    grep -i $i $org_chart_file | cut -d : -f 2
+done > $tmpfile
+
+for i in `cat $tmpfile`
+do
+    echo "$i `manager_of $i -o login,title` "
+done
+

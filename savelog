@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# savelog
+#
+#  Concatenate the BUILD, IOSTAT, and VMSTAT logs together and put them
+#  in the ~/data directory under the CU-BUILD* name.
+#
+
+for log
+do
+    case $log in
+	BUILD_*)
+	    core_name=`echo $log | sed 's/^BUILD_//; s/\.log//'`
+	    echo cat *$core_name* '>' $HOME/data/CU-BUILD_${core_name}.log
+	    cat *$core_name* > $HOME/data/CU-BUILD_${core_name}.log
+	    ;;
+	*)  echo "$log: not recognized as a log file. Skipping. . ."
+	    ;;
+    esac
+done

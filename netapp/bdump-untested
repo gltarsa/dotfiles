@@ -1,0 +1,274 @@
+#! /bin/sh
+#
+# untested-dump
+#
+
+# script to create a report of UNTESTED BURTs for a specified release,
+# owned by members of the specified managers greater team.
+#
+# Displays selected fields and the Test_Plan section for each matching
+# BURT.
+#
+USAGE='Usage: untested-dump <addr> key1, key2...
+<addr> is the e-mail address to which to send the report, if there are
+       matching BURTs.
+
+Specifying <keyX> will narrow the search to BURTs matching those keywords.
+
+       flags:
+         -d[ebug]   Display debugging info and put output on stdout instead
+		    of e-mailing to <addr>
+	 -r[elease] rel-name
+                    Scan BURTs which are targeted to the <rel-name>
+	 -m[gr] unixname
+                    Scan only BURTs whose mgr_owner is <unixname>     
+'
+# Modification History
+# ~~~~~~~~~~~~~~~~~~~~
+# 01	Jul-2007, Greg Tarsa
+#	Munged from keyword-dump
+#
+
+# ensure that burt cmd can be found in cron runs
+PATH="$PATH"":/usr/local/bin:/usr/ucb"
+export PATH
+
+mgr_name=`whoami`	# get manager's default unixname
+mgr_name="gaddis"  # tmp default to Tony
+
+release_name="ironcity"
+
+debugflag=""
+addr=""
+xtraburts=""
+nl="
+"
+# special keywords for screening default to null
+keywords=""
+kwlist=""
+
+# process switches
+while :
+do
+    # No more arguments?  Move on.
+    case $# in
+       0) break ;;
+    esac
+
+    # process the switches
+    case $1 in
+       # debug mode?
+       -debug|-d*) debugflag=yes ;;
+
+       # override manager default?
+       -mgr|-manager|-m*)
+	    shift
+	    case $# in
+	       0) echo 1>&2 "?no manager name specified${nl}$USAGE"
+	           exit 1
+		   ;;
+	    esac
+	    mgr_name=$1
+	    ;;
+
+       # override release default?
+       -release|-r*)
+	    shift
+	    case $# in
+	       0) echo 1>&2 "?no release specified${nl}$USAGE"
+	           exit 1
+		   ;;
+	    esac
+	    release_name=$1
+	    ;;
+
+       # not a recognized switch string...
+       -*) echo 1>&2 "?Invalid switch: $1$nl$USAGE"; exit 1 ;;
+       
+       # not a switch? Then move on...
+       *) break ;;
+    esac
+
+    shift # get next word to process
+done
+
+# process argument(s)
+# get address
+case $# in
+  0) echo 1>&2 "?No e-mail address specified$nl$USAGE"; exit 1 ;;
+  *) addr=$1; shift;;
+esac
+
+while :
+do
+    # No more arguments? All done
+    case $# in
+       0) break ;;
+    esac
+
+    # unfortunately "echo" converts \b to backspace;
+    # need to post-process to get the token back for burt
+    keywords="$keywords|\ b($1)\ b"
+    kwlist="$kwlist $1"
+
+    shift # get next word to process
+done
+
+#remove leading "or" & restore "\b" keyword from echo munge
+# note "the "\b" will show up in debug statements as ^H--just live with it
+keywords=`echo $keywords | sed 's/^|//; s=\\ b=\\b=g'`
+kwlist=`echo $kwlist | sed 's/^ //`
+
+# define the tmp file and setup the trap to cleanup at script completion
+tmpfile=/tmp/untesteddump$$
+trap 'rm -f $tmpfile' 0 INT KILL
+
+# BURT search = BURTs w/ specified keyword for people not reporting to me
+burt_scope='$target_release =~ /\b('$release_name')\b/ && &reports_to($owner,"'$mgr_name'")'
+
+#add keyword screen if keywords specifiedc
+case "$keywords" in
+    "") ;;
+    *)  burt_scope="$burt_scope"' &&  $keywords =~ /'$keywords'/' ;;
+esac
+
+subject="UNTESTED BURT report for release=$release_name & keyword=$kwlist"
+
+#currently scanning all types of BURTs, but may want to reduce the field
+#burt_area='$type =~ /(SW|SW\+NG|NG|SW\+NETCACHE|NETCACHE)/'
+
+# only search UNTESTED BURTs in the current release
+burt_area_exclude='($rel_state =~ /UNTESTED/)'
+
+# combine BURT search criteria into a single spec string (straight
+# concatenate doesn't work if any criteria are null, so only put &&
+# for non-null criteria)
+#
+# i.e.: burt_scope && burt_area && burt_area_exclude
+#
+burtspec="$burt_scope"
+for crit in "$burt_area" "$burt_area_exclude"
+do
+    case $crit in
+      "" ) continue ;;
+      *) burtspec="$burtspec && $crit" ;;
+    esac
+done
+
+# display debug info
+case $debugflag
+in
+   y*)
+       echo "${nl}addr=$addr"
+       echo "${nl}burtspec=$burtspec" 
+       echo "${nl}keywords=$keywords" 
+       echo "${nl}kwlist=$kwlist"
+       echo "${nl}"
+       set -x
+       ;;
+esac
+
+# list out the qualified BURTs
+# hack to change "days new" to something useful when it is truncated.
+save=$tmpfile
+tmpfile=/tmp/greg-demo
+burturborep -xdays \
+     -q"($burtspec)" \
+     -f':id sev pri public state:5 rel_state owner:8 subtype:8 target_release fixed_in_release title' \
+     -release "$release_name" \
+     -s'-fixed_in_release id public subtype id state pri sev' |
+	sed 's%^ *[1-9][0-9]*% http://burtweb.eng.netapp.com:8080/burt-bin/start?id=&\&btn=edit\  &%
+	     s/days+/dysnew/' > $tmpfile
+
+#      -f':id state: sev pri public subtype owner call_rec title' \
+
+#munge the count to remove the wc-inflicted filename
+burtcount=`wc -l $tmpfile | fmt -w 1 | head -1| sed 's/ //g'`
+set +x
+
+case $burtcount in
+    # 1 line = "no records found" = no output: we are done
+    1) exit 0 ;;
+esac
+
+#decrement to remove title from the count; add count to subject
+burtcount=`expr $burtcount - 1`
+subject="$subject (total=$burtcount)"
+
+#
+# create a list of BURTs in the report so we can get their Test_Plan section
+# and parse their Change_Log section for the one who set it to UNTESTED.
+#
+# create a command to collect the BURT view details
+cmd=`awk '/ http/{printf "%d ", \$2}' < $tmpfile`
+
+case $debugflag
+in
+   y*) set -x ;;
+esac
+
+cmd="burt view Test_Plan Change_Log $cmd"
+
+set +x
+
+# next steps:
+
+# figure out how to get both Test_Plan and Change_Log sections from
+# the "burt view" command
+#
+
+# minimize the awkfile that distills the details from the burt view
+# and integrate it into this script.
+
+# it is possible to display the fixed_in_release field using the
+# regular report generator: add it to the report.
+
+# need to figure out how to display the number of days since the BURT was put into UNTESTED
+#
+
+
+
+# double space the BURT report,
+# filter the output for prettiness and either e-mail or
+# display as debug output
+#
+# Note: this takes advantage of a side-effect of the fmt cmd.  The long BURT
+# link will not be broken by fmt unless it contains a blank, which it
+# currently doesn't.  So we know if we use sed to expand the BURT number into
+# the http link & the BURT number and separate them by two spaces, fmt
+# will break the line at the first space and align the link with the
+# BURT data.
+#
+
+# the following awk snippet will put "tgt:" in front of the 10th field
+# and "fix:" in front of the 11th.  currently, these are the
+# target_release and fixed_in_release fields, but we need a better way
+# of determining that than ordinal position.
+# |
+#        awk '/^id/ {print $0; next}
+#	     {$10 = sprintf "\ntgt:%s", $10
+#	      $11 = sprintf "\nfix:%s", $11
+#	      print $0}'
+
+sed G < $tmpfile | 
+	sed 's/|title//' |
+	sed 's/|/\
+    |/' |
+	fmt -72 |
+	    case $debugflag in
+		# mail the filtered report...
+		"") mailx -s "$subject" $addr
+		    ;;
+
+		#...or display it on stdout
+		 *)
+		    echo "The following would be sent to $addr"":"
+		    echo "Subject: $subject"
+		    cat
+		    ;;
+	    esac
+tmpfile=$save
+exit 0
+
+
+

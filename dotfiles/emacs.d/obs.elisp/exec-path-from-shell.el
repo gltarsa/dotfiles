@@ -1,0 +1,1 @@
+exec-path-from-shell/exec-path-from-shell.el

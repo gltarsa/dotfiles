@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: expect
+# key: Ex
+# --
+expect(${1:actual}).${3:$$(yas-choose-value '("toBe", "toBeCloseTo", "toBeDefined", "toBeFalsy", "toBeGreaterThan", "toBeLessThan", "toBeNaN", "toBeNull", "toBeTruthy", "toBeUndefined", "toContain", "toEqual", "toHaveBeenCalled", "toHaveBeenCalledWith", "toMatch", "toThrow", "toThrowError", ".not.toBe", ".not.toBeCloseTo", ".not.toBeDefined", ".not.toBeFalsy", ".not.toBeGreaterThan", ".not.toBeLessThan", ".not.toBeNaN", ".not.toBeNull", ".not.toBeTruthy", ".not.toBeUndefined", ".not.toContain", ".not.toEqual", ".not.toHaveBeenCalled", ".not.toHaveBeenCalledWith", ".not.toMatch", ".not.toThrow", ".not.toThrowError"))}($0);
+

@@ -1,0 +1,15 @@
+#!/bin/ksh
+#
+# Quickie script to search all of MH-mail/jokes for messages containing
+# the specified string.
+#
+# Any egrep-style RE will work.
+#
+case $# in
+    0) echo 1>&2 "?Usage: jfind 'string'" ; exit 1 ;;
+esac
+
+find $HOME/MH-mail/jokes -type d -print |
+	sed 's=.*=egrep -i -e "'"$*"'" &/[0-9]* /dev/null=' |
+	/bin/ksh 2> /dev/null |
+	sed 's=.usr.users.tarsa.MH-mail.=+=;s@/\([0-9][0-9]*:\)@ \1@'

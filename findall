@@ -1,0 +1,29 @@
+#!/bin/bash
+Help="`basename $0` target-RE [opt]
+
+Search all subdirectories of the current directory for the
+<target-RE>.  If <opt> is non-null, then filenames will be supressed
+and leading white space removed.  Otherwise, filenames are listed.
+
+"
+
+inhibit_names="yes"
+case $# in
+  1) target="$1" inhibit_names="no" ;;
+  2) target="$1"; ;;
+  *) echo 1>&2 "? $Help"; exit 0
+esac
+  
+case "$inhibit_names" in
+    "no")
+       find . -type f -exec grep -i "${target}" /dev/null {} \; | sed 's/^[ ]*//'
+       ;;
+
+    "yes")
+	# inhibit file names and remove leading whitespace
+	find . -type f -exec grep -i "${target}" {} \; | sed 's/^[	 ]*//g'
+       ;;
+
+    *) echo "inhibit_names must be yes or not"; exit 0
+	;;
+esac

@@ -1,0 +1,24 @@
+#! /bin/sh
+# Modification History
+# ~~~~~~~~~~~~~~~~~~~~
+# 01 Dec-2004, tarsa
+# Put level back to 1, from 4, to get horiz rules between top level
+# agenda items
+#
+level="="
+sed "
+    /^Agenda Adjustments/d
+    /^Attendance:/{
+		s/^Attendance:[ ]*/${level}Attendance${level}\\
+*/
+        b
+    }
+    /	=/{
+	  s/	=\(.*\)$/${level}=\1${level}=/
+	  b
+	  }
+    /^	/!s/.*/${level}&${level}/
+    s/	/*/g"
+
+
+

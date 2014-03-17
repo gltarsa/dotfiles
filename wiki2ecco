@@ -1,0 +1,14 @@
+#! /bin/sh
+sed '
+    # remove space after opening head sequence +
+    s/= /=/
+
+    # make header 4 into ECCO TLI
+    s/^====//; s/====$//
+
+    #remove space after bullet markup
+    s/\* /*/
+
+    # make bullets into outline level items
+    /^\*/s/\*/	/g
+'

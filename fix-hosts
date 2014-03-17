@@ -1,0 +1,64 @@
+#!/usr/local/bin/bash
+#
+# fix-hosts	add addresses for key internal sites to /etc/hosts file
+#
+#
+hosts="
+	admin-web.netapp.com
+	apps-web.corp.netapp.com
+	burtweb.eng.netapp.com
+	cs-web.netapp.com
+	dragon.eng.netapp.com
+	finance-web.netapp.com
+	hr-web.netapp.com
+	it-web.netapp.com
+	legacy-web.corp.netapp.com
+	majordomo.corp.netapp.com
+	mfgeng-web.netapp.com
+	mktg-web.netapp.com
+	now.netapp.com
+	perburt.eng.netapp.com
+	phlegm.eng.netapp.com
+	se-web.netapp.com
+	search.netapp.com
+	topaz.corp.netapp.com
+	web.netapp.com
+	wpr-web.corp.netapp.com
+	"
+
+for i in $hosts
+do
+   Name=
+   Aliases=
+   Address=
+
+   # show the assignments
+   case $debug in
+      "on")
+       nslookup $i |
+          sed '	1,/answer:/d
+		/:/{
+		    s/:/="/
+		    s/$/"/
+		    }
+		/^[	 ]*$/d
+		s/,//
+		s/  *//'
+       ;;
+    esac
+
+   #evaluate the assignments
+   eval `nslookup $i |
+        sed '	1,/answer:/d
+		/:/{
+		    s/:/="/
+		    s/$/"/
+		    }
+		/^[	 ]*$/d
+		s/,//
+		s/  *//'`
+
+    # emit the /etc/hosts line of interest
+    echo "$Address	$Name $Aliases"
+done
+

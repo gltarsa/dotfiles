@@ -1,0 +1,239 @@
+;;++
+; Mac OS X section
+;
+; Ensure exec-path is derived from the Teminal PATH
+(setq delete-by-moving-to-trash t)  ; delete by moving to OS X Trash
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable to match that used by the user's shell.
+
+This is particularly useful under Mac OSX, where GUI apps are not started from a shell."
+;  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string "[ \t\n]*$" "" (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(when window-system (set-exec-path-from-shell-PATH))
+
+(global-set-key (kbd "s-+") 'text-scale-adjust)
+(global-set-key (kbd "s--") 'text-scale-adjust)
+(global-set-key (kbd "s-=") 'text-scale-adjust)
+(global-set-key (kbd "s-0") 'text-scale-adjust)
+;; s-s was save-buffer, but it is too prone to accidental use
+(global-set-key (kbd "s-s") nil)
+
+;; auto-complere: bind Autocomplete to the CMD-A key (cap A)
+(global-set-key (kbd "s-A") 'global-auto-complete-mode)
+;;-- End Mac OS X section
+
+; gt Jan-2014 Add Melpa to the standard GNU archive for packages
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
+; gt Dec-2013: add a local load path so we can add customize our
+;              modes and features
+(add-to-list 'load-path "~/.emacs.d/elisp/")
+
+;; from StackOverflow: things to do after loading packages via the above 
+(add-hook 'after-init-hook 'my-after-init-hook)
+(defun my-after-init-hook ()
+  (yas-global-mode 1)
+  )
+
+
+;; Define ELLE-like window movement commands
+;; (fset 'previous-window "\e-1\C-Xo")
+
+;;(define-key global-map "\C-s" 'search-forward)
+;;(define-key global-map "\C-r" 'search-backward)
+
+;temporary: until keyboard is mapped properly
+;(define-key global-map "\C-h" 'backward-delete-char-untabify)
+;(define-key global-map "\C-?" 'help-for-help)
+
+;(define-key ctl-x-map "\C-e" 'write-region)
+;(define-key ctl-x-map "\C-i" 'insert-file)
+;(define-key ctl-x-map "\C-n" 'other-window)
+;(define-key ctl-x-map "\C-p" 'previous-window)
+;(define-key ctl-x-map "\\" 'compile)
+(define-key ctl-x-map "\C-\\" 'compile)
+(define-key ctl-x-map "'" 'compilation-next-error)
+;(define-key ctl-x-map "\C-c" 'beginning-of-line)
+;(define-key ctl-x-map "\C-z" 'save-buffers-kill-emacs)
+;(define-key ctl-x-map "\C-c" 'save-buffers-kill-emacs)
+;(define-key ctl-x-map "!" 'shell-command)
+(define-key ctl-x-map ">" '(lambda (start end arg)
+			     (interactive "r\nP")
+			     (indent-rigidly start end (if arg (car arg) 4))))
+(define-key ctl-x-map "<" '(lambda (start end arg)
+			     (interactive "r\nP")
+			     (unindent-rigidly start end (if arg (car arg) 4))))
+;(define-key ctl-x-map "|" 'split-window-horizontally)
+;(define-key esc-map "j" 'fill-paragraph)
+; 12/2013: Use M-g M-G to go to line ;(define-key esc-map "<" 'goto-line-n)
+;(define-key esc-map "r" 'replace-string)
+
+;; Toggle auto-saving for this buffer (useful on VMS mounted partitions)
+;(define-key esc-map "*" 'auto-save-mode)
+
+;; Enable *-region to be used w/o messages
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
+;; Remove menu bar from top of window (until problem is fixed)
+;;(menu-bar-mode -1)
+
+;; Make .txt files turn indented-text-mode on by default
+(setq auto-mode-alist
+      (cons '("\\.txt\\'" . indented-text-mode) auto-mode-alist))
+
+;;+++
+;; Javascript section
+  ;; (add-hook 'js-mode-hook 'linum-mode) ; enable line numbers
+  ;; (add-hook 'js-mode-hook 'auto-complete-mode) ; enable auto-complete
+  (add-hook 'js2-mode-hook 'linum-mode) ; enable line numbers
+  (add-hook 'js2-mode-hook 'auto-complete-mode) ; enable auto-complete
+
+;;---
+
+
+;;+++
+;; RUBY Section
+;;
+;; gt 12/2013: put rspec files and Rakefiles into ruby-mode
+; gt 1/2014: using ELPA version
+; (require 'rspec-mode)
+(add-to-list 'magic-mode-alist '("task.+" . ruby-mode) )
+(add-hook 'ruby-mode-hook 'linum-mode) ; enable line numbers in Ruby mode
+(add-hook 'ruby-mode-hook 'auto-complete-mode) ; enable line numbers in Ruby mode
+;(add-hook 'enh-ruby-mode-hook 'linum-mode) ; enable line numbers in Ruby mode
+(add-hook 'ruby-mode-hook
+          (lambda ()
+            (autopair-mode)))
+(add-to-list 'auto-mode-alist '("\\.spec\\'" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Gemfile" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Capfile" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Vagrantfile" . ruby-mode))
+
+
+
+
+;; define C-c C-c to kill the running compilation
+;(define-key ruby-mode-map "\C-c\C-c" 'kill-compilation)
+;(define-key enh-ruby-mode-map "\C-c\C-c" 'kill-compilation)
+;(define-key global-map "\C-c\C-c" 'kill-compilation)
+
+;Jan-2014, decided not to use
+;(require 'ruby-compilation)
+
+;;(add-to-list 'load-path "/path/to/dash-at-point")
+;;(autoload 'dash-at-point "dash-at-point"
+;;  "Search the word at point with Dash." t nil)
+(global-set-key "\C-cd" 'dash-at-point)
+
+;(require 'dirtree)
+
+;; End RUBY section
+;;---
+
+;; Make files named only by numbers (MH messages) turn
+;; indented-text-mode on by default
+(setq auto-mode-alist (cons '("[1-9][1-9]*\\'" . indented-text-mode) auto-mode-alist))
+
+(setq default-case-fold-search nil)		; make searches case sensitive
+(setq-default case-fold-search nil)
+(setq make_backup_files nil)
+
+;; Set parameters to make mouse scrolling less "jumpy" than defaults
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+;(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+
+;;++
+;; ANSI color for compilation buffers
+;; Add hook for Ansi-color esc sequences to generate colored characters
+;; instead of "Esc [30 m" type of sequences
+;; (from StackOverflow; this method prevent pollution of M-X grep)
+
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  (toggle-read-only)
+  (ansi-color-apply-on-region (point-min) (point-max))
+  (toggle-read-only))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
+;; (ignore-errors
+;;   (require 'ansi-color)
+;;   (defun my-colorize-compilation-buffer ()
+;;     (when (eq major-mode compilation-mode)
+;;       (ansi-qcolor-apply-on-region compilation-filter-start (point-max))))
+;;   (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
+
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+;;--
+
+;; here you can apply any C style which you like, I chose K&R
+(add-hook 'c-mode-hook        
+	  '(lambda ( ) 
+	     (c-set-style "k&r")))
+
+;
+; goto-line-n is essentially goto-line, except if the argument is not specified
+; then the default of 1 is used and no prompting is done.
+;
+;; Dec-2013: reverted to default start-of-buffer.  Use M-gM-g to goto-line
+;; (defun goto-line-n (arg)
+;;   "Goto line ARG, counting from line 1 at beginning of buffer, def arg = 1."
+;;   (interactive "p")
+;;   (save-restriction
+;;     (widen)
+;;     (goto-char 1)
+;;     (forward-line (1- arg))))
+
+
+;
+; unindent-rigidly
+; remove ARG spaces from the specified region.
+;
+(defun unindent-rigidly (start end arg)
+  "Un-indent (remove left margin spaces) from all lines starting in the
+region sideways by ARG columns.  Called from a program, takes three
+arguments, START, END and ARG."
+  (interactive "r\np")
+  (save-excursion
+    (goto-char end)
+    (setq end (point-marker))
+    (goto-char start)
+    (or (bolp) (forward-line 1))
+    (while (< (point) end)
+      (let ((indent (current-indentation)))
+	(delete-region (point) (progn (skip-chars-forward " \t") (point)))
+	(or (eolp)
+	    (indent-to (max 0 (- indent arg)) 0)))
+      (forward-line 1))
+    (move-marker end nil)))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector ["black" "dark red" "forest green" "orange2" "blue" "magenta" "dark cyan" "dark gray"])
+ '(css-indent-offset 2)
+ '(inhibit-startup-screen t)
+ '(scss-compile-at-save nil))
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "Beige" :foreground "Black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 135 :width normal :foundry "apple" :family "Menlo")))))
+
+;; rather than start with an "instructional buffer" let's just create an
+;; empty buffer called "newbuf"
+;(switch-to-buffer "newbuf")

@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Script to convert a VMS distribution list into a Unix distribution
+# list.
+
+Usage='
+	vms2unix file [file. . .]
+
+	file contains a VMS-style mail distribution list.  Multiple
+	files will be converted as a single file, all lower case,
+	sorted, with unique entries removed.  Hence,
+
+		vms2unix list1.dis list2.dis list3.dis > combined
+
+	will cause lists 1, 2, and 3 to be combined into a single list
+	containing no duplicate addresses.
+'
+cr='
+'
+
+sedfile=/tmp/vms2unix$$.sed
+
+case $# in
+    0) echo 1>&2 "?Usage: $Usage"; exit 1 ;;
+esac
+
+trap 'rm -f $sedfile; exit' 0 1 
+cat <<-'EOF-sed' > $sedfile
+	0s**	Convert a VMS distribution list into a Unix distribution list *
+	s/[ 	]*!.*//
+	/^$/d
+	/^[^A-Za-z].*/d
+	s/NM%//
+	s/[ 	].*//
+	y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/
+	s/\(.*\)::\(.*\)/\2: \1::\2/
+-EOF-sed
+
+sed -f $sedfile $*
+
+

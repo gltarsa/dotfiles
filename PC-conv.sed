@@ -1,0 +1,124 @@
+0s** Quickie Heuristic conversion of PC format documents to ASCII *
+0s** Greg Tarsa, Dec-96 *
+
+:top
+s/–/-/g; 0s** hyphen *
+s/’/'/g; 0s** appostrophe (close single quote) *
+s/“/"/g; 0s** open quote *
+s/”/"/g; 0s** close quote *
+/=00/s///g
+/=0A=$/s///g
+/=0D/s///g
+/=0C/s///g
+/=E9/s//'/g
+/=B7/s//o/g
+/=92/s//'/g
+/=12/s//'/g
+/=16/s//-/g
+/=A9/s//(c)/g
+/=09/s//	/g
+/=96/s//-/g
+/=97/s//--/g
+/=D8/s//o/g
+0s** following derived from /usr/man/man1/ascii.1 *
+/=20/s///g
+/=2E/s//./g
+/=21/s//!/g
+/=22/s//"/g
+/=23/s//#/g
+/=24/s//$/g
+/=25/s//%/g
+/=26/s//&/g
+/=27/s//'/g
+/=28/s//(/g
+/=29/s//)/g
+/=2A/s//*/g
+/=2B/s//+/g
+/=2C/s//,/g
+/=2D/s//-/g
+/=2E/s//./g
+/=2F/s==/=g
+/=30/s//0/g
+/=31/s//1/g
+/=32/s//2/g
+/=33/s//3/g
+/=34/s//4/g
+/=35/s//5/g
+/=36/s//6/g
+/=37/s//7/g
+/=38/s//8/g
+/=39/s//9/g
+/=3A/s//:/g
+/=3B/s//;/g
+/=3C/s//</g
+/=3D/s//=/g
+/=3E/s//>/g
+/=3F/s//?/g
+/=40/s//@/g
+/=41/s//A/g
+/=42/s//B/g
+/=43/s//C/g
+/=44/s//D/g
+/=45/s//E/g
+/=46/s//F/g
+/=47/s//G/g
+/=48/s//H/g
+/=49/s//I/g
+/=4A/s//J/g
+/=4B/s//K/g
+/=4C/s//L/g
+/=4D/s//M/g
+/=4E/s//N/g
+/=4F/s//O/g
+/=50/s//P/g
+/=51/s//Q/g
+/=52/s//R/g
+/=53/s//S/g
+/=54/s//T/g
+/=55/s//U/g
+/=56/s//V/g
+/=57/s//W/g
+/=58/s//X/g
+/=59/s//Y/g
+/=5A/s//Z/g
+/=5B/s//[/g
+/=5C/s//\\/g
+/=5D/s//]/g
+/=5E/s//^/g
+/=5F/s//_/g
+/=60/s//`/g
+/=61/s//a/g
+/=62/s//b/g
+/=63/s//c/g
+/=64/s//d/g
+/=65/s//e/g
+/=66/s//f/g
+/=67/s//g/g
+/=68/s//h/g
+/=69/s//i/g
+/=6A/s//j/g
+/=6B/s//k/g
+/=6C/s//l/g
+/=6D/s//m/g
+/=6E/s//n/g
+/=6F/s//o/g
+/=70/s//p/g
+/=71/s//q/g
+/=72/s//r/g
+/=73/s//s/g
+/=74/s//t/g
+/=75/s//u/g
+/=76/s//v/g
+/=77/s//w/g
+/=78/s//x/g
+/=79/s//y/g
+/=7A/s//z/g
+/=7B/s//{/g
+/=7C/s//|/g
+/=7D/s//}/g
+/=7E/s//~/g
+/=$/{
+	N
+	s/=\n//
+	btop
+}

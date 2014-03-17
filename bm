@@ -1,0 +1,205 @@
+#!/bin/sh
+# bm: Benchmark maker
+#
+# Author: Greg Tarsa, Nov-1995
+#
+# This script will run a build with the specified build logs and produce
+# 3 log files, each with an amalgam of the date and the specified build
+# arguments.  These logs contain:
+
+#	1. the output from the build command
+#	2. an iostat report for every $monitor_interval (5 min)
+#	3. a  vmstat report for every $monitor_interval (5 min)
+
+# The process starts off two background jobs to do the gross
+# performance monitoring, which need to be killed at the end of the run.
+# Therefore, a pause of 1 $monitor_interval is taken to allow the last
+# sample to be written, then the jobs are killed.
+#
+# If the benchmark is being run interactively and the monitor log information
+# is not critical, then the user may interrupt the final pause from the KB
+# without affecting anything other than the monitor logs.
+#
+
+Usage='
+	bm [-noclobber | -nobuild | -silent] <build-args>
+
+	Default action is to delete the export and obj trees and then perform
+	an instrumented "build build-args" command, with output going to a
+	time-stamped log file.
+
+	-noclobber	inhibits the export/obj tree deletions
+	-nobuild	inhibits the build action
+	-silent		do not display log on standard output and do not
+			wait for final monitoring period to end.
+
+	unambiguous abbreviations of either flag are acceptable.
+'
+
+# Define some constants
+nl="
+"
+monitor_interval=300	# monitor perf every 5 minutes
+day=`date +"%d%b%y-%H:%M"`
+
+do_clobber="y"
+do_build="y"
+do_display="y"
+
+# Process any flags
+while : 	true
+do
+    case $1 in
+	-noclobber|-noc*)
+	    do_clobber="n"
+	    ;;
+	-nobuild|-nob*)
+	    do_build="n"
+	    ;;
+	-silent|-s*)
+	    do_display="n"
+	    ;;
+	-*) echo 1>&2 "? Unrecognized flag: $1$nl$Usage"
+	    exit 1
+	    ;;
+	""|*)  break
+	    ;;
+    esac
+    shift
+done
+
+#
+# Check for no arguments
+# If building, but no args, flag an error.
+case $#$do_build in
+    0y) echo 1>&2 "?No build arguments specified$nl$Usage"; exit 1 ;;
+esac
+
+# Process any arguments
+suffix=""
+for arg
+do
+    
+    # Skip blank arguments, those containing a leading "[]",
+    # or those containing a blank
+    case $arg in
+	"" | "\[]*" | *" "*)
+	    continue ;;
+    esac
+
+    suffix="${suffix}.$arg"
+done
+
+# define some file names
+io_log="IOSTAT_${day}${suffix}.log"
+vm_log="VMSTAT_${day}${suffix}.log"
+build_log="BUILD_${day}${suffix}.log"
+
+obj_dir=$SOURCEBASE/../obj
+export_dir=$SOURCEBASE/../export
+
+case $do_clobber in
+    n)	echo "[deletion of export and obj trees skipped]" ;;
+    y)
+	# Clear the output trees
+	(if [ -d $obj_dir ]
+	then
+	    echo "Clearing ${obj_dir}. . ."
+	    mv $obj_dir ${obj_dir}.old
+	    rm -rf ${obj_dir}.old
+	fi) &
+
+	(if [ -d $export_dir ]
+	then
+	    echo "Clearing ${export_dir}. . ."
+	    mv $export_dir ${export_dir}.old
+	    rm -rf ${export_dir}.old
+	fi) &
+
+	wait
+esac
+
+# Create the export/obj directories, if they are not found.
+test -d $obj_dir    || ( mkdir $obj_dir;    chmod 755 $obj_dir )
+test -d $export_dir || ( mkdir $export_dir; chmod 755 $export_dir )
+
+# Do not build, unless requested.
+case $do_build in
+    n) echo "[build action skipped]"; exit 0 ;;
+esac
+
+# Create the date stamp
+date=`date`
+
+# Insert the time stamp
+echo "$date" > $io_log
+echo "$date" > $vm_log
+echo "${date}${nl}Starting: build -k $*$nl" >> $build_log
+
+
+# Start the monitors
+iostat $monitor_interval >> $io_log &	# log I/O information
+io_pid=$!				# save pid for later kill
+
+vmstat $monitor_interval >> $vm_log &	# log VM information
+vm_pid=$!				# save pid for later kill
+
+# Set trap to kill background monitors at first sign of trouble or exit
+trap 'echo 	"Trap: cleaning up. . ."
+		kill $io_pid $vm_pid $build_pid 2> /dev/null; exit' 0 1 2 3 4 10 12 
+
+case $do_display in
+    y*) stdout="/dev/tty" ;;
+    *) stdout="/dev/null" ;;
+esac
+
+(
+    echo "Starting: build -k $1"
+    build -k $1 
+    build_pid=$!
+
+    end_date=`date`
+    echo "
+    $end_date"
+
+    echo "Output logs are in:
+	$io_log
+	$vm_log
+	$build_log
+    "
+) | 2>&1 tee $build_log > $stdout 2>&1
+
+# Check the file, if we see a FATAL error in the first 15 lines, then
+# we probably goofed something up and got a "syntax" error of some kind.
+# As a courtesy, we heuristically determine this and print the file
+# immediately when it happens.
+#
+errflg=""
+(head $build_log | grep -i FATAL > /dev/null) && errflg="y"
+(head $build_log | grep "\*\*\* Exit" > /dev/null) && errflg="y"
+(head $build_log | grep "Don't know how to make" > /dev/null) && errflg="y"
+
+case $errflg in
+    "" )
+	tail $build_log | grep Elapsed
+	case $do_display in
+	    n*)
+		# wait for one interval so that we don't lose any data
+		echo "Waiting for monitor period to end. . ."
+		sleep $monitor_interval
+		;;
+	esac
+	;;
+    *)
+	echo "Potential problem seen in $build_log"
+	cat $build_log
+	;;
+esac
+
+#clean up the background processes
+kill $io_pid $vm_pid
+
+exit
+
+
+

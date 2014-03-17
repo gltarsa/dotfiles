@@ -1,0 +1,160 @@
+# website_names
+# script to generate combinations of website names for direct matches
+# on common searches
+Usage='website_names -flag
+where "flag" is one of:
+  -p  ping each name as it is generated and include status with name output
+  -w  include "www." forms of addresses
+  -u  include versions of names w/ words separated by underscores
+  -s  print the "sample" list of addresses ("place" instead of places,
+                                            "school" instead of schools)
+'
+# Modification History
+# ~~~~~~~~~~~~~~~~~~~~
+# 01	Feb-2011, Greg Tarsa
+# Wrote original code.
+#
+
+IFS=","
+
+errflag=""
+pingflag=""
+printflag=""
+wwwflag=""
+sampleflag=""
+underscoreflag=""
+
+#services="tutor,tutors,babysitter,babysitters,nanny,nannies,sitter,sitters,sat test prep,sat tutor"
+services="tutor,tutors,nanny,nannies,sitters,sat test prep,sat tutor"
+
+#places"cary,apex,holly springs,raleigh,north raleigh,durham,morrisville,chapel hill,garner"
+places="cary,apex,holly springs,raleigh,garner"
+
+#schools="peace,meredith,ncstate,ncsu,wake,wake tech,shaw,duke"
+schools="meredith,ncstate,ncsu"
+
+
+while : true
+do
+  # no more arguments? Done.
+  case $#
+  in
+    0) break;;
+  esac
+  case $1
+  in
+    -p|-ping) pingflag=y ;;	# ping each name
+    -w|-www|web) wwwflag=y ;;	# include www. form of each name
+    -u|-underscore) underscoreflag=y ;;	# include '_' versions
+    -s|-sample) sampleflag=y ;;# print sample names only
+    -*)
+        echo 1>&2 "?Invalid flag - $arg"; errflag=1 ;;
+    *) errflag=1
+       echo 1>&2 "?Unexpected argument: $1"
+       ;;
+  esac
+  shift
+done    
+
+case $errflag
+in
+  "") ;;
+  *)
+    echo -e 1>&2 "\n?Usage=$Usage\n"
+    exit 1
+    ;;
+esac
+
+
+case $sampleflag
+in
+  y*) places="place"; schools="school" ;;
+esac
+
+IFS=""
+#display criteria and sorted results
+echo -e "services='"$services"'\n"
+echo -e "places='"$places"'\n"
+echo -e "schools='"$schools"'\n\n\n"
+
+IFS=","
+for service in $services
+do
+  for place in $places $schools
+  do
+    # no space versions
+    name1=`echo "$place$service"".com" | sed 's/ //g'`
+    name2=`echo "$service$place"".com" | sed 's/ //g'`
+    case $underscoreflag in
+      y)
+	# underscore versions
+	name3=`echo "$place $service"".com" | sed 's/ /_/g'`
+	name4=`echo "$service $place"".com" | sed 's/ /_/g'`
+	;;
+    esac
+
+    # Now the www. variants, if specified
+    # Typically these and the non www. forms are the same
+    case $wwwflag
+    in
+       "") name5=""; name6="" name7="" name8="";;
+       *)
+	    # www. no space versions
+	    name5=`echo "www.$place$service"".com" | sed 's/ //g'`
+	    name6=`echo "www.$service$place"".com" | sed 's/ //g'`
+	    # underscore versions
+	    name7=`echo "www.$place $service"".com" | sed 's/ /_/g'`
+	    name8=`echo "www.$service $place"".com" | sed 's/ /_/g'`
+	    ;;
+    esac
+
+    for name in $name1 $name2 $name3 $name4 $name5 $name6 $name7 $name8
+    do
+      case $pingflag
+      in
+        y)
+          msg=`ping -c 1 $name 2>&1`
+	  status=$?
+	  # remove file name & "ping:" string from message
+	  case $status
+          in
+            0|1)
+	      # this sed filter relies heavily on ping output format
+	      msg=`echo $msg | head -1 | sed 's/^.* (//;s/).*$//'`
+	      echo -e "$name\t$status\tnot available\t$msg"
+
+	      # if we hit a ping for this name, put "your" in front of it
+	      yourname="your$name"
+	      msg=`ping -c 1 $yourname 2>&1`
+	      status=$?
+
+	      # remove file name & "ping:" string from message
+	      case $status
+	      in
+		0|1)
+		  # this sed filter relies heavily on ping output format
+		  msg=`echo $msg | head -1 | sed 's/^.* (//;s/).*$//'`
+		  echo -e "$yourname\t$status\tnot available\t$msg"
+		  ;;
+		2|*) 
+		  msg=`echo "$msg" | sed 's/ping: //;s/host '$yourname'/host/'`
+		  echo -e "$yourname\t$status\tavailable\t$msg\t2nd choice"
+		  ;;
+	      esac
+	      ;;
+
+            2|*) 
+	      msg=`echo "$msg" | sed 's/ping: //;s/host '$name'/host/'`
+	      echo -e "$name\t$status\tavailable\t$msg"
+	      ;;
+	  esac
+	  ;;
+        *)
+          echo $name
+	  ;;
+       esac 
+    done
+  done
+done
+
+IFS=""

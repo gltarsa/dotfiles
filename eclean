@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+# Quickie script to clear out emacs droppings from the current directory downwards.
+#
+find . -iname "*~" -exec rm -v {} \;

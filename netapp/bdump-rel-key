@@ -1,0 +1,243 @@
+#! /bin/sh
+#
+# bdump-rel-key
+#
+
+# script to create a report of NOS BURTs for a specified release,
+# owned by members of the specified managers greater team.
+#
+# Displays selected fields and the Test_Plan section for each matching
+# BURT.
+#
+USAGE='Usage: untested-dump <addr> key1, key2...
+<addr> is the e-mail address to which to send the report, if there are
+       matching BURTs.
+
+Specifying <keyX> will narrow the search to BURTs matching those keywords.
+
+       flags:
+         -d[ebug]   Display debugging info and put output on stdout instead
+		    of e-mailing to <addr>
+	 -r[elease] rel-name
+                    Scan BURTs which are targeted to the <rel-name>
+	 -m[gr] unixname
+                    Scan only BURTs whose mgr_owner is <unixname>     
+'
+# Modification History
+# ~~~~~~~~~~~~~~~~~~~~
+# 03	Aug-2008, Greg Tarsa
+#	Add time_est to output
+#
+# 02	Mar-2008, Greg Tarsa
+#	Fixed bug in "no output" code.
+#
+# 01	Jul-2007, Greg Tarsa
+#	Munged from keyword-dump
+#
+
+# ensure that burt cmd can be found in cron runs
+PATH="$PATH"":/usr/local/bin:/usr/ucb"
+export PATH
+
+mgr_name=`whoami`	# get manager's default unixname
+#mgr_name="tarsa"  # default to me
+
+release_name="ironcity"
+
+debugflag=""
+addr=""
+xtraburts=""
+nl="
+"
+# special keywords for screening default to null
+keywords=""
+kwlist=""
+
+# process switches
+while :
+do
+    # No more arguments?  Move on.
+    case $# in
+       0) break ;;
+    esac
+
+    # process the switches
+    case $1 in
+       # debug mode?
+       -debug|-d*) debugflag=yes ;;
+
+       # override manager default?
+       -mgr|-manager|-m*)
+	    shift
+	    case $# in
+	       0) echo 1>&2 "?no manager name specified${nl}$USAGE"
+	           exit 1
+		   ;;
+	    esac
+	    mgr_name=$1
+	    ;;
+
+       # override release default?
+       -release|-r*)
+	    shift
+	    case $# in
+	       0) echo 1>&2 "?no release specified${nl}$USAGE"
+	           exit 1
+		   ;;
+	    esac
+	    release_name=$1
+	    ;;
+
+       # not a recognized switch string...
+       -*) echo 1>&2 "?Invalid switch: $1$nl$USAGE"; exit 1 ;;
+       
+       # not a switch? Then move on...
+       *) break ;;
+    esac
+
+    shift # get next word to process
+done
+
+# process argument(s)
+# get address
+case $# in
+  0) echo 1>&2 "?No e-mail address specified$nl$USAGE"; exit 1 ;;
+  *) addr=$1; shift;;
+esac
+
+while :
+do
+    # No more arguments? All done
+    case $# in
+       0) break ;;
+    esac
+
+    # unfortunately "echo" converts \b to backspace;
+    # need to post-process to get the token back for burt
+    keywords="$keywords|\ b($1)\ b"
+    kwlist="$kwlist $1"
+
+    shift # get next word to process
+done
+
+#remove leading "or" & restore "\b" keyword from echo munge
+# note "the "\b" will show up in debug statements as ^H--just live with it
+keywords=`echo $keywords | sed 's/^|//; s=\\ b=\\b=g'`
+kwlist=`echo $kwlist | sed 's/^ //`
+
+# define the tmp file and setup the trap to cleanup at script completion
+tmpfile=/tmp/untesteddump$$
+trap 'rm -f $tmpfile' 0 INT KILL
+
+# BURT search = BURTs w/ specified keyword for people not reporting to me
+burt_scope='$target_release =~ /\b('$release_name')\b/ && &reports_to($owner,"'$mgr_name'")'
+
+#add keyword screen if keywords specifiedc
+case "$keywords" in
+    "") ;;
+    *)  burt_scope="$burt_scope"' &&  $keywords =~ /'$keywords'/' ;;
+esac
+
+case $kwlist in
+    "") subject="NOS BURT report for release=$release_name" ;;
+    *) subject="NOS BURT report for release=$release_name & keyword=$kwlist";;
+esac
+
+#currently scanning all types of BURTs, but may want to reduce the field
+#burt_area='$type =~ /(SW|SW\+NG|NG|SW\+NETCACHE|NETCACHE)/'
+
+# only sNew, Open, or Study BURTs BURTs in the current release
+burt_area_exclude='($rel_state =~ /NEW|OPEN|STUDY/)'
+
+# combine BURT search criteria into a single spec string (straight
+# concatenate doesn't work if any criteria are null, so only put &&
+# for non-null criteria)
+#
+# i.e.: burt_scope && burt_area && burt_area_exclude
+#
+burtspec="$burt_scope"
+for crit in "$burt_area" "$burt_area_exclude"
+do
+    case $crit in
+      "" ) continue ;;
+      *) burtspec="$burtspec && $crit" ;;
+    esac
+done
+
+# display debug info
+case $debugflag
+in
+   y*)
+       echo "${nl}addr=$addr"
+       echo "${nl}burtspec=$burtspec" 
+       echo "${nl}keywords=$keywords" 
+       echo "${nl}kwlist=$kwlist"
+       echo "${nl}"
+       set -x
+       ;;
+esac
+
+# list out the qualified BURTs
+# hack to change "days new" to something useful when it is truncated.
+save=$tmpfile
+tmpfile=/tmp/greg-demo
+burturborep -xdays \
+     -q"($burtspec)" \
+     -f':id sev pri public rel_state owner:8 subtype:8 date_new:5 time_est keywords title' \
+     -release "$release_name" \
+     -s'pri sev id' |
+	sed 's%^ *[1-9][0-9]*% http://burtweb.eng.netapp.com:8080/burt-bin/start?id=&\&btn=edit\  &%
+	     s/days+/dysnew/' > $tmpfile
+#      -f':id state: sev pri public subtype owner call_rec title' \
+
+#munge the count to remove the wc-inflicted filename
+burtcount=`wc -l $tmpfile | fmt -w 1 | head -1| sed 's/ //g'`
+set +x
+
+case $burtcount in
+    # 1 line means "no records found"; fyi, 1st BURT = 2, 1 for titles, 1 for BURT
+    1)  exit 0 ;;
+esac
+
+#decrement to remove title from the count; add count to subject
+burtcount=`expr $burtcount - 1`
+subject="$subject (total=$burtcount)"
+
+#
+# create a list of BURTs in the report so we can get their Test_Plan section
+# and parse their Change_Log section for the one who set it to UNTESTED.
+#
+# create a command to collect the BURT view details
+cmd=`awk '/ http/{printf "%d ", \$2}' < $tmpfile`
+
+case $debugflag
+in
+   y*) set -x ;;
+esac
+
+cmd="burt view Test_Plan Change_Log $cmd"
+
+set +x
+
+sed G < $tmpfile | 
+	sed 's/|title//' |
+	sed 's/|/\
+    |/' |
+	fmt -72 |
+	    case $debugflag in
+		# mail the filtered report...
+		"") mailx -s "$subject" $addr
+		    ;;
+
+		#...or display it on stdout
+		 *)
+		    echo "The following would be sent to $addr"":"
+		    echo "Subject: $subject"
+		    cat
+		    ;;
+	    esac
+tmpfile=$save
+exit 0
+
+
+

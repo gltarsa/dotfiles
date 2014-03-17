@@ -1,0 +1,231 @@
+# .bashrc
+# Modification History
+# ~~~~~~~~~~~~~~~~~~~~
+# May-04 glt	Added spurt to PATH
+# Feb-02 glt	Added environment variable for CSG web pages
+# Mar-01 glt	Added aliases for NetApp
+# Jun-00 GLT	Updated DISPLAY setting for combined Tru64/Linux use
+#		force TERM=xterm-* to be TERM=xterm for Tru64
+# Dec-98 GLT	Replaced most \!* csh aliases with echo+do invocation
+#		Commented out those that did not translate well
+# Nov-98 GLT	Ported from .cshrc
+
+# initializations
+#
+# export LC_ALL=en_US
+
+# set PATH to proper directories
+PATH=".:$HOME/bin:/usr/local/bin:/usr/local:/sbin:/bin:/usr/ucb:/usr/bin:/usr/sbin:/usr/bin/mh:/usr/bin/X11:/usr/lib/mh:/usr/local/bin/mh:/u/spurtdb/bin"
+export PATH
+
+
+export WEBDIR=/u3/www/docs
+
+# set default file protection to 750
+umask 027
+
+# Set proxy locations
+# (mpeg123 needs the lowercase names)
+# HTTP_PROXY=http://www-proxy.zko.dec.com:8080/
+# FTP_PROXY=http://www-proxy.zko.dec.com:8080/
+# http_proxy=http://www-proxy.zko.dec.com:8080/
+# ftp_proxy=http://www-proxy.zko.dec.com:8080/
+# export HTTP_PROXY FTP_PROXY http_proxy ftp_proxy
+
+
+# tell bash to display background messages immediately
+notify=yes
+
+# Other Environment Variables
+export PRINTER=hpduplex-2
+MANPATH="/usr/man:/usr/share/man:/usr/dt/share/man:/usr/local/man:$HOME/bin/man"; export MANPATH
+export NNTPSERVER=
+export ORGANIZATION="Network Appliance, Inc."
+export EXINIT='set redraw wm=8 nowrapscan autowrite'
+export EDITOR=emacs
+export NEWSBOX="$HOME/News"
+
+# Turn on command line editing
+set -o emacs
+
+# set prompt according to invocation depth
+hostname=`hostname | sed 's/\..*//'`
+me=`who am i | awk '{print $1}'`
+PS1="$hostname[\!]-> "
+case $SHLVL in
+    1) PS1="$hostname-${me}[\!]-> " ;;
+    2) PS1="$hostname-${me}[\!]->> " ;;
+    *) PS1="$hostname-${me}[\!]->>... " ;;
+esac
+export PS1
+
+# OS specific tweaks
+#
+case `uname` in
+    SunOS*) ;;
+    Linux*) ;;
+    BSD*) ;;
+    OSF*)
+	# Force all variants of xterm to be vanilla xterm
+	case $TERM in
+	  xterm*) TERM=xterm; export TERM ;;
+	esac ;;
+    *) echo 1>&2 "?tweaks not implemented for environment." ;;
+esac
+case $clientname in
+    `hostname`) clientname="" ;;
+esac
+# User specific aliases and functions
+
+# Source global definitions
+#if [ -f /etc/bashrc ]; then
+#	. /etc/bashrc
+#fi
+
+#
+# "On the fly" DISPLAY setting code
+#    1. strip off the "/dev" from the tty name
+#    2. get the last login from this tty (should be us) and extract
+#       the connection name.  Since we can't be sure that it is an entire
+#	host specification we punt and. . .
+#    3. . . .use the first component of the connection name
+#
+# Note: with OSF, the 'who' command appears to need to be attached to a
+#       tty in order to work.  When there is no tty, we default clientname
+#       to null.  This is only an 80% solution and hence you cannot use rsh
+#       to invoke an X app.
+#
+	clientname=""
+	case `uname` in
+	    SunOS*|BSD*) clientname=`who am i | sed 's/^.*(//;s/).*//' |
+awk -F. '{print $1}'` ;;
+#	    SunOS*|BSD*) clientname=`who am i | sed 's/^.*(//;s/).*//'` ;;
+	    Linux*) clientname=`who -m | sed 's/\!.*//'` ;;
+	    OSF*) tty > /dev/null && clientname=`who -Mm | sed 's/^.*(//;s/).*//'` ;;
+	    *) echo 1>&2 "?clientname mechanism not implemented for environment." ;;
+	esac
+	case $clientname in
+	    `hostname`) clientname="" ;;
+	esac
+	#clientname=blades
+	case $DISPLAY in
+	    "") export DISPLAY="${clientname}:0.0" ;;
+	esac
+#        export DISPLAY="${clientname}:0.0" 
+
+#Heuristic attempt at getting proper erase character
+case $clientname in
+    *) stty erase  ;;
+esac
+echo 1>&2 "DISPLAY=$DISPLAY"
+#
+# allows args to be displayed prior to execution
+# arg1 must be the command name
+#
+echo+do()
+    {
+    echo 2>&1 "--> $@" 2> /dev/tty
+    $*
+    }
+
+#
+# allows cmd to immediately execute in the background
+# arg 1 must be the command name
+#
+do_background()
+    {
+    $* &
+    }
+
+#
+# executes arg1 as a command fter executing the remainder
+# of the line as a command
+# arg 1 must be the post-command in its entirety
+# arg 2 must be the command name
+#
+do_after()
+    {
+    local postcmd=$1
+    shift
+
+    $* ; $postcmd
+    }
+
+
+PATH="$PATH:/usr/sbin"
+export PATH
+
+# Add machine to first case if color ls is not supported
+case `uname -s` in
+    Linux*)
+	alias cls='ls -Fs --color'
+	alias ls='ls -Fs --color=never'
+	;;
+    *)	alias ls='ls -Fs '
+	;;
+esac
+alias cd='pushd'
+alias bk='popd'
+alias up='cd `/bin/pwd`/..'
+alias cp='echo+do /bin/cp'
+alias clean#='find ~ -name "#*" -exec rm -rf {} \; &'
+alias cls=clear
+alias decode='grep -i \!* $HOME/acronym.lst'
+alias du='du -k'
+alias emacs='do_background emacs'
+alias nemacs='\emacs -nw'
+alias elle=emacs
+alias ftp="echo 'use FTP for real ftp'; \ftp -i ftp-gw.crl.dec.com 1555"
+alias FTP="\ftp -i"
+alias his='x;history 22'
+alias hist='x;history 44 | pr -w80 -2 -l22 -t'
+alias logo=logout
+alias load=uptime
+alias mail=Mail
+alias mar='sed "s/^/	/" '
+# MH aliases
+	alias n="next"
+	alias rs="rmm;next"
+	alias rp="rmm;prev"
+#		force TERM=xterm-* to be xterm for Tru64
+#		force TERM=xterm-* to be xterm for Tru64
+	alias pack="folder -pack"
+	alias pick="do_after 'scan pick' pick -sequence pick"
+	alias repl="repl -filter ~/MH-mail/repl.filter -nocc all"
+#glt98 	alias unrmm="mv ~/MH-mail/inbox/[#,]\!^ ~/MH-mail/inbox/\!^"
+	alias mpc='set _p=`mhpath cur`; pc-conv $_p > /tmp/tmp$$ && rmm cur && mv /tmp/tmp$$ $_p && show cur'
+	alias cur="folder | sed 's/+//g;s/\.//g;s/;//g' | awk '{printf "'"+%s %s\n", $1, $9}'"'"  
+	alias jforw="forw -form joke-components"
+alias mq='/usr/lib/sendmail -bp'
+alias mgr='echo+do "manager_of -f -c"'
+alias mqueue=mq
+alias mv='echo+do /bin/mv'
+alias pc-conv='sed -f ~/bin/PC-conv.sed'
+alias pc_conv=pc-conv
+# glt98 alias pl='pl_local \!*'
+# glt98 alias pl_local='if (\!* != ) sh -c "sed -f $HOME/bin/plist.sed $HOME/phone.lst | grep -i \!*"'
+# glt98 alias pl_ueg='if (\!* != ) grep -i \!* /usr/dec/lib/ueg.phone'
+alias pl='sed -f $HOME/bin/plist.sed $HOME/phone.lst | grep -i '
+alias print=print1
+alias print1='lpr'
+alias print2='lpr -N2'
+alias print4='lpr -N4'
+alias print8='lpr -N8'
+alias printlp1='lpr -w132'
+alias printlp2='lpr -w132 -N2'
+alias rcp="echo+do /bin/rcp"
+alias reload='xrdb -load ~/.Xdefaults'
+alias reset='reset;stty dec new cr0;tset -I -Q'
+# glt98 alias rlogin='rlogin \!:1 -8 \!:2*'
+alias rm='echo+do /bin/rm'
+alias SU=/usr/local/SU
+alias thin='echo """[?3l"'
+alias whoc='((who; users | wc -w) | pr -l18 -t -2)'
+alias unshar="sed '1,/^[:#]/d'"
+alias wide='echo """[?3h"'
+alias x='echo -n """[H""[J""H""J/G<"'
+alias xrs='xrdb -query'
+# glt98 alias xicon='echo """]1;\!*"'
+# glt98 alias xtitle='echo """]2;\!*           `hostname`"'
+# glt98 alias xboth='xicon \!*; xtitle \!*'
+

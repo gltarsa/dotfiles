@@ -1,0 +1,4 @@
+#!/usr/local/bin/bash
+export HOME=/home/tarsa_local
+# vmware -geometry -0+0 -display :0.1 $HOME/.vmware/win2000-boot8.cfg &
+vmware -geometry -0+0 $HOME/.vmware/win2000-boot8.cfg &

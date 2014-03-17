@@ -1,0 +1,116 @@
+#!/bin/bash
+# backup_wiki
+#
+# Script to make a backup copy of the HomeWiki onto the backup server.
+#
+# Currently backs up the entire LAMPP structure because I know no
+# other way that works.
+#
+# The value of "keep" indicates how many save sets to retain
+#
+# The save set will contain the date of the backup.  If a file with
+# that name already exists, then the time will be appended as well to
+# make the save set distinct.
+#
+# Modification History
+# ~~~~~~~~~~~~~~~~~~~~
+# 01, May-2010
+# - Wrote original code
+#
+
+# helpful variables
+logfile=/tmp/backup-wiki$$
+lampp_dir=/opt/lampp
+datestamp=`date +%Y-%m-%d`
+timestamp=`date +%Y-%m-%d-%T`
+
+# prepare the backup file name.  We build this from pieces so that we can
+# do appropriate save set retention, etc., in a modular fashion.
+bkp_dir=/var/backup/homewiki
+bkp_base=lampp-homewiki
+bkp_ext=tgz
+bkp_file=${bkp_base}-${datestamp}.${bkp_ext}
+bkp_dest=${bkp_dir}/$bkp_file
+
+# prepare secondary backup file name, in case 1st exists already
+bkp_file2=${bkp_base}-${timestamp}.${bkp_ext}
+bkp_dest2=${bkp_dir}/$bkp_file2
+
+bkp_tmp=/tmp/${bkp_file}_$$
+
+
+# number of backups to keep
+keep=3
+
+# address for the backup notification
+admin_addr=gltarsa@gmail.com
+
+start_time=`date`
+
+# change to the root directory, but save the current directory
+pushd /
+
+# Stop the LAMPP stack before backing up, so it is consistent
+$lampp_dir/lampp stop
+
+set -x    # Show the commands as they execute
+
+# make a tar archive of the LAMPP directory, relative to the root, so we
+# can possibly restore it to a different location should we need to.
+tar czpf $bkp_tmp .$lampp_dir
+
+set +x    # stop displaying commands
+
+# restore our old current directory
+popd
+
+# Start the LAMPP stack back up
+$lampp_dir/lampp start
+
+# Copy the temporary backup to the file server and delete when successful
+# if the save set already exists, then use the secondary name, which has the
+# time as well as the date in the name.  Assumes that this is sufficiently
+# unique for normal purposes.
+if [ -e $bkp_dest ]
+then
+    echo "?Save set already exists, using secondary name"
+    bkp_dest=$bkp_dest2
+fi
+cp $bkp_tmp $bkp_dest && rm $bkp_tmp
+
+# Iterate through a reverse alphabetical list of save sets
+# Skip the first "keep" entries; delete any after that
+# put any output into the log file
+(
+ start=0
+ for i in `ls -1r ${bkp_dir}/${bkp_base}*.${bkp_ext}`
+ do
+    case $start
+    in
+	$keep)
+	   echo Deleting old backup file $i
+           rm $i
+	   ;;
+	*) echo Keeping backup file $i
+	   start=`expr $start + 1`
+	   ;;
+    esac
+ done
+) > $logfile
+
+end_time=`date`
+
+# all the summary to the log and send it to the admin;
+# also display it for the user (or cron)
+( 
+ echo -e "\nHomeWiki backed-up to $bkp_dest"
+ echo -e "Start: $start_time"
+ echo -e "End:   $end_time\n"
+ ls -shl $bkp_dest || echo "?Problem: Destination file, $bkp_dest, not found"
+) >> $logfile
+
+# mail the log file to the admin
+mailx -s "HomeWiki backup complete" $admin_addr < $logfile
+
+cat $logfile        # show user the same info
+rm $logfile         # cleanup

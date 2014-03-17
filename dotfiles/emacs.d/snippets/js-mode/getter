@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: getter
+# key: get
+# --
+${1:ClassName}.prototype.${2:propertyName} = function() { return this._$2; }
+$0

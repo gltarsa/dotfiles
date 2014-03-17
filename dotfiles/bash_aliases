@@ -1,0 +1,151 @@
+# .bash_aliases
+# Modification History
+# ~~~~~~~~~~~~~~~~~~~~
+# Jan-14 glt	Added alias for git to hub; added completion for hub and git
+# 	 	Added alias for calling MacOSX Emacs directly from cmd line
+# 	 	Added some git aliases
+# Dec-13 glt	Adjusted emacs definitions for MacOSX
+# Nov-13 glt	Added code to enable shims and autocompl for RUBY and 
+# 	 	completion for homebrew; removed mh directory append
+# Dec-11 glt	Added hptemp alias
+# Apr-11 glt	Changed $* to "$@" so that multi-word args work properly.
+# Jan-10 glt	add check for /usr/bin/mh in PATH
+# Aug-09 glt	add local dirs to PATH, if needed
+# Jul-09 glt	converted to .bash_aliases for Ubuntu
+# Mar-01 glt	Added aliases for NetApp
+# Jun-00 GLT	Updated DISPLAY setting for combined Tru64/Linux use
+#		force TERM=xterm-* to be TERM=xterm for Tru64
+# Dec-98 GLT	Replaced most \!* csh aliases with echo_and_do invocation
+#		Commented out those that did not translate well
+# Nov-98 GLT	Ported from .cshrc
+
+#
+# allows args to be displayed prior to execution
+# arg1 must be the command name
+#
+echo_and_do()
+    {
+    echo 2>&1 "--> $@" 2> /dev/tty
+    "$@"
+    }
+
+#
+# allows cmd to immediately execute in the background
+# arg 1 must be the command name
+#
+do_background()
+    {
+    "$@" &
+    }
+
+#
+# executes arg1 as a command fter executing the remainder
+# of the line as a command
+# arg 1 must be the post-command in its entirety
+# arg 2 must be the command name
+#
+do_after()
+    {
+    local postcmd=$1
+    shift
+
+    "$@" ; $postcmd
+    }
+
+
+#++
+# add completion extensions
+
+source ~/.git-completion.bash
+source ~/.hub.bash_completion.sh
+
+
+# gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+source `brew --repository`/Library/Contributions/brew_bash_completion.sh
+export PATH
+
+adt_home=/Volumes/XtraData/Users/tarsa/opt/adt-bundle
+export PATH=${PATH}:${adt_home}/sdk/platform-tools:${adt_home}/sdk/tools
+#
+#--
+
+
+# Add machine to first case if color ls is not supported
+case `uname -s` in
+    Linux*)  # -h = human-readable sizes
+#	alias cls='ls -Fsh --color'
+	alias ls='ls -Fsh --color=never'
+#	alias ls='ls -Fsh --color'
+	;;
+    *)	alias ls='ls -Fsh '
+	;;
+esac
+#alias ffm='defaults write com.apple.Terminal FocusFollowsMouse -bool '
+alias cd='pushd'
+alias bk='popd'
+alias up='cd `/bin/pwd`/..'
+# gt jan14 alias cp='echo_and_do /bin/cp'
+alias cp="cp -v"
+alias cleanup#='find ~ -name "#*" -exec rm -rf {} \; &'
+alias cls=clear
+alias decode='grep -i \!* $HOME/acronym.lst'
+alias du='du -h' # human-readable sizes
+alias df='df -h' # human-readable sizes
+alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/ecco32' 2> /tmp/ecco.wine.errs.txt &"
+# alias xemacs='do_background emacs'
+alias xemacs='do_background ~/bin/emacs'
+# on Mac OS X, we prefer to use Emacs in the terminal window
+alias emacs='\emacs -nw'
+alias nemacs='\emacs -nw'
+#alias ftp="\ftp -i"
+alias gc="git commit -a -m"
+alias git=hub
+alias gs="git status"
+alias his='x;history 22'
+alias hist='x;history 44 | pr -w80 -2 -l22 -t'
+alias hptemp='sudo hpasmcli -s "show temp"'
+alias iostat='iostat -h' # human-readable sizes
+alias load=uptime
+alias mail=Mail
+alias mar='sed "s/^/	/" '
+# MH aliases
+	alias n="next"
+	alias rs="rmm;next"
+	alias rp="rmm;prev"
+	alias pack="folder -pack"
+	alias pick="do_after 'scan pick' pick -sequence pick"
+	alias repl="repl -filter ~/MH-mail/repl.filter -nocc all"
+#glt98 	alias unrmm="mv ~/MH-mail/inbox/[#,]\!^ ~/MH-mail/inbox/\!^"
+	alias mpc='set _p=`mhpath cur`; pc-conv $_p > /tmp/tmp$$ && rmm cur && mv /tmp/tmp$$ $_p && show cur'
+	alias cur="folder | sed 's/+//g;s/\.//g;s/;//g' | awk '{printf "'"+%s %s\n", $1, $9}'"'"  
+	alias jforw="forw -form joke-components"
+alias mq='/usr/lib/sendmail -bp'
+alias mqueue=mq
+alias mv='echo_and_do /bin/mv'
+alias pc-conv='sed -f ~/bin/PC-conv.sed'
+alias pkgupdate="do_background gksudo synaptic"
+alias pl='sed -f $HOME/bin/plist.sed $HOME/phone.lst | grep -i '
+alias print=print1
+alias print1='lpr'
+alias print2='lpr -N2'
+alias print4='lpr -N4'
+alias print8='lpr -N8'
+alias printlp1='lpr -w132'
+alias printlp2='lpr -w132 -N2'
+alias rcp="echo_and_do /bin/rcp"
+alias reload='xrdb -load ~/.Xdefaults'
+alias reset='reset;stty dec new cr0;tset -I -Q'
+# glt98 alias rlogin='rlogin \!:1 -8 \!:2*'
+# gtjan14 alias rm='echo_and_do /bin/rm'
+alias rm="rm -v"
+alias rspec='rspec --format documentation'
+alias SU=/usr/local/SU
+alias thin='echo """[?3l"'
+alias whoc='((who; users | wc -w) | pr -l18 -t -2)'
+alias x='clear'
+alias xrs='xrdb -query'
+# glt98 alias xicon='echo """]1;\!*"'
+# glt98 alias xtitle='echo """]2;\!*           `hostname`"'
+# glt98 alias xboth='xicon \!*; xtitle \!*'
+
