@@ -10,7 +10,7 @@
 	email = gltarsa@gmail.com
 [core]
 	editor = ~/bin/emacs -nw
-	excludesfile = ~/.gitignore_global
+	excludesfile = /Users/tarsa/.gitignore_global
 [merge]
 	tool = vimdiff
 [color]
@@ -23,6 +23,7 @@
 # git <cmd> shorthand definitions
 [alias]
 	lol = log --graph --decorate --oneline --all
+	dif = diff
 
 [push]
 	default = tracking
@@ -32,3 +33,12 @@
 # password all the time
 [credential]
 	helper = cache
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[filter "media"]
+	clean = git-media-clean %f
+	smudge = git-media-smudge %f
