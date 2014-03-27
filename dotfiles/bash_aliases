@@ -1,23 +1,24 @@
 # .bash_aliases
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
-# Jan-14 glt	Added alias for git to hub; added completion for hub and git
-# 	 	Added alias for calling MacOSX Emacs directly from cmd line
-# 	 	Added some git aliases
-# Dec-13 glt	Adjusted emacs definitions for MacOSX
-# Nov-13 glt	Added code to enable shims and autocompl for RUBY and 
+# Mar-14 glt	Add alias for common Heroku mispelling
+# Jan-14 glt	Add alias for git to hub; added completion for hub and git
+# 	 	Add alias for calling MacOSX Emacs directly from cmd line
+# 	 	Add some git aliases
+# Dec-13 glt	Adjust emacs definitions for MacOSX
+# Nov-13 glt	Add code to enable shims and autocompl for RUBY and 
 # 	 	completion for homebrew; removed mh directory append
-# Dec-11 glt	Added hptemp alias
-# Apr-11 glt	Changed $* to "$@" so that multi-word args work properly.
+# Dec-11 glt	Add hptemp alias
+# Apr-11 glt	Change $* to "$@" so that multi-word args work properly.
 # Jan-10 glt	add check for /usr/bin/mh in PATH
 # Aug-09 glt	add local dirs to PATH, if needed
-# Jul-09 glt	converted to .bash_aliases for Ubuntu
-# Mar-01 glt	Added aliases for NetApp
-# Jun-00 GLT	Updated DISPLAY setting for combined Tru64/Linux use
+# Jul-09 glt	convert to .bash_aliases for Ubuntu
+# Mar-01 glt	Add aliases for NetApp
+# Jun-00 GLT	Update DISPLAY setting for combined Tru64/Linux use
 #		force TERM=xterm-* to be TERM=xterm for Tru64
-# Dec-98 GLT	Replaced most \!* csh aliases with echo_and_do invocation
-#		Commented out those that did not translate well
-# Nov-98 GLT	Ported from .cshrc
+# Dec-98 GLT	Replace most \!* csh aliases with echo_and_do invocation
+#		Comment out those that did not translate well
+# Nov-98 GLT	Port from .cshrc
 
 #
 # allows args to be displayed prior to execution
@@ -92,7 +93,8 @@ alias cls=clear
 alias decode='grep -i \!* $HOME/acronym.lst'
 alias du='du -h' # human-readable sizes
 alias df='df -h' # human-readable sizes
-alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/ecco32' 2> /tmp/ecco.wine.errs.txt &"
+alias ecco32="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/ecco32' 2> /tmp/ecco.wine.errs.txt &"
+alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/eccoext' 2> /tmp/ecco.wine.errs.txt &"
 # alias xemacs='do_background emacs'
 alias xemacs='do_background ~/bin/emacs'
 # on Mac OS X, we prefer to use Emacs in the terminal window
@@ -102,6 +104,7 @@ alias nemacs='\emacs -nw'
 alias gc="git commit -a -m"
 alias git=hub
 alias gs="git status"
+alias herokup=heroku
 alias his='x;history 22'
 alias hist='x;history 44 | pr -w80 -2 -l22 -t'
 alias hptemp='sudo hpasmcli -s "show temp"'
