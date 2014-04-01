@@ -2,6 +2,7 @@
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
 # Mar-14 glt	Add alias for common Heroku mispelling
+#		Change emacs aliases to use Emacs daemon
 # Jan-14 glt	Add alias for git to hub; added completion for hub and git
 # 	 	Add alias for calling MacOSX Emacs directly from cmd line
 # 	 	Add some git aliases
@@ -96,10 +97,9 @@ alias df='df -h' # human-readable sizes
 alias ecco32="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/ecco32' 2> /tmp/ecco.wine.errs.txt &"
 alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/eccoext' 2> /tmp/ecco.wine.errs.txt &"
 # alias xemacs='do_background emacs'
-alias xemacs='do_background ~/bin/emacs'
+alias xemacs='do_background ~/bin/ec --quiet'
 # on Mac OS X, we prefer to use Emacs in the terminal window
-alias emacs='\emacs -nw'
-alias nemacs='\emacs -nw'
+alias emacs='\ec -nw --quiet'
 #alias ftp="\ftp -i"
 alias gc="git commit -a -m"
 alias git=hub

@@ -3,6 +3,7 @@
 # ~~~~~~~~~~~~~~~~~~~~
 # Mar-14 glt    Moved PATH changing code form .bashrc_aliases
 #               Removed chroot_debian code and added git branch to prompt
+#		Add defines to support Emacs as a Daemon
 # Nov-13 glt	Added PKG_CONFIG_PATH
 # Jul-09 glt	Added code from my personal bash preference file
 
@@ -14,6 +15,9 @@
 [ -z "$PS1" ] && exit
 
 export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
+
+export ALTERNATE_EDITOR=""
+export EDITOR=emacsclient
 
 # don't put duplicate lines in the history and do not save commands
 # that begin with space. See bash(1) for more options
