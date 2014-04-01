@@ -1,0 +1,31 @@
+" install pathogen package manager
+execute pathogen#infect()
+
+set nocompatible 	" no compatibility with legacy vi
+set encoding=utf-8
+set showcmd		" display incomplete cmds
+set number    " turn line numbering on
+syntax on		" enable syntax sensitivity
+filetype on		" enable filetype detection
+filetype plugin on
+filetype indent on
+set laststatus=2	" always show the status line
+
+"" Indentation, tabbing, and whitespace
+filetype indent on	" enable filetype-specific indentation
+set smartindent
+set tabstop=2
+set shiftwidth=2
+set expandtab
+
+"" Searching
+set hlsearch		" highlight matches
+set incsearch		" incremental search
+set ignorecase		" be case-insensitive...set
+set smartcase		"... unless first letter is capitalized
+
+"" colors and fonts
+set background=light
+colorscheme solarized
+set guifont=Menlo:h15
+
