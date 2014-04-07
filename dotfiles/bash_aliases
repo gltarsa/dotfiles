@@ -104,12 +104,17 @@ alias emacs='\ec -nw --quiet'
 alias gc="git commit -a -m"
 alias git=hub
 alias gs="git status"
+alias gv=gvim
+alias gvi=gvim
 alias herokup=heroku
 alias his='x;history 22'
 alias hist='x;history 44 | pr -w80 -2 -l22 -t'
 alias hptemp='sudo hpasmcli -s "show temp"'
 alias iostat='iostat -h' # human-readable sizes
 alias load=uptime
+function lookup () {
+  google-chrome http://www.google.com/search?q=“$1″
+}
 alias mail=Mail
 alias mar='sed "s/^/	/" '
 # MH aliases
@@ -143,6 +148,12 @@ alias reset='reset;stty dec new cr0;tset -I -Q'
 # gtjan14 alias rm='echo_and_do /bin/rm'
 alias rm="rm -v"
 alias rspec='rspec --format documentation'
+function simple_server () {
+ dir=$1; shift
+ [ -z $dir ] && dir="."
+ echo ruby -r un -e httpd $dir -p 8000 $* 
+ ruby -r un -e httpd $dir -p 8000 $* 
+}
 alias SU=/usr/local/SU
 alias thin='echo """[?3l"'
 alias whoc='((who; users | wc -w) | pr -l18 -t -2)'

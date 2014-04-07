@@ -10,6 +10,7 @@
 pagedump.html
 history.save
 .DS_Store
+.viminfo
 
 # Emacs artifacts
 \#*
