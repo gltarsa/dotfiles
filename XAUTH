@@ -1,8 +1,0 @@
-#!/bin/sh
-# Get Xauthority info for specified hosts
-DISPLAY=`hostname`:0
-for HOST in $*; do
-    /usr/bin/X11/xauth extract - $DISPLAY |
-		 rsh $HOST /usr/bin/X11/xauth merge -
-done
-

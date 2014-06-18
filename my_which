@@ -1,37 +1,34 @@
-#!/bin/sh
+#!/bin/bash -i
+# needs to be an interactive shell to get aliases
 
 for cmd
 do
-    found=""
-    paths=" /usr/users/tarsa/sb/bl8/tools/alpha/hostbin
-	    /usr/users/tarsa/sb/bl8/tools/alpha/bin
-	    /usr/users/tarsa/sb/bl8/tools/alpha/acc
-	    /usr/sde/osf1/build/ptos.bl8/tools/alpha_OSF1/alpha/hostbin
-	    /usr/sde/osf1/build/ptos.bl8/tools/alpha_OSF1/alpha/bin
-	    /usr/sde/osf1/build/ptos.bl8/tools/alpha_OSF1/alpha/acc
-	    /usr/sde/ode3.0/tools/alpha_ace/bin
-	    /usr/ucb
-	    /bin
-	    /usr/bin
-	    /sbin
-	    /usr/sbin"
+  found=""
 
-    OFS="$IFS"
-    IFS=":"
-    for i in $PATH
-    do
-	if [ -f $i/$cmd ]
-	then
-	    echo "$cmd found in $i"
-	    found="y"
-	fi
-    done
-    IFS="$OFS"
+  OFS="$IFS"
+  IFS=":"
+  for i in $PATH
+  do
+    if [ -f $i/$cmd ]
+    then
+      echo "$cmd found in $i"
+      found="y"
+    fi
+  done
+  IFS="$OFS"
 
-    case $found in
-	"") echo "$cmd not found in path\n";;
-    esac
-    echo " "
+  alias_item=`alias | grep -s "alias\s$cmd="`
+  case $alias_item in
+    "") ;; # not found
+    *) echo "$cmd found as: $alias_item"
+       found="y"
+       ;;
+  esac 
+
+  case $found in
+    "") echo "$cmd not found in path\n";;
+  esac
+  echo " "
 done
 
 exit

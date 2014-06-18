@@ -2,4 +2,4 @@
 #
 # Quickie script to clear out emacs droppings from the current directory downwards.
 #
-find . -iname "*~" -exec rm -v {} \;
+find . \( -name "*~" -or -name "\#*\#" -or -iname "tmp-paged*mp.html" \) -exec rm -vf {} \;
