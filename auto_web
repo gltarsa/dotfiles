@@ -53,6 +53,7 @@ Usage='
 '
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
+# 02 Reverted to personal use
 # 01 Updated for Network Appliance, Inc.
 #
 
@@ -148,7 +149,7 @@ cat > $tmpfile <<EOF
 <HTML>
 <HEAD>
    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-   <META NAME="Author" CONTENT="${user_name}, HPS Benchmark Performance Engineering">
+   <META NAME="Author" CONTENT="${user_name}, Tarsa Home, Aviary and Computer Center">
    <META NAME="GENERATOR" CONTENT="auto_web by Greg Tarsa">
    <TITLE>${title}</TITLE>
 </HEAD>
@@ -156,8 +157,7 @@ cat > $tmpfile <<EOF
 
 <H1>${title}</H1>
 
-<p><strong>Information presented here is For NetApp Internal Use
-Only.</strong>
+<p><strong>Information presented here is Greg Tarsa's personal use Only.</strong></p>
 
 
 <table border cellpadding=2>
