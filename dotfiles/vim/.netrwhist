@@ -1,0 +1,8 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_1='/Users/tarsa/src/RoleModel/phonegap/spike/www'
+let g:netrw_dirhist_2='/Users/tarsa/src/RoleModel/phonegap/spike/www/img'
+let g:netrw_dirhist_3='/Users/tarsa/src/RoleModel/phonegap/spike/www/img/cards'
+let g:netrw_dirhist_4='/Users/tarsa/src/RoleModel/phonegap/spike/www/img'
+let g:netrw_dirhist_5='/Users/tarsa/src/RoleModel/phonegap/spike/www'
+let g:netrw_dirhist_6='/Users/tarsa/src/RoleModel/Baloney'

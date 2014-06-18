@@ -1,6 +1,8 @@
 " install pathogen package manager
 execute pathogen#infect()
+set sessionoptions-=options " don't save options when making sessions
 
+"" General settings
 set nocompatible 	" no compatibility with legacy vi
 set encoding=utf-8
 set showcmd		" display incomplete cmds
@@ -9,7 +11,13 @@ syntax on		" enable syntax sensitivity
 filetype on		" enable filetype detection
 filetype plugin on
 filetype indent on
+
+"" Status line customizations
 set laststatus=2	" always show the status line
+set statusline=
+set statusline+=%-3.3n\      " buffer number
+set statusline+=%f\           " filename
+set statusline+=%h%m%r%w      " status flags
 
 "" Indentation, tabbing, and whitespace
 filetype indent on	" enable filetype-specific indentation
@@ -19,13 +27,39 @@ set shiftwidth=2
 set expandtab
 
 "" Searching
-set hlsearch		" highlight matches
-set incsearch		" incremental search
+set nohlsearch		" do not highlight matches
+set noincsearch		" do not incremental search
 set ignorecase		" be case-insensitive...set
 set smartcase		"... unless first letter is capitalized
 
 "" colors and fonts
 set background=light
 colorscheme solarized
-set guifont=Menlo:h15
+"set guifont=Menlo:h12
+set guifont=Anonymous_Pro:h14
+"set guifont=Inconsolata:h14
+
+"" status line settings
+set laststatus=2  " always maintain a status line
+if version >= 700
+  au InsertEnter * hi StatusLine term=reverse ctermbg=5 gui=undercurl guisp=Magenta
+  au InsertLeave * hi StatusLine term=reverse ctermfg=0 ctermbg=2 gui=bold,reverse
+  " au InsertEnter * hi StatusLine term=reverse ctermbg=5           guibg=Pink2     gui=bold,reverse
+  " au InsertLeave * hi StatusLine term=reverse ctermfg=0 ctermbg=2 guifg=PaleGreen gui=bold,reverse
+endif
+
+"" key mappings
+map <leader>n :NERDTreeToggle<CR>
+map <leader>d :execute 'NERDTreeToggle ' . getcwd()<CR>
+
+"" swap files
+set directory=/tmp,~/.vim/tmp,/var/tmp,.
+
+"" Window management
+set splitbelow	" these defaults feel more natural
+set splitright
+
+"" Favorite Macros
+let @w='?:wd$jdd:w'
+let @p='OPry.rescue do/endOendqkb=ii'
 

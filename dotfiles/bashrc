@@ -17,7 +17,8 @@
 export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
 
 export ALTERNATE_EDITOR=""
-export EDITOR=emacsclient
+# export EDITOR=emacsclient
+export EDITOR=gvim
 
 # don't put duplicate lines in the history and do not save commands
 # that begin with space. See bash(1) for more options
@@ -135,3 +136,27 @@ export PATH="/usr/local/heroku/bin:$PATH"
 
 # added for homebrew
 export PATH=/usr/local/sbin:$PATH
+
+# added for Android OS building (/opt/local/bin must appear before /usr/bin)
+export PATH=/opt/local/bin:$PATH
+
+### Oracle client
+export DYLD_LIBRARY_PATH="/Users/tarsa/.oracle/instantclient_11_2"
+export NLS_LANG="AMERICAN_AMERICA.UTF8"
+export TNS_ADMIN="/Users/tarsa/.oracle/instantclient_11_2/admin"
+export PATH="$DYLD_LIBRARY_PATH:$PATH"
+
+# Ansible
+export ANSIBLE_HOSTS=~/.ansible_hosts
+
+# ccache (for Android compilations)
+export USE_CCACHE=1
+# mount the android file image
+function mountAndroid { hdiutil attach ~/xsrc/disk-android.dmg.sparseimage -mountpoint /Volumes/android; }
+mountAndroid
+# raise the limit on the number of open file descriptors to support parallel builds.
+ulimit -S -n 1024
+
+# Require at least 2 EOFs before terminating a shell
+export IGNOREEOF=2
+

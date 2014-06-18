@@ -25,7 +25,7 @@
 # allows args to be displayed prior to execution
 # arg1 must be the command name
 #
-echo_and_do()
+function echo_and_do()
     {
     echo 2>&1 "--> $@" 2> /dev/tty
     "$@"
@@ -35,18 +35,18 @@ echo_and_do()
 # allows cmd to immediately execute in the background
 # arg 1 must be the command name
 #
-do_background()
+function do_background()
     {
     "$@" &
     }
 
 #
-# executes arg1 as a command fter executing the remainder
+# executes arg1 as a command after executing the remainder
 # of the line as a command
 # arg 1 must be the post-command in its entirety
 # arg 2 must be the command name
 #
-do_after()
+function do_after()
     {
     local postcmd=$1
     shift
@@ -75,27 +75,27 @@ export PATH=${PATH}:${adt_home}/sdk/platform-tools:${adt_home}/sdk/tools
 
 # Add machine to first case if color ls is not supported
 case `uname -s` in
-    Linux*)  # -h = human-readable sizes
-#	alias cls='ls -Fsh --color'
-	alias ls='ls -Fsh --color=never'
-#	alias ls='ls -Fsh --color'
-	;;
-    *)	alias ls='ls -Fsh '
-	;;
+  Linux*)  # -h = human-readable sizes
+    alias ls='ls -FshH --color=never'
+    ;;
+  *)
+    alias ls='ls -FshH '
+    ;;
 esac
 #alias ffm='defaults write com.apple.Terminal FocusFollowsMouse -bool '
 alias cd='pushd'
+alias be='bundle exec'
 alias bk='popd'
 alias up='cd `/bin/pwd`/..'
 # gt jan14 alias cp='echo_and_do /bin/cp'
 alias cp="cp -v"
 alias cleanup#='find ~ -name "#*" -exec rm -rf {} \; &'
 alias cls=clear
-alias decode='grep -i \!* $HOME/acronym.lst'
 alias du='du -h' # human-readable sizes
 alias df='df -h' # human-readable sizes
 alias ecco32="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/ecco32' 2> /tmp/ecco.wine.errs.txt &"
 alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/eccoext' 2> /tmp/ecco.wine.errs.txt &"
+alias findall="grep -ris"
 # alias xemacs='do_background emacs'
 alias xemacs='do_background ~/bin/ec --quiet'
 # on Mac OS X, we prefer to use Emacs in the terminal window
@@ -103,6 +103,7 @@ alias emacs='\ec -nw --quiet'
 #alias ftp="\ftp -i"
 alias gc="git commit -a -m"
 alias git=hub
+alias grep='grep -s'  # inhibit "...Is a directory" messages
 alias gs="git status"
 alias gv=gvim
 alias gvi=gvim
@@ -147,7 +148,7 @@ alias reset='reset;stty dec new cr0;tset -I -Q'
 # glt98 alias rlogin='rlogin \!:1 -8 \!:2*'
 # gtjan14 alias rm='echo_and_do /bin/rm'
 alias rm="rm -v"
-alias rspec='rspec --format documentation'
+alias rspec='rspec --color --format documentation'
 function simple_server () {
  dir=$1; shift
  [ -z $dir ] && dir="."
@@ -156,6 +157,7 @@ function simple_server () {
 }
 alias SU=/usr/local/SU
 alias thin='echo """[?3l"'
+alias vi_tags='ctags -R --tag-relative=yes -f ~/.vimtags --exclude="*.vim" --exclude=".#?*"'
 alias whoc='((who; users | wc -w) | pr -l18 -t -2)'
 alias x='clear'
 alias xrs='xrdb -query'
