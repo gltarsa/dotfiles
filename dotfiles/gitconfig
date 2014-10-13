@@ -8,6 +8,7 @@
 [user]
 	name = Greg Tarsa
 	email = gltarsa@gmail.com
+	signingkey = 4C17D589
 [core]
 	editor = ~/bin/emacs -nw
 	excludesfile = /Users/tarsa/.gitignore_global

@@ -1,7 +1,7 @@
 Usage="
 Usage: $0 <count> <cmd>
 
-Action: run <cmd> <count> times.
+Action: run the specified <cmd> <count> times and write a log to status.out.
 "
 case $# in
   0|1) echo 1>&2 "?Usage: $Usage"; exit 1 ;;

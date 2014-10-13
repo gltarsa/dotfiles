@@ -1,2 +1,3 @@
 #! /bin/sh
-~/bin/ecco2txt.pl $@ | sed 's/[ ]*[]*$//'
+# Remove Windows-induced whitespace and also remove 1 leading space
+~/bin/ecco2txt.pl $@ | sed 's/[ ]*[]*$//' | sed 's/^ //' 

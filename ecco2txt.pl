@@ -22,6 +22,9 @@
 #
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
+# 05  Aug-2014, Greg Tarsa
+#     Add option for producing Markdown-compatible output
+#
 # 04  25-Oct-99, Greg Tarsa
 #     Added *many* extra format lines to ensure that long paragraphs
 #     do not get truncated.  This may be an ongoing problem.
@@ -38,22 +41,22 @@
 
 
 $indent = "\t";			# the input indent string
-$outdent = "   ";		# the output indent string
+$outdent = "   ";		# the output indent string (three spaces per level)
 $suf    = "\r\n";             # the tail suffix (for MS-DOS)
 
 # the outline prefixes -- notice that they don't have a big range
 @prefix = ( 
-	   [(a..z)],
-	   [(1..100)],
-	   [(a..z)],
-	   [(1..100)], 
-	   [(a..z)],
-	   [(1..100)],
-	   [(a..z)],
-	   [(1..100)],
-	   [(a..z)],
-	   [(1..100)]
-	   );
+  [(a..z)],
+  [(1..100)],
+  [(a..z)],
+  [(1..100)], 
+  [(a..z)],
+  [(1..100)],
+  [(a..z)],
+  [(1..100)],
+  [(a..z)],
+  [(1..100)]
+);
 # put period after the elements of the first two
 grep(s/(.*)/$1./, @{$prefix[0]});
 grep(s/(.*)/$1./, @{$prefix[1]});
@@ -81,110 +84,112 @@ $wrapWidth = 64;
 
 ################################### look for command line options ##################
 use Getopt::Std;		# library routines for parsing arguments
-getopts("hrud:w:");
+getopts("hrumd:w:");
 if($opt_w) { $wrapWidth = $opt_w; }
 if($opt_u) { $suf ="\n"; }
 if($opt_h) { printf ("   ?Options:
-	-h this message
-	-r raw output (reduce tabs to 4 spaces)
-	-d 'list'	use each char in 'list' as level char
-	-u		inhibit ^M char at end of line (Unix form)
-	-w ##		wrap output at char pos ##
-	\n");
-	exit(1);}
+    -h  this message
+    -d  'list'	use each char in 'list' as level char
+    -u	inhibit ^M char at end of line (Unix form)
+    -m  output is in Markdown-compatible form
+    -r  raw output (reduce tabs to 4 spaces)
+    -w ##		wrap output at char pos ##
+    \n");
+  exit(1);}
+# Markdown: use 2 spaces per level; inhibit wrap; use MD-compat bullets
+if($opt_m) { $outdent = "  "; $wrapWidth = 4011; $opt_d = "-*o"}
 #print "-------------- wrapWidth = $wrapWidth\n";
 
 ################################## main loop #######################################
 while(<>) {
-    chop;
-    next if /^$/;
-    # find the indent level by counting from begining of line
-    while(s/^$indent//) { ++ $curLevel; }
-    if($curLevel > $prevLevel) {
-	$levelCounter[$curLevel] = 0; # reinitialize this level's counter
-    } else { 
-	# increment the counter for this level
-	++ $levelCounter[$curLevel];
+  chop;
+  next if /^$/;
+  # find the indent level by counting from begining of line
+  while(s/^$indent//) { ++ $curLevel; }
+  if($curLevel > $prevLevel) {
+    $levelCounter[$curLevel] = 0; # reinitialize this level's counter
+  } else { 
+    ++ $levelCounter[$curLevel];  # increment the counter for this level
+  }
+  if (!$opt_r) {
+    if ($opt_d) {
+      $prefix = substr($opt_d, $curLevel % length($opt_d), 1);
     }
-    if (!$opt_r) {
-	if ($opt_d) {
-	    $prefix = substr($opt_d, $curLevel % length($opt_d), 1);
-        }
-        else {
-            $prefix = ($outdent x $curLevel) .
-                       $prefix[$curLevel][$levelCounter[$curLevel]];
-        }
+    else {
+      $prefix = ($outdent x $curLevel) .
+      $prefix[$curLevel][$levelCounter[$curLevel]];
     }
-    $body = $_;
-    &SetFormat;			
-    write;
-    $prevLevel = $curLevel;
-    $curLevel = 0;
+  }
+  $body = $_;
+  &SetFormat;			
+  write;
+  $prevLevel = $curLevel;
+  $curLevel = 0;
 }
 
 
 sub SetFormat {			# uses the format statement to
-				# make a tidy output
-    my($prefixLength) = length("$outdent")*$curLevel + 
-	length($prefix[$curLevel][$levelCounter[$curLevel]]) - 1; # 1 for the @
-    my($bodyLength) = $wrapWidth - $prefixLength - 2; # 1 for the space; 1 for the @
+  # make a tidy output
+  my($prefixLength) = length("$outdent")*$curLevel + 
+  length($prefix[$curLevel][$levelCounter[$curLevel]]) - 1; # 1 for the @
+  my($bodyLength) = $wrapWidth - $prefixLength - 2; # 1 for the space; 1 for the @
 
-    # first format line string
-    my($fString) = "\n";	# start with a new line
-    $fString    .= "@" . ">" x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "\$prefix,\$body\n";
-    # subsequent format line strings
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
+  # first format line string
+  my($fString) = "\n";	# start with a new line
+  $fString    .= "@" . ">" x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "\$prefix,\$body\n";
+  # subsequent format line strings
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
 # added the following to accomodate longer paragraphs
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
-    $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
-    $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
+  $fString    .= "~" . " " x $prefixLength . " ^" . "<" x $bodyLength . $suf;
+  $fString    .= "         \$body\n";
 
-    # terminator
-    $fString    .= ".\n";
+  # terminator
+  $fString    .= ".\n";
 
-    # now eval it for STDOUT
-    eval("format = $fString");
+  # now eval it for STDOUT
+  eval("format = $fString");
 }
