@@ -10,7 +10,7 @@
 	email = gltarsa@gmail.com
 	signingkey = 4C17D589
 [core]
-	editor = ~/bin/emacs -nw
+	editor = vim
 	excludesfile = /Users/tarsa/.gitignore_global
 [merge]
 	tool = vimdiff
