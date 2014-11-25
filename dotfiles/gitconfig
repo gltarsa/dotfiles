@@ -10,7 +10,7 @@
 	email = gltarsa@gmail.com
 	signingkey = 4C17D589
 [core]
-	editor = gvim
+	editor = vim
 	excludesfile = /Users/tarsa/.gitignore_global
 [merge]
 	tool = vimdiff
@@ -23,7 +23,7 @@
 #
 # git <cmd> shorthand definitions
 [alias]
-	lol = log --graph --decorate --oneline --all
+	lol = log --graph --decorate --oneline --all --color
 	dif = diff
 
 [push]
