@@ -1,6 +1,8 @@
 # .bashrc
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
+# Nov-14 glt    Change "exit" to "return" in interactivity test
+#               because exiting was causing X11/XQuartz to fail to start.
 # Mar-14 glt    Moved PATH changing code form .bashrc_aliases
 #               Removed chroot_debian code and added git branch to prompt
 #		Add defines to support Emacs as a Daemon
@@ -12,7 +14,7 @@
 # for examples
 
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && exit
+[ -z "$PS1" ] && return
 
 export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
 
@@ -22,7 +24,7 @@ export EDITOR=gvim
 
 # don't put duplicate lines in the history and do not save commands
 # that begin with space. See bash(1) for more options
-export HISTCONTROL=ignoreboth
+# export HISTCONTROL=ignoreboth
 
 # ...append to the history file, don't overwrite it
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
@@ -32,21 +34,21 @@ shopt -s histappend
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# print bg job notifications immediately
+shopt -o notify
+
+# Require at least 10 EOFs before terminating a shell
+shopt ignoreeof
+
 # set default file protection to 750
 umask 027
-
-# tell bash to display background messages immediately
-notify=yes
-
-# show our display name
-#echo 1>&2 "DISPLAY=$DISPLAY"
 
 #++
 # Prompt Setting code
 #
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color) color_prompt=yes;;
+  xterm-color) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
@@ -55,20 +57,20 @@ esac
 #force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
+  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+    # a case would tend to support setf rather than setaf.)
+    color_prompt=yes
+  else
+    color_prompt=
+  fi
 fi
 
 # function for PS1 to display [ git branch] when it is defined
 function __show_git_branch() {
-    branch=`git rev-parse --abbrev-ref HEAD 2>/dev/null`
-    [ -n "$branch" ] && echo " [$branch]"
+  branch=`git rev-parse --abbrev-ref HEAD 2>/dev/null`
+  [ -n "$branch" ] && echo " [$branch]"
 }
 
 # Most interesting prompt escapes:
@@ -82,14 +84,13 @@ PS1='$(tput setaf 7)-- \u@\h:\w$(__show_git_branch) --$(tput sgr0)\n\!\$ '
 
 # add indicator to prompt for invocation depth
 case $SHLVL in
-    1) PS1="${PS1}";;
-    2) PS1="${PS1}> " ;;
-    *) PS1="${PS1}>> " ;;
+  1) PS1="${PS1}";;
+  2) PS1="${PS1}> " ;;
+  *) PS1="${PS1}>> " ;;
 esac
 
 #
 #-- end Prompt setting code
-
 
 #++
 # Alias definitions.
@@ -98,55 +99,63 @@ esac
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+  . ~/.bash_aliases
 fi
-
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+  . /etc/bash_completion
 fi
 
 # add directories to PATH if they are not there already
 # Move /usr/local/bin to front, if it is already there.  Add it to the front, if not.
 case $PATH in
-     */usr/local/bin*)		# path is present remove it and add to beginning
-        PATH=`echo "$PATH" | sed 's=/usr/local/bin[:]*==;s=^=/usr/local/bin:='`
-	;;
-     *)				# add it to the start
-        PATH="/usr/local/bin:$PATH"
-	;;
+  */usr/local/bin*)   # path is present remove it and add to beginning
+    PATH=`echo "$PATH" | sed 's=/usr/local/bin[:]*==;s=^=/usr/local/bin:='`
+    ;;
+  *)	                # add it to the start
+    PATH="/usr/local/bin:$PATH"
+    ;;
 esac
 case $PATH in
-     *~/bin*) ;;		# already there
-     *) PATH="~/bin:$PATH" ;;	# append it
+  *~/bin*)   		      # already there
+    ;;
+  *)                  # append it
+    PATH="~/bin:$PATH"
+    ;;
 esac
 case $PATH in
-     */usr/sbin*) ;;		# already there
-     *)PATH="$PATH"":/usr/sbin" ;; # append it
+  */usr/sbin*)		    # already there
+    ;;
+  *)                  # append it
+    PATH="$PATH"":/usr/sbin" ;;
 esac
 #case $PATH in
-#     */usr/bin/mh*) ;;		# already there
-#    *)PATH="$PATH"":/usr/bin/mh" ;; # append it
+#  */usr/bin/mh*)     # already there
+#    ;;
+#  *)                 # append it
+#    PATH="$PATH"":/usr/bin/mh" 
+#    ;;
 #esac
+
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
-# added for homebrew
+# Added for homebrew
 export PATH=/usr/local/sbin:$PATH
 
-# added for Android OS building (/opt/local/bin must appear before /usr/bin)
+# Added for Android OS building (/opt/local/bin must appear before /usr/bin)
 export PATH=/opt/local/bin:$PATH
 
-### Oracle client
+### Added to support Oracle client (Merge, Sep 2014)
 export DYLD_LIBRARY_PATH="/Users/tarsa/.oracle/instantclient_11_2"
 export NLS_LANG="AMERICAN_AMERICA.UTF8"
 export TNS_ADMIN="/Users/tarsa/.oracle/instantclient_11_2/admin"
 export PATH="$DYLD_LIBRARY_PATH:$PATH"
 
-# Ansible
+# Ansible (Added for Merge)
 export ANSIBLE_HOSTS=~/.ansible_hosts
 
 # ccache (for Android compilations)
@@ -154,9 +163,7 @@ export USE_CCACHE=1
 # mount the android file image
 function mountAndroid { hdiutil attach ~/xsrc/disk-android.dmg.sparseimage -mountpoint /Volumes/android; }
 mountAndroid
+
 # raise the limit on the number of open file descriptors to support parallel builds.
 ulimit -S -n 1024
-
-# Require at least 2 EOFs before terminating a shell
-export IGNOREEOF=2
 
