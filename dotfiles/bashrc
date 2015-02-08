@@ -1,6 +1,8 @@
 # .bashrc
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
+# Jan-15 glt    Comment out Oracle and Android dev setups until we want to use them again
+#
 # Nov-14 glt    Change "exit" to "return" in interactivity test
 #               because exiting was causing X11/XQuartz to fail to start.
 # Mar-14 glt    Moved PATH changing code form .bashrc_aliases
@@ -26,19 +28,14 @@ export EDITOR=gvim
 # that begin with space. See bash(1) for more options
 # export HISTCONTROL=ignoreboth
 
-# ...append to the history file, don't overwrite it
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-shopt -s histappend
+# -s[et] shell options
+#  notify:    print bg job notifications immediately
+#  ignoreeof: Require at least 10 EOFs before terminating a shell
+shopt -o -s notify ignoreeof
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# print bg job notifications immediately
-shopt -o notify
-
-# Require at least 10 EOFs before terminating a shell
-shopt ignoreeof
+#  histappend: append to history file, do not overwrite
+#  checkwinsize: check window size after every command, updating LINES & COLUMNS if needed.
+shopt -s histappend checkwinsize
 
 # set default file protection to 750
 umask 027
@@ -149,21 +146,27 @@ export PATH=/usr/local/sbin:$PATH
 # Added for Android OS building (/opt/local/bin must appear before /usr/bin)
 export PATH=/opt/local/bin:$PATH
 
-### Added to support Oracle client (Merge, Sep 2014)
-export DYLD_LIBRARY_PATH="/Users/tarsa/.oracle/instantclient_11_2"
-export NLS_LANG="AMERICAN_AMERICA.UTF8"
-export TNS_ADMIN="/Users/tarsa/.oracle/instantclient_11_2/admin"
-export PATH="$DYLD_LIBRARY_PATH:$PATH"
+# inhibit Oracle client use, since no longer at Merge
+if false; then
+  ### Added to support Oracle client (Merge, Sep 2014)
+  export DYLD_LIBRARY_PATH="/Users/tarsa/.oracle/instantclient_11_2"
+  export NLS_LANG="AMERICAN_AMERICA.UTF8"
+  export TNS_ADMIN="/Users/tarsa/.oracle/instantclient_11_2/admin"
+  export PATH="$DYLD_LIBRARY_PATH:$PATH"
+fi
 
 # Ansible (Added for Merge)
 export ANSIBLE_HOSTS=~/.ansible_hosts
 
-# ccache (for Android compilations)
-export USE_CCACHE=1
-# mount the android file image
-function mountAndroid { hdiutil attach ~/xsrc/disk-android.dmg.sparseimage -mountpoint /Volumes/android; }
-mountAndroid
+# inhibit enabling Android environment, for now
+if false; then
+  # ccache (for Android compilations)
+  export USE_CCACHE=1
+  # mount the android file image
+  function mountAndroid { hdiutil attach ~/xsrc/disk-android.dmg.sparseimage -mountpoint /Volumes/android; }
+  mountAndroid
+fi
 
 # raise the limit on the number of open file descriptors to support parallel builds.
-ulimit -S -n 1024
+# ulimit -S -n 1024
 

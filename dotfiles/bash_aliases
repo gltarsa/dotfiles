@@ -92,7 +92,7 @@ alias cp="cp -v"
 alias cleanup#='find ~ -name "#*" -exec rm -rf {} \; &'
 alias cls=clear
 alias du='du -h' # human-readable sizes
-alias df='df -h' # human-readable sizes
+alias df='df -Ph' # human-readable sizes
 alias ecco32="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/ecco32' 2> /tmp/ecco.wine.errs.txt &"
 alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/eccoext' 2> /tmp/ecco.wine.errs.txt &"
 alias findall="grep -ris"
@@ -138,18 +138,13 @@ alias pl='sed -f $HOME/bin/plist.sed $HOME/phone.lst | grep -i '
 alias rcp="echo_and_do /bin/rcp"
 alias reload='xrdb -load ~/.Xdefaults'
 # spin alias may not work.
-alias spin='bundle exec rescue `bundle exec which spinach`'
+alias spin="bundle exec rescue `bundle exec which spinach`"
+alias rake="bundle exec rake"
 alias reset='reset;stty dec new cr0;tset -I -Q'
-# glt98 alias rlogin='rlogin \!:1 -8 \!:2*'
 # gtjan14 alias rm='echo_and_do /bin/rm'
 alias rm="rm -v"
-alias rspec='rspec --color --format documentation'
-function simple_server () {
- dir=$1; shift
- [ -z $dir ] && dir="."
- echo ruby -r un -e httpd $dir -p 8000 $* 
- ruby -r un -e httpd $dir -p 8000 $* 
-}
+alias rspec="bundle exec rspec --color --format documentation"
+alias spinach="bundle exec spinach"
 alias SU=/usr/local/SU
 alias vi_tags='ctags -R --tag-relative=yes -f ~/.vimtags --exclude="*.vim" --exclude=".#?*"'
 alias whoc='((who; users | wc -w) | pr -l18 -t -2)'

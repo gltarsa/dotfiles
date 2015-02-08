@@ -23,8 +23,13 @@
 #
 # git <cmd> shorthand definitions
 [alias]
+  # log One Line (color)
 	lol = log --graph --decorate --oneline --all --color
+  # Log Line (color)
+  ll  = log --graph --decorate --oneline --all --color --pretty=format:'%C(auto)%h %d %s (%Cblue%an, %Cred%ad%Creset)' --date=relative
+  # shorthand and spellos
 	dif = diff
+  co  = checkout
 
 [push]
 	default = tracking
