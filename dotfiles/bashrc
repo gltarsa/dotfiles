@@ -31,7 +31,8 @@ export EDITOR=gvim
 # -s[et] shell options
 #  notify:    print bg job notifications immediately
 #  ignoreeof: Require at least 10 EOFs before terminating a shell
-shopt -o -s notify ignoreeof
+set -o notify
+set -o ignoreeof
 
 #  histappend: append to history file, do not overwrite
 #  checkwinsize: check window size after every command, updating LINES & COLUMNS if needed.
@@ -106,6 +107,16 @@ if [ -f /etc/bash_completion ]; then
   . /etc/bash_completion
 fi
 
+# add paths for Linux brew
+case $(uname) in
+  Linux)
+    export PATH="$HOME/.linuxbrew/bin:$PATH"
+    export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
+    export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
+    ;;
+esac
+
+
 # add directories to PATH if they are not there already
 # Move /usr/local/bin to front, if it is already there.  Add it to the front, if not.
 case $PATH in
@@ -153,13 +164,14 @@ if false; then
   export NLS_LANG="AMERICAN_AMERICA.UTF8"
   export TNS_ADMIN="/Users/tarsa/.oracle/instantclient_11_2/admin"
   export PATH="$DYLD_LIBRARY_PATH:$PATH"
+
+  # Ansible (Added for Merge)
+  export ANSIBLE_HOSTS=~/.ansible_hosts
 fi
 
-# Ansible (Added for Merge)
-export ANSIBLE_HOSTS=~/.ansible_hosts
-
 # inhibit enabling Android environment, for now
-if false; then
+if false
+then
   # ccache (for Android compilations)
   export USE_CCACHE=1
   # mount the android file image
