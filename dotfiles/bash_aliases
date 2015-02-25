@@ -83,6 +83,9 @@ else
   alias ls='ls -FshH'
 fi
 
+alias   ack='ack --ignore-file=ext:log,svg --ignore-dir={tmp,bower_components,node_modules,pkg-config-0.23}'
+alias ackns='ack --ignore-file=ext:log,svg --ignore-dir={tmp,bower_components,node_modules,pkg-config-0.23,spec,features}'
+
 #alias ffm='defaults write com.apple.Terminal FocusFollowsMouse -bool '
 alias cd='pushd'
 alias be='bundle exec'
@@ -156,7 +159,8 @@ alias vi_tags='ctags -R --tag-relative=yes -f ~/.vimtags --exclude="*.vim" --exc
 alias whoc='((who; users | wc -w) | pr -l18 -t -2)'
 alias x='clear'
 alias xrs='xrdb -query'
-# glt98 alias xicon='echo """]1;\!*"'
-# glt98 alias xtitle='echo """]2;\!*           `hostname`"'
-# glt98 alias xboth='xicon \!*; xtitle \!*'
-
+alias xssh='ssh -X'
+#
+function xicon()  { echo """]1;$@"; }
+function xtitle() { echo """]2;$@         `hostname`"; }
+function xboth()  { xicon $@; xtitle $@; }
