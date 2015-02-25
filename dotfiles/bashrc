@@ -90,6 +90,15 @@ esac
 #
 #-- end Prompt setting code
 
+# add paths for Linux brew
+case $(uname) in
+  Linux)
+    export PATH="$HOME/.linuxbrew/bin:$PATH"
+    export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
+    export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
+    ;;
+esac
+
 #++
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -106,16 +115,6 @@ fi
 if [ -f /etc/bash_completion ]; then
   . /etc/bash_completion
 fi
-
-# add paths for Linux brew
-case $(uname) in
-  Linux)
-    export PATH="$HOME/.linuxbrew/bin:$PATH"
-    export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
-    export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
-    ;;
-esac
-
 
 # add directories to PATH if they are not there already
 # Move /usr/local/bin to front, if it is already there.  Add it to the front, if not.
