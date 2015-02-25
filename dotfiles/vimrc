@@ -33,14 +33,13 @@ set ignorecase		" be case-insensitive...set
 set smartcase		"... unless first letter is capitalized
 
 "" colors and fonts
-set background=light
-colorscheme solarized
-"set guifont=Menlo:h12
-set guifont=Anonymous_Pro:h14
-"set guifont=Inconsolata:h14
-
-"" Solarized options for terminal display
-" Set these in your vimrc file prior to calling the colorscheme.
+if has('gui_running')
+  set background=light
+  colorscheme solarized
+  "set guifont=Menlo:h12
+  set guifont=Anonymous_Pro:h14
+  "set guifont=Inconsolata:h14
+endif
 
 "" status line settings
 set laststatus=2  " always maintain a status line
