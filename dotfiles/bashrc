@@ -147,6 +147,15 @@ esac
 #    ;;
 #esac
 
+# gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+source `brew --repository`/Library/Contributions/brew_bash_completion.sh
+export PATH
+
+#
+#--
+
+
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
@@ -159,9 +168,9 @@ export PATH=/opt/local/bin:$PATH
 # inhibit Oracle client use, since no longer at Merge
 if false; then
   ### Added to support Oracle client (Merge, Sep 2014)
-  export DYLD_LIBRARY_PATH="/Users/tarsa/.oracle/instantclient_11_2"
+  export DYLD_LIBRARY_PATH="$HOME/.oracle/instantclient_11_2"
   export NLS_LANG="AMERICAN_AMERICA.UTF8"
-  export TNS_ADMIN="/Users/tarsa/.oracle/instantclient_11_2/admin"
+  export TNS_ADMIN="$HOME/.oracle/instantclient_11_2/admin"
   export PATH="$DYLD_LIBRARY_PATH:$PATH"
 
   # Ansible (Added for Merge)
@@ -171,6 +180,12 @@ fi
 # inhibit enabling Android environment, for now
 if false
 then
+  case ${uname} in
+    Darwin)
+      adt_home=/Volumes/XtraData/Users/tarsa/opt/adt-bundle
+      export PATH=${PATH}:${adt_home}/sdk/platform-tools:${adt_home}/sdk/tools
+      ;;
+  esac
   # ccache (for Android compilations)
   export USE_CCACHE=1
   # mount the android file image

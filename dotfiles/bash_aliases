@@ -63,18 +63,6 @@ function do_after()
 source ~/.git-completion.bash
 source ~/.hub.bash_completion.sh
 
-
-# gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-source `brew --repository`/Library/Contributions/brew_bash_completion.sh
-export PATH
-
-adt_home=/Volumes/XtraData/Users/tarsa/opt/adt-bundle
-export PATH=${PATH}:${adt_home}/sdk/platform-tools:${adt_home}/sdk/tools
-#
-#--
-
-
 # if ls supports --color, use it
 if ls --color /tmp > /dev/null 2>&1
 then
@@ -156,6 +144,11 @@ alias rspec="bundle exec rspec --color --format documentation"
 alias spinach="bundle exec spinach"
 alias SU=/usr/local/SU
 alias vi_tags='ctags -R --tag-relative=yes -f ~/.vimtags --exclude="*.vim" --exclude=".#?*"'
+# if which supports --read-alias (and by inference --read-function), then define a handy alias
+if `which --help 2> /dev/null | grep --silent -e "--read-alias"`
+then
+  alias which='(alias; declare -f) | which --tty-only --read-alias --read-functions --show-tilde --show-dot'
+fi
 alias whoc='((who; users | wc -w) | pr -l18 -t -2)'
 alias x='clear'
 alias xrs='xrdb -query'

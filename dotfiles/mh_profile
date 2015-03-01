@@ -1,0 +1,13 @@
+Path: MH-mail
+editor: vim
+draft-folder: +drafts
+unseen-sequence: unseen
+Aliasfile: aliases
+forw: -filter mhl.forw-format -nodash
+#scan: -form scan.timely-size
+scan: -form scan.pinpoint-size
+folders: -recurse
+showproc: mhl
+showmimeproc: mhl
+repl: -filter ~/MH-mail/repl.filter -nocc all
+pick: -sequence pick
