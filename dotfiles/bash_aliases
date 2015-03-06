@@ -71,8 +71,9 @@ else
   alias ls='ls -FshH'
 fi
 
-alias   ack='ack --ignore-file=ext:log,svg --ignore-dir={tmp,bower_components,node_modules,pkg-config-0.23}'
-alias ackns='ack --ignore-file=ext:log,svg --ignore-dir={tmp,bower_components,node_modules,pkg-config-0.23,spec,features}'
+# .ackrc file may be a better place for this kind of thing
+alias   ack='ack --ignore-file=ext:log,svg,txt --ignore-dir={tmp,bower_components,node_modules}'
+alias ackns='ack --ignore-file=ext:log,svg,txt --ignore-dir={tmp,bower_components,node_modules,spec,features}'
 
 #alias ffm='defaults write com.apple.Terminal FocusFollowsMouse -bool '
 alias cd='pushd'
