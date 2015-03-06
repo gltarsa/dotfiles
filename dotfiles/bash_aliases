@@ -92,17 +92,23 @@ alias findall="grep -ris"
 alias xemacs='do_background ~/bin/ec --quiet'
 # on Mac OS X, we prefer to use Emacs in the terminal window
 alias emacs='\ec -nw --quiet'
+alias firefox='firefox 2> /dev/null 1>&2 &'
 #alias ftp="\ftp -i"
 alias gd="git diff"
 case `uname` in
   Linux)
     ;;
-  "*")
+  Darwin)
     alias git=hub
     ;;
 esac
 alias grep='grep -s'  # inhibit "...Is a directory" messages
 alias gs="git status"
+case `uname` in
+   Darwin)
+     alias google-chrome="google-chrome 2> /dev/null 1>&2 &"
+     ;;
+esac
 alias gvim='gvim 2> /dev/null 1>&2'
 alias herokup=heroku
 alias his='x;history 22'
