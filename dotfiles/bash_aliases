@@ -136,6 +136,7 @@ alias rcp="echo_and_do /bin/rcp"
 alias reload='xrdb -load ~/.Xdefaults'
 # spin alias may not work.
 alias spin="bundle exec rescue `bundle exec which spinach`"
+alias ssh="ssh -X" # enable X11 pass through by default
 alias rake="bundle exec rake"
 alias reset='reset;stty dec new cr0;tset -I -Q'
 # gtjan14 alias rm='echo_and_do /bin/rm'
