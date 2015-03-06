@@ -102,8 +102,7 @@ case `uname` in
 esac
 alias grep='grep -s'  # inhibit "...Is a directory" messages
 alias gs="git status"
-alias gv=gvim
-alias gvi=gvim
+alias gvim='gvim 2> /dev/null 1>&2'
 alias herokup=heroku
 alias his='x;history 22'
 alias hist='x;history 44 | pr -w80 -2 -l22 -t'

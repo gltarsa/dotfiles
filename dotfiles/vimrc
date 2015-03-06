@@ -36,9 +36,16 @@ set smartcase		"... unless first letter is capitalized
 if has('gui_running')
   set background=light
   colorscheme solarized
-  "set guifont=Menlo:h12
-  set guifont=Anonymous_Pro:h14
-  "set guifont=Inconsolata:h14
+  if has("macunix")
+    "set guifont=Menlo:h12
+    set guifont=Anonymous_Pro:h14
+    "set guifont=Inconsolata:h14
+  endif
+  if has("gui_gtk2")
+    set guifont=Anonymous\ Pro\ 12
+    "set guifont=Inconsolata\ 12
+    "set guifont=Menlo\ 12
+  endif
 endif
 
 "" status line settings
