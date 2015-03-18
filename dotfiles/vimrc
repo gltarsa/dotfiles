@@ -42,6 +42,7 @@ if has('gui_running')
     "set guifont=Inconsolata:h14
   endif
   if has("gui_gtk2")
+    set guioptions -=T  " remove toolbar
     set guifont=Anonymous\ Pro\ 12
     "set guifont=Inconsolata\ 12
     "set guifont=Menlo\ 12
