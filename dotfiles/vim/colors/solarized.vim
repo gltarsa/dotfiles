@@ -1,5 +1,5 @@
 " Name:     Solarized vim colorscheme
-" Author:   Ethan Schoonover <es@ethanschoonover.com>
+" Author:   Ethan Schoonover <es@ethanschoonover.com> (modified by Greg Tarsa)
 " URL:      http://ethanschoonover.com/solarized
 "           (see this url for latest release & screenshots)
 " License:  OSI approved MIT license (see end of this file)
@@ -11,6 +11,9 @@
 " ---------------------------------------------------------------------
 " Solarized is a carefully designed selective contrast colorscheme with dual 
 " light and dark modes that runs in both GUI, 256 and 16 color modes.
+"
+" Greg Tarsa found the grey text to light in March 2015, so he darkened the
+" hues a bit.
 "
 " See the homepage above for screenshots and details.
 "
@@ -313,16 +316,18 @@ let colors_name = "solarized"
 " neutral gray monotone palette component)
 if has("gui_running") && w:solarized_degrade == 0
     let s:g_back        = "#002b36"
-    let s:g_base03      = "#002b36"
-    let s:g_base02      = "#073642"
-    " gt: darken, original= let s:g_base01      = "#586e75"
-    let s:g_base01      = "#3E4D52"
-    let s:g_base00      = "#657b83"
-    " gt: darken, original= let s:g_base0       = "#839496"
-    let s:g_base0       = "#343B3C"
-    let s:g_base1       = "#93a1a1"
-    let s:g_base2       = "#eee8d5"
-    let s:g_base3       = "#fdf6e3"
+    let s:g_base03      = "#002b36" " dark background tone
+    let s:g_base02      = "#073642" " slightly lighter background tone
+    let s:og_base01      = "#586e75"
+    let s:og_base00      = "#657b83"
+    let s:og_base0       = "#839496"
+    let s:og_base1       = "#93a1a1"
+    let s:g_base01      = s:g_base03 " darker content tones (using base03)
+    let s:g_base00      = s:g_base02 " slightly lighter darker content tones (using base02)
+    let s:g_base0       = s:og_base01 " lighter content tones (using orig base01)
+    let s:g_base1       = s:og_base00 " slightly darker lighter content tones (using base00)
+    let s:g_base2       = "#eee8d5" " slightly darker light bg tone (unchanged)
+    let s:g_base3       = "#fdf6e3" " darker light bg tone (unchanged)
     let s:g_yellow      = "#b58900"
     let s:g_orange      = "#cb4b16"
     let s:g_red         = "#d30102"
@@ -342,12 +347,14 @@ else
     let s:g_back        = "#121212"
     let s:g_base03      = "#121212"
     let s:g_base02      = "#1c1c1c"
-    " gt: darken, original=    let s:g_base01      = "#4e4e4e"
-    let s:g_base01      = "#2F2F2F" 
-    let s:g_base00      = "#585858"
-    " gt: darken, original= let s:g_base0       = "#808080"
-    let s:g_base0       = "#4D4D4D"
-    let s:g_base1       = "#8a8a8a"
+    let s:og_base01     = "#4e4e4e"
+    let s:og_base00     = "#585858"
+    let s:og_base03     = "#121212"
+    let s:og_base02     = "#1c1c1c"
+    let s:g_base01      = s:g_base03 " darker content tones (using base03)
+    let s:g_base00      = s:g_base02 " slightly lighter darker content tones (using base02)
+    let s:g_base0       = s:og_base01 " lighter content tones (using orig base01)
+    let s:g_base1       = s:og_base00 " slightly darker lighter content tones (using base00)
     let s:g_base2       = "#e4e4e4"
     let s:g_base3       = "#ffffd7"
     let s:g_yellow      = "#af8700"
