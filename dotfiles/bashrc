@@ -196,3 +196,10 @@ fi
 # raise the limit on the number of open file descriptors to support parallel builds.
 # ulimit -S -n 1024
 
+# Added for Time2Track
+case ${uname} in
+  Darwin)
+    export FORMSTACK_TOKEN='e3289978afc2f05955bb9d70736fd77f'
+    ;;
+esac
+
