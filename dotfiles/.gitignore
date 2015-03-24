@@ -6,9 +6,10 @@ vim/bundle/vim-multiple-cursors
 vim/bundle/vim-javascript
 
 # ignore configuration directory (so we can have diff configs on diff boxes)
-config
+config/
 
 # ignore Emacs related cruft
 *~
 emacs.d.auto-save-list
-
+dotfiles/emacs.d/obs*
+dotfiles/emacs.d/ac-comphist.dat
