@@ -1,6 +1,16 @@
 " install pathogen package manager
-execute pathogen#infect()
-set sessionoptions-=options " don't save options when making sessions
+" execute pathogen#infect()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'gmarik/Vundle.vim'
+" my plugins
+Plugin 'kien/ctrlp.vim'
+Plugin 'scrooloose/nerdtree'
+
+
+call vundle#end() " end of Vundle plugin list
+filetype plugin on " required by Vundle
+filetype indent on " required by Vundle
 
 "" General settings
 set nocompatible 	" no compatibility with legacy vi
@@ -9,8 +19,6 @@ set showcmd		" display incomplete cmds
 set number    " turn line numbering on
 syntax on		" enable syntax sensitivity
 filetype on		" enable filetype detection
-filetype plugin on
-filetype indent on
 
 "" Status line customizations
 set laststatus=2	" always show the status line
@@ -48,6 +56,9 @@ if has('gui_running')
     "set guifont=Menlo\ 12
   endif
 endif
+
+"" Session options
+set sessionoptions-=options " don't save options when making sessions
 
 "" status line settings
 set laststatus=2  " always maintain a status line
