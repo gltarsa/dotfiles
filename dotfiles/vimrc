@@ -1,11 +1,19 @@
-" install pathogen package manager
-" execute pathogen#infect()
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 " my plugins
-Plugin 'kien/ctrlp.vim'
-Plugin 'scrooloose/nerdtree'
+Plugin 'kien/ctrlp.vim'           " ^P to invoke
+Plugin 'scrooloose/nerdtree'      " \n to open NerdTree
+Plugin 'tpope/vim-commentary.git' " gc for commenting
+Plugin 'xolox/vim-misc'           " base lib for other xolox plugins
+Plugin 'xolox/vim-easytags'       " automatic tag file management
+" doc for vim-ruby: https://github.com/vim-ruby/vim-ruby/wiki/VimRubySupport
+Plugin 'vim-ruby/vim-ruby'        " indentation for Ruby
+Plugin 'kana/vim-textobj-user'    " foundation for writing your own text object cmds
+Plugin 'nelstrom/vim-textobj-rubyblock' " indentation for ruby blocks
+Plugin 'slim-template/vim-slim.git' " Slim support
+Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
+Plugin 'tpope/vim-rails'          " Rails support.  :help rails-
 
 
 call vundle#end() " end of Vundle plugin list
