@@ -22,7 +22,7 @@ export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
 
 export ALTERNATE_EDITOR=""
 # export EDITOR=emacsclient
-export EDITOR=gvim
+export EDITOR=vim
 
 # don't put duplicate lines in the history and do not save commands
 # that begin with space. See bash(1) for more options
