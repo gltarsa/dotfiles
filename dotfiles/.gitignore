@@ -5,7 +5,7 @@
 # vim/bundle/vim-easytags
 # vim/bundle/vim-misc
 # vim/bundle/vim-ruby
-# vim/bundle/vim-textobj-user
+vim/bundle/vim-textobj-user
 # vim/bundle/vim-slim
 
 # ignore Emacs related cruft
