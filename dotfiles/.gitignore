@@ -1,12 +1,12 @@
 # these vim extensions are all cloned git repos
 # so we don't want to save them.
-vim/bundle/nerdtree
-vim/bundle/vim-commentary
-vim/bundle/vim-easytags
-vim/bundle/vim-misc
-vim/bundle/vim-ruby
-vim/bundle/vim-textobj-user
-vim/bundle/vim-slim
+# vim/bundle/nerdtree
+# vim/bundle/vim-commentary
+# vim/bundle/vim-easytags
+# vim/bundle/vim-misc
+# vim/bundle/vim-ruby
+# vim/bundle/vim-textobj-user
+# vim/bundle/vim-slim
 
 # ignore Emacs related cruft
 *~
