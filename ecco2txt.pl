@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 #
-# Generates outline notation based on level of indentation. 
+# Generates outline notation based on level of indentation.
 # Useful for changing pasted text from an ECCO outline into similar
 # form for a file.
 #
@@ -39,17 +39,19 @@
 #     Added '-r' option for "raw output"
 #
 
+use constant false => ( 1 != 1);
+use constant true => ( 1 == 1);
 
 $indent = "\t";			# the input indent string
 $outdent = "   ";		# the output indent string (three spaces per level)
 $suf    = "\r\n";             # the tail suffix (for MS-DOS)
 
 # the outline prefixes -- notice that they don't have a big range
-@prefix = ( 
+@prefix = (
   [(a..z)],
   [(1..100)],
   [(a..z)],
-  [(1..100)], 
+  [(1..100)],
   [(a..z)],
   [(1..100)],
   [(a..z)],
@@ -83,19 +85,22 @@ $prevLevel = -1;		# previous indent level- starts less than cur
 $wrapWidth = 64;
 
 ################################### look for command line options ##################
-use Getopt::Std;		# library routines for parsing arguments
-getopts("hrumd:w:");
-if($opt_w) { $wrapWidth = $opt_w; }
-if($opt_u) { $suf ="\n"; }
-if($opt_h) { printf ("   ?Options:
+$helpStr = "
+  ?Options:
     -h  this message
     -d  'list'	use each char in 'list' as level char
     -u	inhibit ^M char at end of line (Unix form)
     -m  output is in Markdown-compatible form
     -r  raw output (reduce tabs to 4 spaces)
     -w ##		wrap output at char pos ##
-    \n");
-  exit(1);}
+  \n";
+if(@ARGV == 0) { printf($helpStr); exit(1); }
+use Getopt::Std;		# library routines for parsing arguments
+$Getopt::Std::STANDARD_HELP_VERSION = true;
+getopts("hrumd:w:");
+if($opt_w) { $wrapWidth = $opt_w; }
+if($opt_u) { $suf ="\n"; }
+if($opt_h) { printf ($helpStr); exit(1);}
 # Markdown: use 2 spaces per level; inhibit wrap; use MD-compat bullets
 if($opt_m) { $outdent = "  "; $wrapWidth = 4011; $opt_d = "-*o"}
 #print "-------------- wrapWidth = $wrapWidth\n";
@@ -108,7 +113,7 @@ while(<>) {
   while(s/^$indent//) { ++ $curLevel; }
   if($curLevel > $prevLevel) {
     $levelCounter[$curLevel] = 0; # reinitialize this level's counter
-  } else { 
+  } else {
     ++ $levelCounter[$curLevel];  # increment the counter for this level
   }
   if (!$opt_r) {
@@ -121,7 +126,7 @@ while(<>) {
     }
   }
   $body = $_;
-  &SetFormat;			
+  &SetFormat;
   write;
   $prevLevel = $curLevel;
   $curLevel = 0;
@@ -130,7 +135,7 @@ while(<>) {
 
 sub SetFormat {			# uses the format statement to
   # make a tidy output
-  my($prefixLength) = length("$outdent")*$curLevel + 
+  my($prefixLength) = length("$outdent")*$curLevel +
   length($prefix[$curLevel][$levelCounter[$curLevel]]) - 1; # 1 for the @
   my($bodyLength) = $wrapWidth - $prefixLength - 2; # 1 for the space; 1 for the @
 
