@@ -1,3 +1,6 @@
+set nocompatible " no compatibility with legacy vi (also req'd for Vundle)
+filetype off     " Vundle needs this off for initialization
+"" Intialize Vundle and load plugins.  See ":h vundle" for more info.
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
@@ -14,20 +17,27 @@ Plugin 'nelstrom/vim-textobj-rubyblock' " indentation for ruby blocks
 Plugin 'slim-template/vim-slim.git' " Slim support
 Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
 Plugin 'tpope/vim-rails'          " Rails support.  :help rails-
-
+Plugin 'kchmck/vim-coffee-script'
 
 call vundle#end() " end of Vundle plugin list
 filetype plugin on " required by Vundle
 filetype indent on " required by Vundle
 
 "" General settings
-set nocompatible 	" no compatibility with legacy vi
+autocmd BufWritePre * :%s/\s\+$//e  " remove trailing whitespace on buffer write
 set encoding=utf-8
 set showcmd		" display incomplete cmds
 set number    " turn line numbering on
 syntax on		" enable syntax sensitivity
 filetype on		" enable filetype detection
 set mouse=a   " enable mouse interaction with non-gui vim
+
+"" Highlighting & cursor
+if has("gui_running")  "match brackets w/ lighter bg
+  highlight MatchParen guibg=HoneyDew gui=bold,underline
+else
+  highlight MatchParen ctermbg=LightGrey cterm=bold,reverse,underline
+endif
 
 "" Status line customizations
 set laststatus=2	" always show the status line
@@ -102,7 +112,7 @@ let @s='O---\/jo---/\k/2014w'
 let g:xml_syntax_folding=1
 au FileType xml setlocal foldmethod=syntax
 
-" CtrlP directives to ignore (per ctrlp docs) 
+" CtrlP directives to ignore (per ctrlp docs)
 let g:ctrlp_custom_ignore = {
  \ 'dir': '\v(bower_components|node_modules)$',
  \ }
