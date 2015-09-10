@@ -1,0 +1,6 @@
+# these pmset cmds change the nature of Mac Sleep
+# 5 supposedly saves memory to disk (hibernation)
+# 3 is the default
+pmset -g
+sudo pmset -a hibernatemode 5 # set hibernate on
+sudo pmset -a hibernatemode 3 # set hibernate to default

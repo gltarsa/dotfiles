@@ -9,6 +9,8 @@ vim/bundle/vim-textobj-user
 vim/bundle/CamelCaseMotion
 vim/bundle/vim-multiple-cursors
 vim/bundle/vim-javascript
+vim/bundle/vim-coffee-script
+vim/bundle/fugitive.vim
 
 # ignore git configuration directories (so we can have different
 # configs on different boxes)

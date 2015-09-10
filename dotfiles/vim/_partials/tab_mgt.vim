@@ -33,9 +33,10 @@ function! GuiTabLabel()
   if wincount > 1
     return label . '|' . wincount
   else
-    return label 
+    return label
   endif
 endfunction
+
 set guitablabel=%{GuiTabLabel()}
 
 "" tab tooltips for every buffer

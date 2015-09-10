@@ -50,12 +50,13 @@ set statusline+=%-3.3n\      " buffer number
 set statusline+=%f\           " filename
 set statusline+=%h%m%r%w      " status flags
 
-"" Indentation, tabbing, and whitespace
+"" Tab Management, Indentation, tabbing, and whitespace
 filetype indent on	" enable filetype-specific indentation
 set smartindent
 set tabstop=2
 set shiftwidth=2
 set expandtab
+source ~/.vim/_partials/tab_mgt.vim
 
 "" Searching
 set nohlsearch		" do not highlight matches
@@ -102,9 +103,6 @@ set directory=/tmp,~/.vim/tmp,/var/tmp,.
 "" Window management
 set splitbelow	" these defaults feel more natural
 set splitright
-
-"" Tab Management
-source ~/.vim/_partials/tab_mgt.vim
 
 "" Favorite Macros
 let @w='?:wd$jdd:w'
