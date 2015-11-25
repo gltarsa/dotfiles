@@ -116,5 +116,8 @@ au FileType xml setlocal foldmethod=syntax
 
 " CtrlP directives to ignore (per ctrlp docs)
 let g:ctrlp_custom_ignore = {
-      \ 'dir': '\v(bower_components|node_modules)$',
-      \ }
+ \ 'dir': '\v(bower_components|node_modules)$',
+ \ }
+
+"" VIMs back up feature prevents write in place and crontab requires it
+autocmd filetype crontab setlocal nobackup nowritebackup
