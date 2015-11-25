@@ -95,20 +95,10 @@ alias emacs='\ec -nw --quiet'
 alias firefox='firefox 2> /dev/null 1>&2 &'
 #alias ftp="\ftp -i"
 alias gd="git diff"
-case `uname` in
-  Linux)
-    ;;
-  Darwin)
-    alias git=hub
-    ;;
-esac
+test `uname` = Darwin && alias git=hub
 alias grep='grep -s'  # inhibit "...Is a directory" messages
 alias gs="git status"
-case `uname` in
-   Darwin)
-     alias google-chrome="google-chrome 2> /dev/null 1>&2 &"
-     ;;
-esac
+test `uname` = Darwin && alias google-chrome="google-chrome 2> /dev/null 1>&2 &"
 alias gvim='gvim 2> /dev/null 1>&2'
 alias herokup=heroku
 alias his='x;history 22'
@@ -135,6 +125,7 @@ alias mar='sed "s/^/	/" '
 alias mq='/usr/lib/sendmail -bp'
 alias mqueue=mq
 alias mv='echo_and_do /bin/mv'
+test `uname` = Linux && alias open="exo-open"
 alias pc-conv='sed -f ~/bin/PC-conv.sed'
 alias pkgupdate="do_background gksudo synaptic"
 alias pl='sed -f $HOME/bin/plist.sed $HOME/phone.lst | grep -i '
