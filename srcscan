@@ -1,3 +1,0 @@
-#!/bin/sh
-egrep -rni "binding|pry|puts" ~/src/Merge/eclinical_os | grep -v "\.git"
-

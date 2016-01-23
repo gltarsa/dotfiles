@@ -1,5 +1,0 @@
-#!/usr/bin/perl
-
-system ("google-chrome &");
-
-exit 0;
