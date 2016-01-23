@@ -1,0 +1,41 @@
+#!/bin/bash
+
+Help="Usage: `basename $0` file [file ...]
+
+`basename $0`
+Creates symbolic links for each file in the argument list to ~,
+saving any existing dotfiles in ./dot_backup.
+
+This was written to be part of the setup when installing the
+http://github.com/gltarsa/homedir or sysmgr_dir
+repository.
+"
+
+case $1 in
+  --help|-h*|--h*) echo 2>&1 "? $Help"
+    exit ;;
+esac
+
+dest_dir=~
+backup_dir=~/.dot_backup
+
+for i in $@
+do
+  src_name=$i
+  bare_name=`basename $i`
+  dest_name=~/.$bare_name
+
+  # destination exists? save it to the backup dir unless already there
+  # if already there, assume we are re-running this script and do not
+  # want to overwrite the backups
+  test -e $dest_name && test ! -e $backup_dir/.$bare_name &&
+    {
+    mkdir -p $backup_dir
+    echo "$dest_name already exists, moving to $backup_dir"
+    mv $dest_name $backup_dir
+    }
+
+  echo "Linking $src_name ---> $dest_name"
+  test -e $dest_name && rm -r $dest_name
+  ln -s $src_name $dest_name
+done
