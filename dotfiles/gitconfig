@@ -26,7 +26,8 @@
   # log One Line (color)
 	lol = log --graph --decorate --oneline --all --color
   # Log Line (color)
-  ll  = log --graph --decorate --oneline --all --color --pretty=format:'%C(auto)%h %d %s (%Cblue%an, %Cred%ad%Creset)' --date=relative
+  lll  = log --graph --decorate --oneline --all --color --pretty=format:'%C(auto)%h %d %s (%Cblue%an, %Cred%ad%Creset)' --date=relative
+  ll  = log --graph --decorate --oneline --all --color --pretty=format:'%C(auto)%h %d %s (%Cblue%an, %Cred%ad%Creset)' --date=relative --max-count=10
   # shorthand and spellos
 	dif = diff
   co  = checkout
@@ -41,7 +42,7 @@
 	helper = cache
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true

@@ -161,18 +161,6 @@ export PATH=/usr/local/sbin:$PATH
 # Added for Android OS building (/opt/local/bin must appear before /usr/bin)
 export PATH=/opt/local/bin:$PATH
 
-# inhibit Oracle client use, since no longer at Merge
-if false; then
-  ### Added to support Oracle client (Merge, Sep 2014)
-  export DYLD_LIBRARY_PATH="$HOME/.oracle/instantclient_11_2"
-  export NLS_LANG="AMERICAN_AMERICA.UTF8"
-  export TNS_ADMIN="$HOME/.oracle/instantclient_11_2/admin"
-  export PATH="$DYLD_LIBRARY_PATH:$PATH"
-
-  # Ansible (Added for Merge)
-  export ANSIBLE_HOSTS=~/.ansible_hosts
-fi
-
 # inhibit enabling Android environment, for now
 if false
 then
