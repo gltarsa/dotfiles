@@ -20,14 +20,16 @@
 	interactive = auto
 	diff = auto
 	ui = auto
+[pretty]
+  myline = '%C(auto)%h %d %s (%Cblue%an, %Cred%ad%Creset)'
 #
 # git <cmd> shorthand definitions
 [alias]
   # log One Line (color)
 	lol = log --graph --decorate --oneline --all --color
   # Log Line (color)
-  lll  = log --graph --decorate --oneline --all --color --pretty=format:'%C(auto)%h %d %s (%Cblue%an, %Cred%ad%Creset)' --date=relative
-  ll  = log --graph --decorate --oneline --all --color --pretty=format:'%C(auto)%h %d %s (%Cblue%an, %Cred%ad%Creset)' --date=relative --max-count=10
+  lll = log --graph --decorate --oneline --all --color --pretty=myline --date=relative
+  ll  = log --graph --decorate --oneline --all --color --pretty=myline --date=relative --max-count=10
   # shorthand and spellos
 	dif = diff
   co  = checkout
