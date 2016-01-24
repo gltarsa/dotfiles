@@ -33,14 +33,14 @@
 #
 # git <cmd> shorthand definitions
 [alias]
-  # log One Line (color)
-	lol = log --graph --decorate --oneline --all --color
   # Log Line (color)
   lll = log --graph --decorate --oneline --all --color --pretty=myline --date=relative
   ll  = log --graph --decorate --oneline --all --color --pretty=myline --date=relative --max-count=10
   # shorthand and spellos
 	dif = diff
   co  = checkout
+  # spellos
+	dif = diff
 
 [push]
 	default = tracking

@@ -212,6 +212,7 @@ case $LOGNAME in
     ;;
 esac
 
+<<<<<<< 9daff0c14f89bdb57f3ba697ef640cd0bf04f1da
 case $(uname) in
   Darwin)
     # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
@@ -220,3 +221,9 @@ case $(uname) in
     export PATH
     ;;
 esac
+=======
+# gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+[ -x /usr/local/bin/brew ] && source `brew --repository`/Library/Contributions/brew_bash_completion.sh
+export PATH
+>>>>>>> Add aliases for starting/stopping mds
