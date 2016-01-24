@@ -39,3 +39,13 @@ do
   test -e $dest_name && rm -r $dest_name
   ln -s $src_name $dest_name
 done
+
+# install vundle, if necessary
+vundle_dest=~/bin/dotfiles/vim/bundle/Vundle.vim
+set $vundle_dest/*
+case `ls -1 $vundle_dest 2> /dev/null | wc -l | sed 's/ //g'` in
+  0)
+    echo "Installing Vundle"
+    git clone https://github.com/VundleVim/Vundle.vim.git $vundle_dest
+    ;;
+esac
