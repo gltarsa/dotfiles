@@ -1,12 +1,18 @@
-# these vim extensions are all cloned git repos
-# so we don't want to save them.
+# homedir project .gitignore file
+#   These vim extensions are all cloned git repos so we do not
+#   want to save them.
+#
+#   Note: This file  is only for homedir project git manipulation,
+#   do not link this into your home directory.
+#
 vim/bundle/vim-textobj-user
 vim/bundle/CamelCaseMotion
 vim/bundle/vim-multiple-cursors
 vim/bundle/vim-javascript
 
-# ignore configuration directory (so we can have diff configs on diff boxes)
-config/
+# ignore git configuration directories (so we can have different
+# configs on different boxes)
+.git/config/
 
 # ignore Emacs related cruft
 *~
