@@ -140,7 +140,7 @@ test `uname` = Linux && {
 alias rcp="echo_and_do /bin/rcp"
 alias reload='xrdb -load ~/.Xdefaults'
 test `uname` = Linux && alias ssh="ssh -X" # enable X11 pass through by default
-alias rm="rm -v"
+alias rm="rm -v --preserve-root"
 alias vi_tags='ctags -R --tag-relative=yes -f ~/.vimtags --exclude="*.vim" --exclude=".#?*"'
 # if which supports --read-alias (and by inference --read-function), then define a handy alias
 if `which --help 2> /dev/null | grep --silent -e "--read-alias"`
