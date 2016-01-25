@@ -15,11 +15,19 @@
 [merge]
 	tool = vimdiff
 [color]
-	branch = auto
-	status = auto
-	interactive = auto
-	diff = auto
 	ui = auto
+  branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+[color "decorate"]
+  # these colors are explicit settings for the official
+  # defaults, here to make it easier to customize
+  head = cyan bold
+  branch = green bold
+  tag = yellow bold
+  remoteBranch = red bold
+  stash = magenta bold
 [pretty]
   myline = '%C(auto)%h %d %s (%Cblue%an, %Cred%ad%Creset)'
 #
