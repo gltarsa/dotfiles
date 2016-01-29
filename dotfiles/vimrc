@@ -1,27 +1,29 @@
 set nocompatible " no compatibility with legacy vi (also req'd for Vundle)
-filetype off     " Vundle needs this off for initialization
-"" Intialize Vundle and load plugins.  See ":h vundle" for more info.
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'gmarik/Vundle.vim'
-" my plugins
-Plugin 'kien/ctrlp.vim'           " ^P to invoke
-Plugin 'scrooloose/nerdtree'      " \n to open NerdTree
-Plugin 'tpope/vim-commentary.git' " gc for commenting
-Plugin 'xolox/vim-misc'           " base lib for other xolox plugins
-Plugin 'xolox/vim-easytags'       " automatic tag file management
-" doc for vim-ruby: https://github.com/vim-ruby/vim-ruby/wiki/VimRubySupport
-Plugin 'vim-ruby/vim-ruby'        " indentation for Ruby
-Plugin 'kana/vim-textobj-user'    " foundation for writing your own text object cmds
-Plugin 'nelstrom/vim-textobj-rubyblock' " indentation for ruby blocks
-Plugin 'slim-template/vim-slim.git' " Slim support
-Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
-Plugin 'tpope/vim-rails'          " Rails support.  :help rails-
-Plugin 'kchmck/vim-coffee-script'
+if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
+  filetype off     " Vundle needs this off for initialization
+  "" Intialize Vundle and load plugins.  See ":h vundle" for more info.
+  set rtp+=~/.vim/bundle/Vundle.vim
+  call vundle#begin()
+  Plugin 'gmarik/Vundle.vim'
+  " my plugins
+  Plugin 'kien/ctrlp.vim'           " ^P to invoke
+  Plugin 'scrooloose/nerdtree'      " \n to open NerdTree
+  Plugin 'tpope/vim-commentary.git' " gc for commenting
+  Plugin 'xolox/vim-misc'           " base lib for other xolox plugins
+  Plugin 'xolox/vim-easytags'       " automatic tag file management
+  " doc for vim-ruby: https://github.com/vim-ruby/vim-ruby/wiki/VimRubySupport
+  Plugin 'vim-ruby/vim-ruby'        " indentation for Ruby
+  Plugin 'kana/vim-textobj-user'    " foundation for writing your own text object cmds
+  Plugin 'nelstrom/vim-textobj-rubyblock' " indentation for ruby blocks
+  Plugin 'slim-template/vim-slim.git' " Slim support
+  Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
+  Plugin 'tpope/vim-rails'          " Rails support.  :help rails-
+  Plugin 'kchmck/vim-coffee-script'
 
-call vundle#end() " end of Vundle plugin list
-filetype plugin on " required by Vundle
-filetype indent on " required by Vundle
+  call vundle#end() " end of Vundle plugin list
+  filetype plugin on " required by Vundle
+  filetype indent on " required by Vundle
+endif
 
 "" General settings
 autocmd BufWritePre * :%s/\s\+$//e  " remove trailing whitespace on buffer write
@@ -114,5 +116,5 @@ au FileType xml setlocal foldmethod=syntax
 
 " CtrlP directives to ignore (per ctrlp docs)
 let g:ctrlp_custom_ignore = {
- \ 'dir': '\v(bower_components|node_modules)$',
- \ }
+      \ 'dir': '\v(bower_components|node_modules)$',
+      \ }
