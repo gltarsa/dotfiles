@@ -81,7 +81,7 @@ alias ackns='ack --ignore-file=ext:log,svg,txt --ignore-dir={tmp,bower_component
 alias cd='pushd'
 alias bk='popd'
 # convenience aliases if we are using bundle
-test ! -z `which bundle` && {
+test -z `which bundle` || {
   alias be='bundle exec'
   alias rake="bundle exec rake"
   alias rspec="bundle exec rspec --color --format documentation"
@@ -97,7 +97,7 @@ alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/eccoext' 2> /tmp
 # on Mac OS X, we prefer to use Emacs in the terminal window
 alias emacs='\ec -nw --quiet'
 alias xemacs='do_background ~/bin/ec --quiet'
-test ! -z `which git` && {
+test -z `which git` || {
   test `uname` = Darwin && alias git=hub
   alias gd="git diff"
   alias gs="git status"
@@ -118,7 +118,7 @@ alias iostat='iostat -h' # human-readable sizes
 alias load=uptime
 alias mar='sed "s/^/	/" '
 # MH aliases
-test ! -z `which next` && {
+test -z `which next` || {
 	alias n="next"
 	alias rs="rmm;next"
 	alias rp="rmm;prev"

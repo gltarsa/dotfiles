@@ -1,8 +1,11 @@
 # .bashrc
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
-# Apr-15 glt    Add "eternal history" (from Stackoverflow 9457233/unlimited-bash-history)
-# Jan-15 glt    Comment out Oracle and Android dev setups until we want to use them again
+# Feb-16 glt    Add .secret_key inclusion
+# Apr-15 glt    Add "eternal history" (from Stackoverflow
+#               9457233/unlimited-bash-history)
+# Jan-15 glt    Comment out Oracle and Android dev setups until we want
+#               to use them again
 # Nov-14 glt    Change "exit" to "return" in interactivity test
 #               because exiting was causing X11/XQuartz to fail to start.
 # Mar-14 glt    Moved PATH changing code form .bashrc_aliases
@@ -18,11 +21,15 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+secret_key_file=~/.secret_keys
+test -e $secret_key_file && source $secret_key_file
+
 export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
 
 export ALTERNATE_EDITOR=""
 # export EDITOR=emacsclient
 export EDITOR=vim
+export CLICOLOR=true
 
 # -s[et] shell options
 #  notify:    print bg job notifications immediately
@@ -204,3 +211,9 @@ export HISTFILE=~/.bash_eternal_history
 # Force prompt to write history after every command.
 # http://superuser.com/questions/20900/bash-history-loss
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+PATH="/Users/gtarsa/perl5/bin${PATH+:}${PATH}"; export PATH;
+PERL5LIB="/Users/gtarsa/perl5/lib/perl5${PERL5LIB+:}${PERL5LIB}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/Users/gtarsa/perl5${PERL_LOCAL_LIB_ROOT+:}${PERL_LOCAL_LIB_ROOT}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/Users/gtarsa/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/Users/gtarsa/perl5"; export PERL_MM_OPT;
