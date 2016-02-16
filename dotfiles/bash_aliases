@@ -87,6 +87,14 @@ test -z `which bundle` || {
   alias rspec="bundle exec rspec --color --format documentation"
   alias spinach="bundle exec spinach"
 }
+# Run stop_mds prior to speed up El Capitan Time Machine backups, start_mds after it is done.
+case `uname` in
+  Darwin)
+    alias start_mds="sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist; sudo sysctl -w debug.lowpri_throttle_enabled=0"
+    alias stop_mds="sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist; sudo sysctl -w debug.lowpri_throttle_enabled=1"
+    alias md_status='case `ps aux | grep /mds$` in "") echo "mds are not running--TM backups fast" ;; *) echo "mds are running--TM backups slow" ;; esac; sysctl debug.lowpri_throttle_enabled'
+    ;;
+esac
 alias cp="cp -v"
 alias cleanup#='find ~ -name "#*" -exec rm -rf {} \; &'
 alias cls=clear
