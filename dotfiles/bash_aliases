@@ -1,7 +1,7 @@
 # .bash_aliases
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
-# Jan-16 glt	Cleanup unused and os-specific aliases
+# Jan-16 glt	Cleanup unused and os-specific aliases and added shutdown/startup md aliases
 # Aug-14 glt  Remove ancient 'print' and other older, unused aliases.
 # Jul-14 glt  Add alias for pry-rescue with spinach.  [May not be working]
 # Mar-14 glt	Add alias for common Heroku mispelling
@@ -81,20 +81,12 @@ alias ackns='ack --ignore-file=ext:log,svg,txt --ignore-dir={tmp,bower_component
 alias cd='pushd'
 alias bk='popd'
 # convenience aliases if we are using bundle
-test -z `which bundle` || {
+test `which bundle` && {
   alias be='bundle exec'
   alias rake="bundle exec rake"
   alias rspec="bundle exec rspec --color --format documentation"
   alias spinach="bundle exec spinach"
 }
-# Run stop_mds prior to speed up El Capitan Time Machine backups, start_mds after it is done.
-case `uname` in
-  Darwin)
-    alias start_mds="sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist; sudo sysctl -w debug.lowpri_throttle_enabled=0"
-    alias stop_mds="sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist; sudo sysctl -w debug.lowpri_throttle_enabled=1"
-    alias md_status='case `ps aux | grep /mds$` in "") echo "mds are not running--TM backups fast" ;; *) echo "mds are running--TM backups slow" ;; esac; sysctl debug.lowpri_throttle_enabled'
-    ;;
-esac
 alias cp="cp -v"
 alias cleanup#='find ~ -name "#*" -exec rm -rf {} \; &'
 alias cls=clear
@@ -105,7 +97,7 @@ alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/eccoext' 2> /tmp
 # on Mac OS X, we prefer to use Emacs in the terminal window
 alias emacs='\ec -nw --quiet'
 alias xemacs='do_background ~/bin/ec --quiet'
-test -z `which git` || {
+test `which git` && {
   test `uname` = Darwin && alias git=hub
   alias gd="git diff"
   alias gs="git status"
@@ -126,7 +118,7 @@ alias iostat='iostat -h' # human-readable sizes
 alias load=uptime
 alias mar='sed "s/^/	/" '
 # MH aliases
-test -z `which next` || {
+test `which next` && {
 	alias n="next"
 	alias rs="rmm;next"
 	alias rp="rmm;prev"
@@ -152,6 +144,18 @@ case `uname` in
   Linux) alias rm="rm -v --preserve-root" ;;
   *)     alias rm="rm -v" ;;
 esac
+alias rspec="bundle exec rspec --color --format documentation"
+alias spinach="bundle exec spinach"
+# Run stop_mds prior to speed up El Capitan Time Machine backups, start_mds after it is done.
+case `uname` in
+  Darwin)
+    # in El Capitan, the new lowpri_throttle seems to negatively impact time machine backups.
+    alias tm-status='a=`sysctl debug.lowpri_throttle_enabled`; case `echo "$a" | sed "s/^.*: //"` in *0*) echo "TM is fast.";; *) echo "TM is slow" ;; esac'
+    alias tm-slow='sudo sysctl -w debug.lowpri_throttle_enabled=1'
+    alias tm-fast='sudo sysctl -w debug.lowpri_throttle_enabled=0'
+    ;;
+esac
+alias SU=/usr/local/SU
 alias vi_tags='ctags -R --tag-relative=yes -f ~/.vimtags --exclude="*.vim" --exclude=".#?*"'
 # if which supports --read-alias (and by inference --read-function), then define a handy alias
 if `which --help 2> /dev/null | grep --silent -e "--read-alias"`
