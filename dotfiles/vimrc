@@ -2,7 +2,7 @@ set nocompatible " no compatibility with legacy vi (also req'd for Vundle)
 if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
   filetype off     " Vundle needs this off for initialization
   "" Intialize Vundle and load plugins.  See ":h vundle" for more info.
-  set rtp+=~/.vim/bundle/Vundle.vim
+  set runtimepath+=~/.vim/bundle/Vundle.vim
   call vundle#begin()
   Plugin 'gmarik/Vundle.vim'
   " my plugins
@@ -13,12 +13,14 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
   Plugin 'xolox/vim-easytags'       " automatic tag file management
   " doc for vim-ruby: https://github.com/vim-ruby/vim-ruby/wiki/VimRubySupport
   Plugin 'vim-ruby/vim-ruby'        " indentation for Ruby
+  Plugin 'tpope/vim-endwise'        " intelligent 'end' addition for coding
   Plugin 'kana/vim-textobj-user'    " foundation for writing your own text object cmds
   Plugin 'nelstrom/vim-textobj-rubyblock' " indentation for ruby blocks
   Plugin 'slim-template/vim-slim.git' " Slim support
   Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
   Plugin 'tpope/vim-rails'          " Rails support.  :help rails-
   Plugin 'kchmck/vim-coffee-script'
+  Plugin 'vim-scripts/camelcasemotion'
 
   call vundle#end() " end of Vundle plugin list
   filetype plugin on " required by Vundle
