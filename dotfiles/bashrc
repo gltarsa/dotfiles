@@ -21,8 +21,6 @@ test "$PS1" || return
 secret_key_file=~/.secret_keys
 test -e $secret_key_file && source $secret_key_file
 
-export VIM_APP_DIR=/Applications  # 4/29: System Macvim is newer than brew version, so override for now
-export HOMEBREW_GITHUB_API_TOKEN=59f07ad8c0aed74f96716b08a501c5d9db29b97c
 export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
 
 export ALTERNATE_EDITOR=""
@@ -162,12 +160,22 @@ prepend_to PATH ./node_modules/.bin
 ### Added for the Heroku Toolbelt
 prepend_to PATH /usr/local/heroku/bin
 
+case $(uname) in
+  Darwin)
+    # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
+    if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+    source `brew --repository`/Library/Contributions/brew_bash_completion.sh
+    export PATH
+    ;;
+esac
+
 # Added for homebrew
 prepend_to PATH /usr/local/sbin
-
 #
 #--
 
+=======
+>>>>>>> Merge master and macbook bashrc and vimrc
 # raise the limit on the number of open file descriptors to support parallel builds.
 # ulimit -S -n 1024
 
@@ -206,24 +214,9 @@ case $LOGNAME in
     PERL_MB_OPT="--install_base \"/Users/gtarsa/perl5\""; export PERL_MB_OPT;
     PERL_MM_OPT="INSTALL_BASE=/Users/gtarsa/perl5"; export PERL_MM_OPT;
     ;;
+
   tarsa)
     PERL_MB_OPT="--install_base \"/Users/tarsa/perl5\""; export PERL_MB_OPT;
     PERL_MM_OPT="INSTALL_BASE=/Users/tarsa/perl5"; export PERL_MM_OPT;
     ;;
 esac
-
-<<<<<<< 9daff0c14f89bdb57f3ba697ef640cd0bf04f1da
-case $(uname) in
-  Darwin)
-    # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
-    if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-    source `brew --repository`/Library/Contributions/brew_bash_completion.sh
-    export PATH
-    ;;
-esac
-=======
-# gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-[ -x /usr/local/bin/brew ] && source `brew --repository`/Library/Contributions/brew_bash_completion.sh
-export PATH
->>>>>>> Add aliases for starting/stopping mds

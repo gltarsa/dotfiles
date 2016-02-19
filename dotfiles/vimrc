@@ -50,13 +50,12 @@ set statusline+=%-3.3n\      " buffer number
 set statusline+=%f\           " filename
 set statusline+=%h%m%r%w      " status flags
 
-"" Tab Management, Indentation, tabbing, and whitespace
+"" Indentation, tabbing, and whitespace
 filetype indent on	" enable filetype-specific indentation
 set smartindent
 set tabstop=2
 set shiftwidth=2
 set expandtab
-source ~/.vim/_partials/tab_mgt.vim
 
 "" Searching
 set nohlsearch		" do not highlight matches
@@ -104,6 +103,9 @@ set directory=/tmp,~/.vim/tmp,/var/tmp,.
 set splitbelow	" these defaults feel more natural
 set splitright
 
+"" Tab Management
+source ~/.vim/_partials/tab_mgt.vim
+
 "" Favorite Macros
 let @w='?:wd$jdd:w'
 let @p='OPry.rescue do/endOendqkb=ii'
@@ -116,8 +118,5 @@ au FileType xml setlocal foldmethod=syntax
 
 " CtrlP directives to ignore (per ctrlp docs)
 let g:ctrlp_custom_ignore = {
- \ 'dir': '\v(bower_components|node_modules)$',
- \ }
-
-"" VIMs back up feature prevents write in place and crontab requires it
-autocmd filetype crontab setlocal nobackup nowritebackup
+      \ 'dir': '\v(bower_components|node_modules)$',
+      \ }
