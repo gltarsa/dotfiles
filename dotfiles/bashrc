@@ -2,10 +2,7 @@
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
 # Feb-16 glt    Add .secret_key inclusion
-# Apr-15 glt    Add "eternal history" (from Stackoverflow
-#               9457233/unlimited-bash-history)
-# Jan-15 glt    Comment out Oracle and Android dev setups until we want
-#               to use them again
+# Apr-15 glt    Add "eternal history" (from Stackoverflow 9457233/unlimited-bash-history)
 # Nov-14 glt    Change "exit" to "return" in interactivity test
 #               because exiting was causing X11/XQuartz to fail to start.
 # Mar-14 glt    Moved PATH changing code form .bashrc_aliases
@@ -19,7 +16,7 @@
 # for examples
 
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+test "$PS1" || return
 
 secret_key_file=~/.secret_keys
 test -e $secret_key_file && source $secret_key_file
@@ -37,9 +34,8 @@ export CLICOLOR=true
 set -o notify
 set -o ignoreeof
 
-#  histappend: append to history file, do not overwrite
 #  checkwinsize: check window size after every command, updating LINES & COLUMNS if needed.
-shopt -s histappend checkwinsize
+shopt -s checkwinsize
 
 # set default file protection to 750
 umask 027
@@ -71,7 +67,7 @@ fi
 # function for PS1 to display [ git branch] when it is defined
 function __show_git_branch() {
   branch=`git rev-parse --abbrev-ref HEAD 2>/dev/null`
-  [ -n "$branch" ] && echo " [$branch]"
+  test -n "$branch" && echo " [$branch]"
 }
 
 # Most interesting prompt escapes:
@@ -93,12 +89,42 @@ esac
 #
 #-- end Prompt setting code
 
+# {app,pre}pend_to path-var-name dirpath
+# remove_from path-var-name dirpath
+#
+# Functions to manipulate a path-style variable.  {app,pre}pend_to
+# both remove any other instances of dirname before adding it to
+# the start or end of the path-var-name variable.
+#
+# Calling example:
+#   append_to PATH "/usr/local/bin"
+#
+# Uses eval to allow target path varname to be passed in.
+function remove_from() {
+  # add surrounging colons
+  eval tmp_path=":\$${1}:"
+  # if dir is already there, remove it
+  (echo "${tmp_path}" | grep --silent ":${2}:") &&
+    tmp_path=`echo "$tmp_path" | sed "s=:${2}:=:=g"`
+  # remove surrounding colons
+  tmp_path=`echo "$tmp_path" | sed 's=^:==; s=:$=='`
+  eval export $1=\"$tmp_path\"
+}
+function append_to() {
+  remove_from "$1" "$2"  # clean the path contents
+  eval export $1=\"\$${1}:$2\"
+}
+function prepend_to() {
+  remove_from "$1" "$2"  # clean the path contents
+  eval export $1=\"${2}:\$$1\"
+}
+
 # add paths for Linux brew
 case $(uname) in
   Linux)
-    export PATH="$HOME/.linuxbrew/bin:$PATH"
-    export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
-    export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
+    prepend_to PATH "$HOME/.linuxbrew/bin"
+    prepend_to MANPATH "$HOME/.linuxbrew/share/man"
+    prepend_to INFOPATH "$HOME/.linuxbrew/share/info"
     ;;
 esac
 
@@ -112,6 +138,9 @@ if [ -f ~/.bash_aliases ]; then
   . ~/.bash_aliases
 fi
 
+#
+#--
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -119,83 +148,33 @@ if [ -f /etc/bash_completion ]; then
   . /etc/bash_completion
 fi
 
-# add directories to PATH if they are not there already
+# add directories to PATH
 # Move /usr/local/bin to front, if it is already there.  Add it to the front, if not.
-case $PATH in
-  */usr/local/bin*)   # path is present remove it and add to beginning
-    PATH=`echo "$PATH" | sed 's=/usr/local/bin[:]*==;s=^=/usr/local/bin:='`
-    ;;
-  *)	                # add it to the start
-    PATH="/usr/local/bin:$PATH"
-    ;;
-esac
-case $PATH in
-  *~/bin*)   		      # already there
-    ;;
-  *)                  # append it
-    PATH="~/bin:$PATH"
-    ;;
-esac
-case $PATH in
-  */usr/sbin*)		    # already there
-    ;;
-  *)                  # append it
-    PATH="$PATH"":/usr/sbin" ;;
-esac
-#case $PATH in
-#  */usr/bin/mh*)     # already there
-#    ;;
-#  *)                 # append it
-#    PATH="$PATH"":/usr/bin/mh"
-#    ;;
-#esac
+prepend_to PATH /usr/local/bin
+append_to PATH "~/bin"
+append_to PATH /usr/sbin
 
 # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 source `brew --repository`/Library/Contributions/brew_bash_completion.sh
 export PATH
 
-#
-#--
-
-
 ### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
+prepend_to PATH /usr/local/heroku/bin
 
 # Added for homebrew
-export PATH=/usr/local/sbin:$PATH
-
-# Added for Android OS building (/opt/local/bin must appear before /usr/bin)
-export PATH=/opt/local/bin:$PATH
-
-# inhibit enabling Android environment, for now
-if false
-then
-  case ${uname} in
-    Darwin)
-      adt_home=/Volumes/XtraData/Users/tarsa/opt/adt-bundle
-      export PATH=${PATH}:${adt_home}/sdk/platform-tools:${adt_home}/sdk/tools
-      ;;
-  esac
-  # ccache (for Android compilations)
-  export USE_CCACHE=1
-  # mount the android file image
-  function mountAndroid { hdiutil attach ~/xsrc/disk-android.dmg.sparseimage -mountpoint /Volumes/android; }
-  mountAndroid
-fi
+prepend_to PATH /usr/local/sbin
 
 # raise the limit on the number of open file descriptors to support parallel builds.
 # ulimit -S -n 1024
 
-# Added for Time2Track
-case ${uname} in
-  Darwin)
-    export FORMSTACK_TOKEN='e3289978afc2f05955bb9d70736fd77f'
-    ;;
-esac
+#++
+# Bash history configuration
 
-# filter DUPS from history
-# don't put duplicate lines in the history and do not save commands
+#  histappend: append to history file, do not overwrite
+shopt -s histappend
+
+# Do not put duplicate lines in the history and and do not save commands
 # that begin with space. See bash(1) for more options
 # export HISTCONTROL=ignoreboth
 
@@ -205,15 +184,23 @@ esac
 export HISTFILESIZE=
 export HISTSIZE=
 export HISTTIMEFORMAT="[%m-%d% %T] "
+
 # Change the file location because certain bash sessions truncate .bash_history file upon close.
 # http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
 export HISTFILE=~/.bash_eternal_history
+
 # Force prompt to write history after every command.
 # http://superuser.com/questions/20900/bash-history-loss
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+#
+#--
 
-PATH="/Users/gtarsa/perl5/bin${PATH+:}${PATH}"; export PATH;
-PERL5LIB="/Users/gtarsa/perl5/lib/perl5${PERL5LIB+:}${PERL5LIB}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/Users/gtarsa/perl5${PERL_LOCAL_LIB_ROOT+:}${PERL_LOCAL_LIB_ROOT}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/Users/gtarsa/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/Users/gtarsa/perl5"; export PERL_MM_OPT;
+case $LOGNAME in
+  gtarsa)
+    PATH="/Users/gtarsa/perl5/bin${PATH+:}${PATH}"; export PATH;
+    PERL5LIB="/Users/gtarsa/perl5/lib/perl5${PERL5LIB+:}${PERL5LIB}"; export PERL5LIB;
+    PERL_LOCAL_LIB_ROOT="/Users/gtarsa/perl5${PERL_LOCAL_LIB_ROOT+:}${PERL_LOCAL_LIB_ROOT}"; export PERL_LOCAL_LIB_ROOT;
+    PERL_MB_OPT="--install_base \"/Users/gtarsa/perl5\""; export PERL_MB_OPT;
+    PERL_MM_OPT="INSTALL_BASE=/Users/gtarsa/perl5"; export PERL_MM_OPT;
+    ;;
+esac
