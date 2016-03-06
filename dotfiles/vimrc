@@ -21,6 +21,7 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
   Plugin 'tpope/vim-rails'          " Rails support.  :help rails-
   Plugin 'kchmck/vim-coffee-script'
   Plugin 'vim-scripts/camelcasemotion'
+  Plugin 'AndrewRadev/splitjoin.vim'
 
   call vundle#end() " end of Vundle plugin list
   filetype plugin on " required by Vundle
