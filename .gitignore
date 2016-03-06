@@ -1,6 +1,7 @@
 # these vim extensions are all cloned git repos
 # so we don't want to save them.
 dotfiles/vim/bundle
+dotfiles/vim/bundle/.vundle/*
 
 # ignore configuration directory (so we can have diff configs on diff boxes)
 config/
