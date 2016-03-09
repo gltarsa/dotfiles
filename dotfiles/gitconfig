@@ -11,7 +11,7 @@
 	signingkey = 4C17D589
 [core]
 	editor = vim
-	excludesfile = /Users/tarsa/.gitignore_global
+	excludesfile = ~/.gitignore_global
 [merge]
 	tool = vimdiff
 [color]
