@@ -14,6 +14,11 @@ alias mv="mv -v"
 alias rake="bundle exec rake"
 alias rm="rm -v --preserve-root"
 alias x=clear
+# if which supports --read-alias (and by inference --read-function), then define a handy alias
+if `which --help 2> /dev/null | grep --silent -e "--read-alias"`
+then
+  alias which='(alias; declare -f) | which --tty-only --read-alias --read-functions --show-tilde --show-dot'
+fi
 
 #++
 # Prompt Setting code
@@ -52,7 +57,7 @@ function __show_git_branch() {
 #    \w - cwd, \W - cwd basename
 #    \! - cmd history number
 #PS1='-- \u@\h:\w$(__show_git_branch) --\n\!\$ '
-PS1='$(tput setaf 7)-- \u@\h:\w$(__show_git_branch) --$(tput sgr0)\n\!\$ '
+PS1='$(tput setaf 7)-- \u@$(tput bold)\h$(tput sgr0; tput setaf 7):\w$(__show_git_branch) --$(tput sgr0)\n\!\$ '
 
 # add indicator to prompt for invocation depth
 case $SHLVL in
