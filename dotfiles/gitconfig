@@ -41,6 +41,7 @@
   co  = checkout
   # spellos
 	dif = diff
+	aliases = !git config -l | grep alias | cut -c 7-
 
 [push]
 	default = tracking
@@ -52,7 +53,7 @@
 	helper = cache
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
