@@ -57,7 +57,9 @@ set smartindent
 set tabstop=2
 set shiftwidth=2
 set expandtab
-source ~/.vim/_partials/tab_mgt.vim
+if !empty(glob("~/.vim/_partials/tab_mgt*"))
+  source ~/.vim/_partials/tab_mgt.vim
+endif
 
 "" Searching
 set nohlsearch		" do not highlight matches
