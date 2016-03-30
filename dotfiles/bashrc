@@ -20,6 +20,8 @@ test "$PS1" || return
 secret_key_file=~/.secret_keys
 test -e $secret_key_file && source $secret_key_file
 
+export AXIAL_USER gtarsa # used for production preferences
+
 export VIM_APP_DIR=/Applications  # 4/29: System Macvim is newer than brew version, so override for now
 export HOMEBREW_GITHUB_API_TOKEN=59f07ad8c0aed74f96716b08a501c5d9db29b97c
 export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
