@@ -3,8 +3,9 @@
 Help="Usage: `basename $0` file [file ...]
 
 `basename $0`
-Creates symbolic links for each file in the argument list to ~,
-saving any existing dotfiles in ./dot_backup.
+Creates hidden symbolic links for each file in the argument
+list to ~ (i.e., prefaces each name with a '~/.'), saving
+any existing dotfiles in ./dot_backup.
 
 This was written to be part of the setup when installing the
 http://github.com/gltarsa/homedir or sysmgr_dir
@@ -12,7 +13,7 @@ repository.
 "
 
 case $1 in
-  --help|-h*|--h*) echo 2>&1 "? $Help"
+  ""|--help|-h*|--h*) echo 2>&1 "? $Help"
     exit ;;
 esac
 
@@ -21,7 +22,7 @@ backup_dir=~/.dot_backup
 
 for i in $@
 do
-  src_name=$i
+  src_name=`pwd`/$i       # force filenames to be fully qualified so ln -s works
   bare_name=`basename $i`
   dest_name=~/.$bare_name
 

@@ -14,7 +14,6 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
-
 # If not running interactively, don't do anything
 test "$PS1" || return
 
@@ -79,7 +78,7 @@ function __show_git_branch() {
 #    \w - cwd, \W - cwd basename
 #    \! - cmd history number
 #PS1='-- \u@\h:\w$(__show_git_branch) --\n\!\$ '
-PS1='$(tput setaf 7)-- \u@\h:\w$(__show_git_branch) --$(tput sgr0)\n\!\$ '
+PS1='$(tput setaf 7)-- \u@$(tput bold)\h$(tput sgr0; tput setaf 7):\w$(__show_git_branch) --$(tput sgr0)\n\!\$ '
 
 # add indicator to prompt for invocation depth
 case $SHLVL in
@@ -130,19 +129,6 @@ case $(uname) in
     ;;
 esac
 
-#++
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-  . ~/.bash_aliases
-fi
-
-#
-#--
-
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -165,7 +151,10 @@ prepend_to PATH /usr/local/heroku/bin
 case $(uname) in
   Darwin)
     # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
-    if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+    # rbenv  init - | sed 's/export PATH=/prepend_to PATH /'
+    if which rbenv > /dev/null; then
+      eval "$(rbenv  init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')";
+    fi
     source `brew --repository`/Library/Contributions/brew_bash_completion.sh
     export PATH
     ;;
@@ -220,3 +209,18 @@ case $LOGNAME in
     PERL_MM_OPT="INSTALL_BASE=/Users/tarsa/perl5"; export PERL_MM_OPT;
     ;;
 esac
+
+#++
+# Alias definitions.
+# Be sure to put this after all PATH adjustments
+
+[[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
+
+#
+#--
+
+# only use RVM if we create the ~/use_rvm file
+[[ -e ~/use_rvm ]] && {
+  append_to PATH ~/.rvm/bin # Add RVM to PATH for scripting
+  remove_from PATH
+}

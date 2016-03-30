@@ -1,0 +1,70 @@
+echo "Setting Greg's handy aliases..."
+umask 0027  # default file modes to 0750 = rwxr-x---
+
+alias be="bundle exec"
+alias bk=popd
+alias cd=pushd
+alias cp="cp -v"
+alias df="df -h"
+alias du="du -sh"
+alias gs="git status"
+alias gvim="vim"
+alias ls="ls --color -Fs"
+alias mv="mv -v"
+alias rake="bundle exec rake"
+alias rm="rm -v --preserve-root"
+alias x=clear
+# if which supports --read-alias (and by inference --read-function), then define a handy alias
+if `which --help 2> /dev/null | grep --silent -e "--read-alias"`
+then
+  alias which='(alias; declare -f) | which --tty-only --read-alias --read-functions --show-tilde --show-dot'
+fi
+
+#++
+# Prompt Setting code
+#
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+  xterm-color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+#force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+    # a case would tend to support setf rather than setaf.)
+    color_prompt=yes
+  else
+    color_prompt=
+  fi
+fi
+
+# function for PS1 to display [ git branch] when it is defined
+function __show_git_branch() {
+  branch=`git rev-parse --abbrev-ref HEAD 2>/dev/null`
+  [ -n "$branch" ] && echo " [$branch]"
+}
+
+# Most interesting prompt escapes:
+#    \h - hostname up until first '.'  (\H for entire)
+#    \j - # jobs managed by shell
+#    \u - username,
+#    \w - cwd, \W - cwd basename
+#    \! - cmd history number
+#PS1='-- \u@\h:\w$(__show_git_branch) --\n\!\$ '
+PS1='$(tput setaf 7)-- \u@$(tput bold)\h$(tput sgr0; tput setaf 7):\w$(__show_git_branch) --$(tput sgr0)\n\!\$ '
+
+# add indicator to prompt for invocation depth
+case $SHLVL in
+  1) PS1="${PS1}";;
+  2) PS1="${PS1}> " ;;
+  *) PS1="${PS1}>> " ;;
+esac
+
+#
+#-- end Prompt setting code
