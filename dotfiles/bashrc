@@ -46,26 +46,11 @@ umask 027
 #++
 # Prompt Setting code
 #
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-  xterm-color) color_prompt=yes;;
-esac
-
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
-
-if [ -n "$force_color_prompt" ]; then
-  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    # We have color support; assume it's compliant with Ecma-48
-    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-    # a case would tend to support setf rather than setaf.)
-    color_prompt=yes
-  else
-    color_prompt=
-  fi
-fi
+color_prompt=
+test $force_color_prompt &&
+  test -x /usr/bin/tput &&
+  tput setaf 1 >&/dev/null &&
+  color_prompt=yes
 
 # function for PS1 to display [ git branch] when it is defined
 function __show_git_branch() {
@@ -104,13 +89,10 @@ esac
 #
 # Uses eval to allow target path varname to be passed in.
 function remove_from() {
-  # add surrounging colons
-  eval tmp_path=":\$${1}:"
-  # if dir is already there, remove it
-  (echo "${tmp_path}" | grep --silent ":${2}:") &&
+  eval tmp_path=":\$${1}:"                           # add surrounding colons
+  (echo "$tmp_path" | grep --silent ":${2}:") &&     # dir present?, remove it
     tmp_path=`echo "$tmp_path" | sed "s=:${2}:=:=g"`
-  # remove surrounding colons
-  tmp_path=`echo "$tmp_path" | sed 's=^:==; s=:$=='`
+  tmp_path=`echo "$tmp_path" | sed 's=^:==; s=:$=='` # rm surrounding colons
   eval export $1=\"$tmp_path\"
 }
 function append_to() {
@@ -153,10 +135,8 @@ prepend_to PATH /usr/local/heroku/bin
 case $(uname) in
   Darwin)
     # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
-    # rbenv  init - | sed 's/export PATH=/prepend_to PATH /'
-    if which rbenv > /dev/null; then
-      eval "$(rbenv  init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')";
-    fi
+    which rbenv > /dev/null &&
+      eval "$(rbenv  init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
     source `brew --repository`/Library/Contributions/brew_bash_completion.sh
     export PATH
     ;;
@@ -164,11 +144,6 @@ esac
 
 # Added for homebrew
 prepend_to PATH /usr/local/sbin
-#
-#--
-
-# raise the limit on the number of open file descriptors to support parallel builds.
-# ulimit -S -n 1024
 
 #++
 # Bash history configuration
@@ -216,13 +191,13 @@ esac
 # Alias definitions.
 # Be sure to put this after all PATH adjustments
 
-[[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
+test -f ~/.bash_aliases && source ~/.bash_aliases
 
 #
 #--
 
 # only use RVM if we create the ~/use_rvm file
-[[ -e ~/use_rvm ]] && {
+test -e ~/use_rvm && {
   append_to PATH ~/.rvm/bin # Add RVM to PATH for scripting
   remove_from PATH
 }
