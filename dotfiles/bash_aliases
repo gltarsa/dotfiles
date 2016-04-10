@@ -66,16 +66,9 @@ do
 done
 
 # if ls supports --color, use it
-if ls --color /tmp > /dev/null 2>&1
-then
+alias ls='ls -FshH'
+ls --color /tmp > /dev/null 2>&1 &&
   alias ls='ls -FshH --color'
-else
-  alias ls='ls -FshH'
-fi
-
-# .ackrc file may be a better place for this kind of thing
-alias   ack='ack --ignore-file=ext:log,svg,txt --ignore-dir={tmp,bower_components,node_modules}'
-alias ackns='ack --ignore-file=ext:log,svg,txt --ignore-dir={tmp,bower_components,node_modules,spec,features}'
 
 #alias ffm='defaults write com.apple.Terminal FocusFollowsMouse -bool '
 alias cd='pushd'
@@ -139,7 +132,8 @@ test `uname` = Linux && {
 }
 alias rcp="echo_and_do /bin/rcp"
 alias reload='xrdb -load ~/.Xdefaults'
-test `uname` = Linux && alias ssh="ssh -X" # enable X11 pass through by default
+test `uname` = Linux &&
+  alias ssh="ssh -X" # enable X11 pass through by default
 case `uname` in
   Linux) alias rm="rm -v --preserve-root" ;;
   *)     alias rm="rm -v" ;;
