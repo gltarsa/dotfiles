@@ -109,9 +109,6 @@ set splitright
 
 "" Favorite Macros
 let @w='?:wd$jdd:w'
-let @p='OPry.rescue do/endOendqkb=ii'
-let @f=':set fdm=indent:set foldlevel=1:set fdm=manual'
-let @s='O---\/jo---/\k/2014w'
 
 " XML folding
 let g:xml_syntax_folding=1
