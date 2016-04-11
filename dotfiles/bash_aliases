@@ -108,6 +108,7 @@ esac
 alias his='x;history 22'
 alias hist="x;history 44 | sed 's/\[[0-9].*[0-9]\] //' | pr -w`tput cols` -2 -l22 -t"
 alias iostat='iostat -h' # human-readable sizes
+alias ip=aws_asg_to_ip.sh
 alias load=uptime
 alias mar='sed "s/^/	/" '
 # MH aliases
