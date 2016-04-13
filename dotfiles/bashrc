@@ -137,8 +137,9 @@ case $(uname) in
     # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
     which rbenv > /dev/null &&
       eval "$(rbenv  init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
-    source `brew --repository`/Library/Contributions/brew_bash_completion.sh
     export PATH
+    test -f $(brew --prefix)/etc/bash_completion &&
+      source $(brew --prefix)/etc/bash_completion
     ;;
 esac
 
