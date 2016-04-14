@@ -111,7 +111,7 @@ alias iostat='iostat -h' # human-readable sizes
 alias ip=aws_asg_to_ip.sh
 alias load=uptime
 alias mar='sed "s/^/	/" '
-# MH aliases
+# NMH aliases
 test `which next` && {
 	alias n="next"
 	alias rs="rmm;next"
@@ -119,7 +119,6 @@ test `which next` && {
 	alias pack="folder -pack"
 	alias pick="do_after 'scan pick' pick -sequence pick"
 	alias repl="repl -filter ~/MH-mail/repl.filter -nocc all"
-	alias mpc='set _p=`mhpath cur`; pc-conv $_p > /tmp/tmp$$ && rmm cur && mv /tmp/tmp$$ $_p && show cur'
 	alias cur="folder | sed 's/+//g;s/\.//g;s/;//g' | awk '{printf "'"+%s %s\n", $1, $9}'"'"
 	alias jforw="forw -form joke-components"
 }
