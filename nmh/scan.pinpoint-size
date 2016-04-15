@@ -1,0 +1,5 @@
+%4(msg)%<(cur)+%| %>%<{replied}-%|%<{encrypted}E%| %>%>\
+%<{date}%02(mday{date})-%03(month{date})-%(year{date})%|   *   %>\
+%5(size) \
+%<(mymbox{from})To:%14(friendly{to})%|%17(friendly{from})%>  \
+%{subject}

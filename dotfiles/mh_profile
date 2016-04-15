@@ -2,9 +2,10 @@ Path: MH-mail
 editor: vim
 draft-folder: +drafts
 unseen-sequence: unseen
-Aliasfile: aliases
-forw: -filter mhl.forw-format -nodash
-#scan: -form scan.timely-size
+#Aliasfile: aliases
+#forw: -filter mhl.forw-format -nodash
+forw: -nodash
+#pre-2010 scan: -form scan.timely-size
 scan: -form scan.pinpoint-size
 folders: -recurse
 showproc: mhl
