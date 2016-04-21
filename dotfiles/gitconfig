@@ -36,13 +36,13 @@
   # Log Line (color)
   lll = log --graph --decorate --oneline --all --color --pretty=myline --date=relative
   ll  = log --graph --decorate --oneline --all --color --pretty=myline --date=relative --max-count=10
+	whenadded = lll --diff-filter=A
   # shorthand and spellos
 	dif = diff
   co  = checkout
   # spellos
 	dif = diff
 	aliases = !git config -l | grep alias | cut -c 7-
-	whenadded = lll --diff-filter=A
 
 [push]
 	default = tracking
@@ -54,7 +54,7 @@
 	helper = cache
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
