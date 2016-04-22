@@ -76,9 +76,10 @@ alias bk='popd'
 # convenience aliases if we are using bundle
 test `which bundle` && {
   alias be='bundle exec'
-  alias rake="bundle exec rake"
-  alias rspec="bundle exec rspec --color --format documentation"
-  alias spinach="bundle exec spinach"
+  alias rake="be rake"
+  alias rspec="be rspec --color --format documentation"
+  alias spinach="be spinach"
+  alias cap="be cap"
 }
 alias cp="cp -v"
 alias cleanup#='find ~ -name "#*" -exec rm -rf {} \; &'
