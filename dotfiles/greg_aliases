@@ -11,7 +11,7 @@ alias gs="git status"
 alias gvim="vim"
 alias ls="ls --color -Fs"
 alias mv="mv -v"
-alias rake="bundle exec rake"
+alias rake="be rake"
 alias rm="rm -v --preserve-root"
 alias x=clear
 # if which supports --read-alias (and by inference --read-function), then define a handy alias
