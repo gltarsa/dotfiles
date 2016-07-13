@@ -17,6 +17,11 @@ case $1 in
     exit ;;
 esac
 
+test -d $1 && {
+  echo 2>&1 "?$1 is a directory.  Did you mean $1/*?"
+  exit
+}
+
 dest_dir=~
 backup_dir=~/.dot_backup
 
