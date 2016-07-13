@@ -1,3 +1,3 @@
-AwesomePrinte.defaults = {
-  indent:        2      # Number of spaces for indenting.
+AwesomePrint.defaults = {
+  indent: 2      # Number of spaces for indenting.
 }
