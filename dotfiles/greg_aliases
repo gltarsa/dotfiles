@@ -9,7 +9,9 @@ alias df="df -h"
 alias du="du -sh"
 alias gs="git status"
 alias gvim="vim"
-alias ls="ls --color -Fs"
+# if ls supports --color, use it
+alias ls='ls -FshHG'
+ls --color /tmp > /dev/null 2>&1 && alias ls='ls -FshH --color'
 alias mv="mv -v"
 alias rake="be rake"
 alias rm="rm -v --preserve-root"
