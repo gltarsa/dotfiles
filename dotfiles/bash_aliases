@@ -78,7 +78,7 @@ alias bk='popd'
 test `which bundle` && {
   alias be='bundle exec'
   alias rake="be rake"
-  alias rspec="be rspec --color --format documentation"
+  alias rspec="be rspec --color"
   alias spinach="be spinach"
   alias cap="be cap"
 }
@@ -141,8 +141,6 @@ case `uname` in
   Linux) alias rm="rm -v --preserve-root" ;;
   *)     alias rm="rm -v" ;;
 esac
-alias rspec="bundle exec rspec --color --format documentation"
-alias spinach="bundle exec spinach"
 # Run stop_mds prior to speed up El Capitan Time Machine backups, start_mds after it is done.
 case `uname` in
   Darwin)
