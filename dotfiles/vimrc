@@ -121,3 +121,6 @@ let g:ctrlp_custom_ignore = {
 
 "" VIMs back up feature prevents write in place and crontab requires it
 autocmd filetype crontab setlocal nobackup nowritebackup
+"" Set default screen size
+set lines=50 columns=90
+
