@@ -1,6 +1,7 @@
 # .bash_aliases
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
+# Jul-16 glt  Add alias for 'sync' which, unlike other unices, take minutes to run instead of seconds.
 # Jan-16 glt	Cleanup unused and os-specific aliases and added shutdown/startup md aliases
 # Aug-14 glt  Remove ancient 'print' and other older, unused aliases.
 # Jul-14 glt  Add alias for pry-rescue with spinach.  [May not be working]
@@ -104,6 +105,7 @@ case `uname` in
   Darwin)
     alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
     alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+    alias sync="echo 'This not the command you are looking for.  Move along.'"
     ;;
 esac
 alias his='x;history 22'
