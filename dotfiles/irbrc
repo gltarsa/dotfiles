@@ -1,12 +1,14 @@
-require "awesome_print"
-AwesomePrint.pry!
 
 # These lines replace irb with pry
 # make sure to `gem install pry` beforehand.
 begin
-  require "pry"
-  Pry.start
-  exit
+  if require "pry"
+    Pry.start
+  end
 rescue LoadError => e
   warn "=> Unable to load pry"
+end
+
+if require "awesome_print"
+  AwesomePrint.pry!
 end
