@@ -13,4 +13,5 @@ emacs.d.auto-save-list
 dotfiles/emacs.d/elpa/
 dotfiles/emacs.d/ac-comphist.dat
 dotfiles/emacs.d/obs.elisp/
+.env_overrides
 

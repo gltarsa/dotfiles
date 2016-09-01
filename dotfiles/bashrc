@@ -17,13 +17,18 @@
 # If not running interactively, don't do anything
 test "$PS1" || return
 
-secret_key_file=~/.secret_keys
+secret_key_file=~/bin/.env_overrides
 test -e $secret_key_file && source $secret_key_file
 
 export AXIAL_USER=gtarsa # used for production preferences
 
 export VIM_APP_DIR=/Applications  # 4/29: System Macvim is newer than brew version, so override for now
-export HOMEBREW_GITHUB_API_TOKEN=59f07ad8c0aed74f96716b08a501c5d9db29b97c
+case $HOMEBREW_GITHUB_API_TOKEN in
+  "")
+    export HOMEBREW_GITHUB_API_TOKEN="not defined"
+    echo >&2 "? Warning: HOMEBREW_GITHUB_API_TOKEN undefined.  Add to ~/.secret_keys"
+    ;;
+esac
 export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
 
 export ALTERNATE_EDITOR=""
@@ -179,6 +184,10 @@ test -d /usr/local/nmh && {
   append_to MANPATH /usr/local/nmh/share/man
 }
 
+# used by the `stack` package manager (Haskell & friends)
+test -d ~/.local/bin && {
+  append_to PATH ~/.local/bin
+}
 #++
 # Alias definitions.
 # Be sure to put this after all PATH adjustments
