@@ -22,6 +22,8 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
   Plugin 'kchmck/vim-coffee-script'
   Plugin 'vim-scripts/camelcasemotion'
   Plugin 'AndrewRadev/splitjoin.vim'
+  Plugin 'sheerun/vim-polyglot'     " Lots of on-demand language support
+  Plugin 'mustache/vim-mustache-handlebars' " {{ support for emberjs & friends
 
   call vundle#end() " end of Vundle plugin list
   filetype plugin on " required by Vundle
