@@ -36,13 +36,24 @@
   # Log Line (color)
   lll = log --graph --decorate --oneline --all --color --pretty=myline --date=relative
   ll  = log --graph --decorate --oneline --all --color --pretty=myline --date=relative --max-count=10
-	whenadded = lll --diff-filter=A
   # shorthand and spellos
 	dif = diff
   co  = checkout
-  # spellos
+  s = status
 	dif = diff
+  # handy features
 	aliases = !git config -l | grep alias | cut -c 7-
+  # only push if our ref is up-to-date with the destination
+	please = push --force-with-lease
+  # glom the current commit onto the last commit (saves a rebase -i/squash)
+	commend = commit --amend --no-edit
+  # stash variants
+  # stsh - only unstanged changes to tracked files
+  stsh = stash --keep-index
+  # staash - untracked AND tracked files
+  staash = stash --include-untracked
+  # ignored, untracked and tracked files (equiv to clone state)
+  staaash = stash --all
 
 [push]
 	default = tracking
