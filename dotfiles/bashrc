@@ -137,6 +137,11 @@ prepend_to PATH ./node_modules/.bin
 ### Added for the Heroku Toolbelt
 prepend_to PATH /usr/local/heroku/bin
 
+# Add MH directory
+test -d /usr/bin/mh && {
+  append_to PATH /usr/bin/mh
+}
+
 case $(uname) in
   Darwin)
     # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
