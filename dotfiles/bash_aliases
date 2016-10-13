@@ -66,10 +66,11 @@ do
   test -f $i && source $i
 done
 
-# if ls supports --color, use it
-alias ls='ls -FshH'
+# use --color, when able; also follow symlinks, use human sizes + show file types
+lscmd="ls -FshH"
+alias ls="$lscmd"
 ls --color /tmp > /dev/null 2>&1 &&
-  alias ls='ls -FshH --color'
+  alias ls="$lscmd --color"
 
 #alias ffm='defaults write com.apple.Terminal FocusFollowsMouse -bool '
 alias cd='pushd'
@@ -84,11 +85,8 @@ test `which bundle` && {
   alias spinach="be spinach"
 }
 alias cp="cp -v"
-alias cleanup#='find ~ -name "#*" -exec rm -rf {} \; &'
-alias cls=clear
 alias du='du -h' # human-readable sizes
 alias df='df -Ph' # human-readable sizes
-alias ecco32="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/ecco32' 2> /tmp/ecco.wine.errs.txt &"
 alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/eccoext' 2> /tmp/ecco.wine.errs.txt &"
 # on Mac OS X, we prefer to use Emacs in the terminal window
 alias emacs='\ec -nw --quiet'
@@ -107,6 +105,12 @@ case `uname` in
     alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
     alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
     alias sync="echo 'This not the command you are looking for.  Move along.'"
+
+    # in El Capitan, the new lowpri_throttle seems to negatively impact
+    # time machine backups.
+    alias tm-status='a=`sysctl debug.lowpri_throttle_enabled`; case `echo "$a" | sed "s/^.*: //"` in *0*) echo "TM is fast.";; *) echo "TM is slow" ;; esac'
+    alias tm-slow='sudo sysctl -w debug.lowpri_throttle_enabled=1'
+    alias tm-fast='sudo sysctl -w debug.lowpri_throttle_enabled=0'
     ;;
 esac
 alias his='x;history 22'
@@ -142,15 +146,6 @@ test `uname` = Linux &&
 case `uname` in
   Linux) alias rm="rm -v --preserve-root" ;;
   *)     alias rm="rm -v" ;;
-esac
-# Run stop_mds prior to speed up El Capitan Time Machine backups, start_mds after it is done.
-case `uname` in
-  Darwin)
-    # in El Capitan, the new lowpri_throttle seems to negatively impact time machine backups.
-    alias tm-status='a=`sysctl debug.lowpri_throttle_enabled`; case `echo "$a" | sed "s/^.*: //"` in *0*) echo "TM is fast.";; *) echo "TM is slow" ;; esac'
-    alias tm-slow='sudo sysctl -w debug.lowpri_throttle_enabled=1'
-    alias tm-fast='sudo sysctl -w debug.lowpri_throttle_enabled=0'
-    ;;
 esac
 alias SU=/usr/local/SU
 alias vi_tags='ctags -R --tag-relative=yes -f ~/.vimtags --exclude="*.vim" --exclude=".#?*"'
