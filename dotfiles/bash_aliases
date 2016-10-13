@@ -76,7 +76,7 @@ ls --color /tmp > /dev/null 2>&1 &&
 alias cd='pushd'
 alias bk='popd'
 # convenience aliases if we are using bundle
-test `which bundle` && {
+test `which bundle 2> /dev/null` && {
   alias be='bundle exec'
   alias cap="be cap"
   alias cucumber="be cucumber"
@@ -91,7 +91,7 @@ alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/eccoext' 2> /tmp
 # on Mac OS X, we prefer to use Emacs in the terminal window
 alias emacs='\ec -nw --quiet'
 alias xemacs='do_background ~/bin/ec --quiet'
-test `which git` && {
+test `which git 2> /dev/null` && {
   test `uname` = Darwin && alias git=hub
   alias gd="git diff"
   alias gs="git status"
@@ -121,7 +121,7 @@ alias ip=aws_asg_to_ip.sh
 alias load=uptime
 alias mar='sed "s/^/	/" '
 # NMH aliases
-test `which next` && {
+test `which next 2> /dev/null` && {
 	alias n="next"
 	alias rs="rmm;next"
 	alias rp="rmm;prev"
