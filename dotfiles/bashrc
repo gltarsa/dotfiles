@@ -150,7 +150,7 @@ test -d /usr/bin/mh && {
 }
 
 case $(uname) in
-  Darwin)
+  *)
     # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
     which rbenv > /dev/null &&
       eval "$(rbenv  init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
