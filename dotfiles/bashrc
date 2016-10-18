@@ -17,7 +17,7 @@
 # If not running interactively, don't do anything
 test "$PS1" || return
 
-secret_key_file=~/bin/.env_overrides
+secret_key_file=~/.secret_key_file
 test -e $secret_key_file && source $secret_key_file
 
 export AXIAL_USER=gtarsa # used for production preferences
