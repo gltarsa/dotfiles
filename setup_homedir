@@ -2,10 +2,13 @@
 
 Help="Usage: `basename $0` file [file ...]
 
-`basename $0`
+Options:
+  --help  print this message
+  --all   link all files in ./dotfiles
+
 Creates hidden symbolic links for each file in the argument
-list to ~ (i.e., prefaces each name with a '~/.'), saving
-any existing dotfiles in ./dot_backup.
+list to ~ (\$HOME)  (i.e., prefaces each name with a '~/.'),
+saving any existing dotfiles in ./dot_backup.
 
 This was written to be part of the setup when installing the
 http://github.com/gltarsa/homedir or sysmgr_dir
@@ -14,7 +17,12 @@ repository.
 
 case $1 in
   ""|--help|-h*|--h*) echo 2>&1 "? $Help"
-    exit ;;
+    exit
+    ;;
+
+  --all|-a*|--a*)
+    set ./dotfiles/*
+    ;;
 esac
 
 test -d $1 && {
