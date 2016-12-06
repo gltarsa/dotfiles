@@ -6,13 +6,13 @@ Options:
   --help  print this message
   --all   link all files in ./dotfiles
 
-Creates hidden symbolic links for each file in the argument
-list to ~ (\$HOME)  (i.e., prefaces each name with a '~/.'),
-saving any existing dotfiles in ./dot_backup.
+Creates hidden symbolic links for each file in the argument list to ~ (\$HOME)
+(i.e., prefaces each name with a '~/.'), saving any existing dotfiles in
+./dot_backup.  Subsequent edits can be on eitehr version of the file, but
+remember to commit and push your changes periodically.
 
 This was written to be part of the setup when installing the
-http://github.com/gltarsa/homedir or sysmgr_dir
-repository.
+http://github.com/gltarsa/homedir repo.
 "
 
 case $1 in
