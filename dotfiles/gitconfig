@@ -6,20 +6,20 @@
 # Created 11/17/2013
 #
 [user]
-	name = Greg Tarsa
-	email = gltarsa@gmail.com
-	signingkey = 4C17D589
+  name = Greg Tarsa
+  email = gltarsa@gmail.com
+  signingkey = 4C17D589
 [core]
-	editor = vim
-	excludesfile = ~/.gitignore_global
+  editor = vim
+  excludesfile = /Users/tarsa/.gitignore_global
 [merge]
-	tool = vimdiff
+  tool = vimdiff
 [color]
-	ui = auto
+  ui = auto
   branch = auto
-	diff = auto
-	interactive = auto
-	status = auto
+  diff = auto
+  interactive = auto
+  status = auto
 [color "decorate"]
   # these colors are explicit settings for the official
   # defaults, here to make it easier to customize
@@ -37,16 +37,16 @@
   lll = log --graph --decorate --oneline --all --color --pretty=myline --date=relative
   ll  = log --graph --decorate --oneline --all --color --pretty=myline --date=relative --max-count=10
   # shorthand and spellos
-	dif = diff
+  dif = diff
   co  = checkout
   s = status
-	dif = diff
+  dif = diff
   # handy features
-	aliases = !git config -l | grep alias | cut -c 7-
+  aliases = !git config -l | grep alias | cut -c 7-
   # only push if our ref is up-to-date with the destination
-	please = push --force-with-lease
+  please = push --force-with-lease
   # glom the current commit onto the last commit (saves a rebase -i/squash)
-	commend = commit --amend --no-edit
+  commend = commit --amend --no-edit
   # stash variants
   # stsh - only unstanged changes to tracked files
   stsh = stash --keep-index
@@ -56,20 +56,20 @@
   staaash = stash --all
 
 [push]
-	default = tracking
+  default = tracking
 
 #
 # setting the helper to cache helps relieve the need to type your
 # password all the time
 [credential]
-	helper = cache
+  helper = cache
 [difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
+  cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+  path =
 [mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+  cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+  trustExitCode = true
 [filter "media"]
-	clean = git media clean %f
-	smudge = git media smudge %f
-	required = true
+  clean = git media clean %f
+  smudge = git media smudge %f
+  required = true
