@@ -148,7 +148,14 @@ case `uname` in
   *)     alias rm="rm -v" ;;
 esac
 alias SU=/usr/local/SU
-alias vi_tags='ctags -R --tag-relative=yes -f ~/.vimtags --exclude="*.vim" --exclude=".#?*"'
+alias vim_tags='ctags -R --tag-relative=yes -f ~/.vimtags ' \
+  '--exclude="*.vim" ' \
+  '--exclude=".#?*" ' \
+  '--exclude="vendor/*" ' \
+  '--exclude="node_modules/*" ' \
+  '--exclude="public/*" ' \
+  '--exclude="app/assets/javascripts/i18n/*" ' \
+  '--exclude="coverage/*"'
 # if which supports --read-alias (and by inference --read-function), then define a handy alias
 if `which --help 2> /dev/null | grep --silent -e "--read-alias"`
 then
