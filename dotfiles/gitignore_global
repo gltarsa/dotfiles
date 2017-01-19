@@ -1,4 +1,4 @@
-# Global .gitignore for the files that I personally need to ignore 
+# Global .gitignore for the files that I personally need to ignore
 # in most of my projects--primarily Emacs temp files.
 # See https://help.github.com/articles/ignoring-files for more about ignoring files.
 #
@@ -17,3 +17,7 @@ history.save
 .#*
 *~
 .sass-cache
+
+# Zeus artifacts (Ruby test accelerator)
+custom_plan.rb
+zeus.json

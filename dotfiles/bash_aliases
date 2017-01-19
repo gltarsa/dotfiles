@@ -1,6 +1,7 @@
 # .bash_aliases
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
+# Jan-17 glt  Add alias for rails to use zeus speed-up, if installed.
 # Jul-16 glt  Add alias for 'sync' which, unlike other unices, take minutes to run instead of seconds.
 # Jan-16 glt	Cleanup unused and os-specific aliases and added shutdown/startup md aliases
 # Aug-14 glt  Remove ancient 'print' and other older, unused aliases.
@@ -83,6 +84,15 @@ test `which bundle 2> /dev/null` && {
   alias rake="be rake"
   alias rspec="be rspec --color"
   alias spinach="be spinach"
+  function rails() {
+    case `gem list -i zeus` in
+      true)
+        zeus $@ ;;
+      *)
+        echo 1>&2 "? zeus gem not installed.  Falling back to rails"
+        bundle exec rails $@ ;;
+    esac
+  }
 }
 alias cp="cp -v"
 alias du='du -h' # human-readable sizes
@@ -92,9 +102,9 @@ alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/eccoext' 2> /tmp
 alias emacs='\ec -nw --quiet'
 alias xemacs='do_background ~/bin/ec --quiet'
 test `which git 2> /dev/null` && {
-  test `uname` = Darwin && alias git=hub
-  alias gd="git diff"
-  alias gs="git status"
+test `uname` = Darwin && alias git=hub
+alias gd="git diff"
+alias gs="git status"
 }
 alias grep='grep -s'  # inhibit "...Is a directory" messages
 alias gvim='gvim 2> /dev/null 1>&2'
@@ -115,7 +125,9 @@ case `uname` in
 esac
 alias his='x;history 22'
 alias hist="x;history 44 | sed 's/\[[0-9].*[0-9]\] //' | pr -w`tput cols` -2 -l22 -t"
-function home()  { cd $1; cd; bk; }
+# unwinds the dir stack and makes the argument the base directory
+function home() { pushd $1; while : true; do pushd 2> /dev/null || break; popd; done }
+alias nhist="his | sed 's/^.*:[0-9][0-9]] //'"  # "naked history" - for saving history for scripts
 alias iostat='iostat -h' # human-readable sizes
 alias ip=aws_asg_to_ip.sh
 alias load=uptime
