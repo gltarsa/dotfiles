@@ -1,9 +1,9 @@
-
 # These lines replace irb with pry
 # make sure to `gem install pry` beforehand.
 begin
   if require "pry"
     Pry.start
+    exit
   end
 rescue LoadError => e
   warn "=> Unable to load pry"
