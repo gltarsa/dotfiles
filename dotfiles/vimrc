@@ -16,15 +16,21 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
   Plugin 'tpope/vim-endwise'        " intelligent 'end' addition for coding
   Plugin 'kana/vim-textobj-user'    " foundation for writing your own text object cmds
   Plugin 'nelstrom/vim-textobj-rubyblock' " indentation for ruby blocks
-  Plugin 'slim-template/vim-slim.git' " Slim support
+  Plugin 'slim-template/vim-slim.git' " slim support
   Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
-  Plugin 'tpope/vim-rails'          " Rails support.  :help rails-
+  Plugin 'tpope/vim-rails'          " rails support.  :help rails-
   Plugin 'kchmck/vim-coffee-script'
   Plugin 'vim-scripts/camelcasemotion'
   Plugin 'AndrewRadev/splitjoin.vim'
   Plugin 'sheerun/vim-polyglot'     " Lots of on-demand language support
   "Plugin 'mustache/vim-mustache-handlebars' " {{ support for emberjs & friends
-  Plugin 'mileszs/ack.vim'          " :Ack support
+  Plugin 'mileszs/ack.vim'          " :ack support
+  Plugin 'thoughtbot/vim-rspec' " :rspec support
+  " RSpec.vim mappings
+  map <Leader>t :call RunCurrentSpecFile()<CR>
+  map <Leader>s :call RunNearestSpec()<CR>
+  map <Leader>l :call RunLastSpec()<CR>
+  map <Leader>a :call RunAllSpecs()<CR>
 
   call vundle#end() " end of Vundle plugin list
   filetype plugin on " required by Vundle
