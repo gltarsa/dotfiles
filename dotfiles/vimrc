@@ -25,7 +25,8 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
   Plugin 'sheerun/vim-polyglot'     " Lots of on-demand language support
   "Plugin 'mustache/vim-mustache-handlebars' " {{ support for emberjs & friends
   Plugin 'mileszs/ack.vim'          " :ack support
-  Plugin 'thoughtbot/vim-rspec' " :rspec support
+  Plugin 'thoughtbot/vim-rspec'     " :rspec support
+  Plugin 'rizzatti/dash.vim'        " dash support
   " RSpec.vim mappings
   map <Leader>t :call RunCurrentSpecFile()<CR>
   map <Leader>s :call RunNearestSpec()<CR>
