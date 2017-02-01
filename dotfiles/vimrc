@@ -7,7 +7,9 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
   Plugin 'gmarik/Vundle.vim'
   " my plugins
   Plugin 'kien/ctrlp.vim'           " ^P to invoke
-  Plugin 'scrooloose/nerdtree'      " \n to open NerdTree
+  " Plugin 'scrooloose/nerdtree'      " \n to open NerdTree
+  "   map <leader>n :NERDTreeToggle<CR>
+  "   map <leader>d :execute 'NERDTreeToggle ' . getcwd()<CR>
   Plugin 'tpope/vim-commentary.git' " gc for commenting
   Plugin 'xolox/vim-misc'           " base lib for other xolox plugins
   Plugin 'xolox/vim-easytags'       " automatic tag file management
@@ -25,12 +27,13 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
   Plugin 'sheerun/vim-polyglot'     " Lots of on-demand language support
   "Plugin 'mustache/vim-mustache-handlebars' " {{ support for emberjs & friends
   Plugin 'mileszs/ack.vim'          " :ack support
-  Plugin 'thoughtbot/vim-rspec' " :rspec support
-  " RSpec.vim mappings
-  map <Leader>t :call RunCurrentSpecFile()<CR>
-  map <Leader>s :call RunNearestSpec()<CR>
-  map <Leader>l :call RunLastSpec()<CR>
-  map <Leader>a :call RunAllSpecs()<CR>
+  Plugin 'thoughtbot/vim-rspec'     " :rspec support
+    map <Leader>t :call RunCurrentSpecFile()<CR>
+    map <Leader>s :call RunNearestSpec()<CR>
+    map <Leader>l :call RunLastSpec()<CR>
+    map <Leader>a :call RunAllSpecs()<CR>
+  Plugin 'rizzatti/dash.vim'        " dash support
+    :nmap <silent> <leader>d <Plug>DashSearch
 
   call vundle#end() " end of Vundle plugin list
   filetype plugin on " required by Vundle
@@ -104,10 +107,6 @@ if version >= 700
   " au InsertEnter * hi StatusLine term=reverse ctermbg=5           guibg=Pink2     gui=bold,reverse
   " au InsertLeave * hi StatusLine term=reverse ctermfg=0 ctermbg=2 guifg=PaleGreen gui=bold,reverse
 endif
-
-"" key mappings
-map <leader>n :NERDTreeToggle<CR>
-map <leader>d :execute 'NERDTreeToggle ' . getcwd()<CR>
 
 "" swap files
 set directory=/tmp,~/.vim/tmp,/var/tmp,.
