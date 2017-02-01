@@ -81,17 +81,27 @@ test `which bundle 2> /dev/null` && {
   alias be='bundle exec'
   alias cap="be cap"
   alias cucumber="be cucumber"
-  alias rake="be rake"
-  alias rspec="be rspec --color"
-  alias spinach="be spinach"
+  #alias rake="be rake"
+  #alias rspec="be rspec --color"
+  #alias spinach="be spinach"
   function rails() {
+    zeus_if_installed $@
+  }
+  function rake() {
+    zeus_if_installed rake $@
+  }
+  function rspec() {
+    zeus_if_installed rspec $@
+  }
+  function zeus_if_installed() {
+    prefix="zeus"
     case `gem list -i zeus` in
-      true)
-        zeus $@ ;;
-      *)
-        echo 1>&2 "? zeus gem not installed.  Falling back to rails"
-        bundle exec rails $@ ;;
+      false)
+        prefix="bundle exec"
+        echo 1>&2 "? zeus gem not installed.  Falling back to $1"
+        ;;
     esac
+    $prefix $@
   }
 }
 alias cp="cp -v"
