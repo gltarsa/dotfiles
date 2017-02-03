@@ -94,6 +94,7 @@ test `which bundle 2> /dev/null` && {
     esac
   }
 }
+alias rubocop="bundle exec rubocop -D"
 alias cp="cp -v"
 alias du='du -h' # human-readable sizes
 alias df='df -Ph' # human-readable sizes
