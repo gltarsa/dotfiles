@@ -34,6 +34,7 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
     map <Leader>a :call RunAllSpecs()<CR>
   Plugin 'rizzatti/dash.vim'        " dash support
     :nmap <silent> <leader>d <Plug>DashSearch
+  Plugin 'terryma/vim-multiple-cursors'  " Cool multi-cursor support
 
   call vundle#end() " end of Vundle plugin list
   filetype plugin on " required by Vundle
