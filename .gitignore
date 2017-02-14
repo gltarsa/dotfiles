@@ -3,6 +3,7 @@
 jq
 dotfiles/vim/bundle
 dotfiles/vim/bundle/.vundle/*
+dotfiles/vim/.netrwhist
 
 # ignore configuration directory (so we can have diff configs on diff boxes)
 config/
