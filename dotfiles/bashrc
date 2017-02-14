@@ -69,6 +69,7 @@ function __show_git_branch() {
 #    \u - username,
 #    \w - cwd, \W - cwd basename
 #    \! - cmd history number
+#    \[ \] - put around escape sequences so that they do not confuse ^A and friends
 #-
 # Set AF color indices:
 #   Color  Value
@@ -84,10 +85,10 @@ function __show_git_branch() {
 trap '[[ -t 1 ]] && tput sgr0' DEBUG  # deactivate all post-command graphics
 case $USER in
   root)  # root in red (setaf 1)
-    PS1='$(tput setaf 1)-- \u@$(tput bold)\h$(tput sgr0; tput setaf 1):\w$(__show_git_branch) --$(tput sgr0)\n\!\$ '
+    PS1='\[$(tput setaf 1)\]-- \u@\[$(tput bold)\]\h\[$(tput sgr0; tput setaf 1)\]:\w$(__show_git_branch) --\[$(tput sgr0)\]\n\!\$ '
     ;;
   *)     # non-root in grey (setaf 7)
-    PS1='$(tput setaf 7)-- \u@$(tput bold)\h$(tput sgr0; tput setaf 7):\w$(__show_git_branch) --$(tput sgr0)\n\!\$ '
+    PS1='\[$(tput setaf 7)\]-- \u@\[$(tput bold)\]\h\[$(tput sgr0; tput setaf 7)\]:\w$(__show_git_branch) --\[$(tput sgr0)\]\n\!\$ '
     ;;
 esac
 
