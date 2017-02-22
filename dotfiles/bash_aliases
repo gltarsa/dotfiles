@@ -82,6 +82,7 @@ test `which bundle 2> /dev/null` && {
   alias cap="be cap"
   alias cucumber="be cucumber"
   #alias rake="be rake"
+  alias crspec="rspec --order defined --format doc"  # canonical rspec
   #alias rspec="be rspec --color"
   #alias spinach="be spinach"
   function rails() {
