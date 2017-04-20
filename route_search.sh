@@ -1,0 +1,22 @@
+Usage="$(basename $0) target-string or regexp
+
+    Search the local copy of routes.txt for the specifed target and
+    print it with as little leading whitespace as possible.
+"
+file="routes.txt"
+case $# in
+  1)
+    target="$1"
+    ;;
+
+  *)
+    echo 1>&2 "? Usage: $Usage"
+    exit 1
+    ;;
+esac
+
+tab="	"
+shortest_prefix=$(grep $target $file | awk -F'[^ ]' '{print length($1)}' | sort | head -1)
+extra_prefix=$( head -c $shortest_prefix /dev/zero | tr '\0' '.')
+grep $target $file | sed "s/^$extra_prefix//" |
+  sed "s/)    */)$tab$tab/"
