@@ -15,6 +15,11 @@ case $# in
     ;;
 esac
 
+{ grep --silent $target $file  ||
+  echo 1>&2 "? '$target' not found in $file'"
+  exit 2
+}
+
 tab="	"
 shortest_prefix=$(grep $target $file | awk -F'[^ ]' '{print length($1)}' | sort | head -1)
 extra_prefix=$( head -c $shortest_prefix /dev/zero | tr '\0' '.')
