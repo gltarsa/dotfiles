@@ -12,6 +12,7 @@
 [core]
   editor = vim
   excludesfile = /Users/tarsa/.gitignore_global
+	autocrlf = input
 [merge]
   tool = vimdiff
 [color]
@@ -29,31 +30,32 @@
   remoteBranch = red bold
   stash = magenta bold
 [pretty]
-  myline = '%C(auto)%h %d %s (%Cblue%an, %Cred%ad%Creset)'
-#
-# git <cmd> shorthand definitions
+  colorful = '%C(auto)%h %d %s (%Cblue%an, %Cred%ad%Creset)'
+  today = '%C(auto)%h %d %s'
 [alias]
   # Log Line (color)
-  lll = log --graph --decorate --oneline --all --color --pretty=myline --date=relative
-  ll  = log --graph --decorate --oneline --all --color --pretty=myline --date=relative --max-count=10
+  lll = log --graph --decorate --oneline --all --color --pretty=colorful --date=relative
+  ll  = log --graph --decorate --oneline --all --color --pretty=colorful --date=relative --max-count=10
+  #
   # shorthand and spellos
   dif = diff
   co  = checkout
   s = status
   dif = diff
+  #
   # handy features
+  #
   aliases = !git config -l | grep alias | cut -c 7-
-  # only push if our ref is up-to-date with the destination
-  please = push --force-with-lease
-  # glom the current commit onto the last commit (saves a rebase -i/squash)
+  # commend: glom the current commit onto the last commit (saves a rebase -i/squash)
   commend = commit --amend --no-edit
+  #
   # stash variants
-  # stsh - only unstanged changes to tracked files
-  stsh = stash --keep-index
-  # staash - untracked AND tracked files
-  staash = stash --include-untracked
-  # ignored, untracked and tracked files (equiv to clone state)
-  staaash = stash --all
+  stsh = stash --keep-index           # only unstanged changes to tracked files
+  staash = stash --include-untracked  # untracked AND tracked files
+  staaash = stash --all               # ignore everything (equiv to clone state)
+	praise = blame                      # why only blame?  Sometimes we praise
+  ltoday = lll --since=00:00:00 --no-merges --author=tarsa --pretty=today
+  today  = lll --since=00:00:00 --no-merges --author=tarsa --pretty=today
 
 [push]
   default = tracking
@@ -65,7 +67,7 @@
   helper = cache
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
