@@ -1,7 +1,6 @@
 # .bash_aliases
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
-# Jan-17 glt  Add alias for rails to use zeus speed-up, if installed.
 # Jul-16 glt  Add alias for 'sync' which, unlike other unices, take minutes to run instead of seconds.
 # Jan-16 glt	Cleanup unused and os-specific aliases and added shutdown/startup md aliases
 # Aug-14 glt  Remove ancient 'print' and other older, unused aliases.
@@ -81,6 +80,7 @@ test `which bundle 2> /dev/null` && {
   alias be='bundle exec'
   alias cap="be cap"
   alias cucumber="be cucumber"
+  alias rails="be rails"
   alias rake="be rake"
   alias crspec="be rspec --order defined --format doc"  # canonical rspec
   alias rspec="be rspec --color"
