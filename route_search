@@ -15,7 +15,7 @@ case $# in
     ;;
 esac
 
-{ grep --silent $target $file  ||
+grep --silent $target $file  || {
   echo 1>&2 "? '$target' not found in $file'"
   exit 2
 }
