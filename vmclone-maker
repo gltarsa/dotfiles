@@ -1,0 +1,80 @@
+#!/bin/sh
+mem_size="2048"   # in MB
+vram_size="18"    # in MB
+image_disk_base="$HOME/VirtualBox-VMs/ubuntu-16.04LTS-image/ubuntu-16.04LTS-image.vdi"
+clone_disk_base="$HOME/VirtualBox-VMs/cloned_ubuntu-16.04lts-image.vdi"
+controller_type="sata"
+controller="sata1"
+
+help="Usage: `basename $0` new-vm-name
+
+Options: none
+
+This script will create a VM based off $clone_disk_base
+but any changes made in the machine subsequent to creation will
+be local to this clone.
+
+FYI: the command 'VBoxManage unregister --delete <vmname>' will unregister
+the specified <vmname> and delete all the associated files.
+"
+
+# For future info, here are some convenient Virtualbox Commands:
+#  VBoxManage unregister [--delete]    removes VM from Virtual Box interface, --delete deletes all the files as well
+
+case $# in
+  0)
+    echo 1>&2 "?Usage: $help"
+    exit 1
+    ;;
+  1)
+    vm_name="$1"
+    ;;
+  *)
+    echo 1>&2 "?Too many arguments.  Usage: $help"
+    exit 2
+    ;;
+esac
+
+target_disk="$vm_name/$vm_name.vdi"
+
+echo "At the start, these VMs exist:"
+echo "----------"
+VBoxManage list vms
+echo "----------"
+
+set -x
+# create a clone machine
+#  --register causes the machine to be visible to the Virtualbox installation
+#  --ostype is typically Ubuntu_64 for Ubuntu.  "VBoxManage list ostypes" for more.
+VBoxManage createvm --name "$vm_name" --ostype Ubuntu_64 --register || exit 5
+
+# Adjust default settings.  See https://www.virtualbox.org/manual/ch08.html#vboxmanage-modifyvm for more.
+# These appear to be the key parameters to set.
+VBoxManage modifyvm "$vm_name" --memory=$mem_size --vram=$vram_size || exit 5
+VBoxManage modifyvm "$vm_name" --description="vmclone-maker Ubuntu machine based off disk file $clone_disk_base" || exit 5
+
+# Add a SATA controller to the VM clone
+VBoxManage storagectl "$vm_name" --name=$controller --add $controller_type || exit 5
+
+# Optionally, add a local networking NIC
+# VBoxManage modifyvm "$vm_name" --nic1=hostonly --hostonlyadapter1="vboxnet0"
+
+# Clone the base disk, if needed
+test -f $clone_disk_base || VBoxManage clonehd "$image_disk_base" "$clone_disk_base"
+
+# Optionally, change the UUID of the disk
+#VBoxManage internalcommands sethduuid "$target_disk" || exit 5
+
+# Attach the clone drive to the machine.
+# Note 'multiattach' is key for copy-on-write.  If the type is 'immutable', then any writes are reset upon reboot.
+# See https://www.virtualbox.org/manual/ch05.html#hdimagewrites for more.
+VBoxManage storageattach "$vm_name" --storagectl=$controller --port=0 --device=0 --type=hdd --medium=$clone_disk_base --mtype=multiattach || exit 5
+
+# Add a DVD/CD drive
+VBoxManage storageattach "$vm_name" --storagectl=$controller --port=1 --device=0 --type=dvddrive --medium=emptydrive || exit 5
+set +x
+
+echo "At the end, these VMs exist:"
+echo "----------"
+VBoxManage list vms
+echo "----------"
