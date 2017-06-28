@@ -7,6 +7,9 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+# prod-cpy line is temporary for WF2
+/config/.database.yml.prod-cpy
+/config/.database.yml.std
 pagedump.html
 history.save
 .DS_Store
