@@ -46,7 +46,9 @@ set -o ignoreeof
 shopt -s checkwinsize
 
 # set default file protection to 750
-umask 027
+# umask 027
+# set default file protection to 770
+umask 007
 
 #++
 # Prompt Setting code
