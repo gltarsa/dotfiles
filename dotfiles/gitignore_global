@@ -19,7 +19,11 @@ history.save
 \#*
 .#*
 *~
+# Other artifacts
 .sass-cache
+*.vim
+tags
+routes.txt
 
 # Zeus artifacts (Ruby test accelerator)
 custom_plan.rb
