@@ -1,8 +1,9 @@
 #!/bin/sh
 mem_size="2048"   # in MB
 vram_size="18"    # in MB
-image_disk_base="$HOME/VirtualBox-VMs/ubuntu-16.04LTS-image/ubuntu-16.04LTS-image.vdi"
-clone_disk_base="$HOME/VirtualBox-VMs/cloned_ubuntu-16.04lts-image.vdi"
+vm_home="$HOME/VirtualBox-VMs"
+image_disk_base="$vm_home/$HOME/VirtualBox-VMs/ubuntu-16.04LTS-image/ubuntu-16.04LTS-image.vdi"
+clone_disk_base="$vm_home/cloned_ubuntu-16.04lts-image.vdi"
 controller_type="sata"
 controller="sata1"
 
@@ -19,7 +20,9 @@ the specified <vmname> and delete all the associated files.
 "
 
 # For future info, here are some convenient Virtualbox Commands:
-#  VBoxManage unregister [--delete]    removes VM from Virtual Box interface, --delete deletes all the files as well
+#  VBoxManage list [vms, hdds] list the current VMs or HDDs
+#  VBoxManage unregister [--delete]    removes VM from VB interface, --delete deletes all the files as well
+#  VBoxManage closemedium disk <path> [--delete]   removes HD medium from VB interface, --delete deletes file
 
 case $# in
   0)
@@ -56,8 +59,19 @@ VBoxManage modifyvm "$vm_name" --description="vmclone-maker Ubuntu machine based
 # Add a SATA controller to the VM clone
 VBoxManage storagectl "$vm_name" --name=$controller --add $controller_type || exit 5
 
-# Optionally, add a local networking NIC
+# add our Shared Folder to the machine
+VBoxManage sharedfolder add "$vm_name" --name="sharename" --hostpath="$vm_home/shared_folder"
+
+# Enable Mouse Integration
+VBoxManage modifyvm "$vm_name" --mouse=usbtablet
+VBoxManage modifyvm "$vm_name" --mouse=bidirectional
+
+# Optionally, add a local networking NIC (Use VirtualBox Preferences to add vboxnet0 to Network Settings)
 # VBoxManage modifyvm "$vm_name" --nic1=hostonly --hostonlyadapter1="vboxnet0"
+VBoxManage modifyvm "$vm_name" --nic1=bridged --bridgeadapter1=en3
+
+# Optionally, Add port forwarding to allow ssh into the box
+VBoxManage modifyvm "$vm_name" --natpf1="ssh,tcp,,3022,,22"
 
 # Clone the base disk, if needed
 test -f $clone_disk_base || VBoxManage clonehd "$image_disk_base" "$clone_disk_base"
