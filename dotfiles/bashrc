@@ -180,6 +180,10 @@ esac
 # Added for homebrew
 prepend_to PATH /usr/local/sbin
 
+# hack in Postgresql
+pg="/usr/local/opt/postgresql94/bin"
+which pg_dump > /dev/null || test -d $pg && prepend_to PATH $pg
+
 #++
 # Bash history configuration
 
