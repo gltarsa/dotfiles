@@ -1,0 +1,55 @@
+#! /usr/bin/env bash
+logdirs="./ log/ logs/"
+logfile="test.log"
+
+help="Usage: `basename $0` [logfilename]
+
+Options: none
+
+This script will run a 'tail -f' operation on the specified log file
+(default: ${logfile}), filtering out DatabaseCleaner-specific strings
+as it goes.
+
+If no directory is specified in the logfilename and the file does not exist in
+the current directory, then 'log/' and 'logs/' will be prepended to the name to
+see if it resides in either of those known subdirectories.  If not found then
+the command will fail.
+"
+
+case $# in
+  0) logfile=test.log
+    ;;
+  1) logfile=$1
+    ;;
+  *)
+     echo 1>&2 "?Wrong number of arguments: $*"
+     echo 1>&2 "$help"
+     exit 1
+     ;;
+esac
+
+logpath=""
+case $logfile in
+  */*) logpath=$logfile;;
+  *)
+    for dir in $logdirs
+    do
+      test -f $dir$logfile && {
+        logpath="$dir$logfile"
+        break
+      }
+    done
+esac
+
+case $logpath in
+  "")
+    echo 1>&2 "?$logfile not found in any of: $logdirs"
+    echo 1>&2 "$help"
+    exit 2
+    ;;
+  *)
+    echo 1>&2 "Filtering tail of $logpath..."
+    ;;
+esac
+
+tail -f $logpath | egrep --line-buffered -v "TRIGGER|TRUNCATE|NoMethodError: undefined method .example_group."
