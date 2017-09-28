@@ -1,0 +1,103 @@
+#!/usr/bin/env ruby
+require 'beaver'
+require 'uri'
+require 'csv'
+require 'optparse'
+require 'pry'
+
+class FilterForLongActions
+  # time_limit: look at actions taking longer than this in seconds
+  # logs: search the logs files matching this glob string
+  def initialize(time_limit:, logs:)
+    @time_limit = time_limit
+    beaver = Beaver.new(logs = logs)
+    @requests = beaver.parse.requests
+    puts "Beavering on #{logs}. #{@requests.count} requests found exceeding #{time_limit} seconds"
+  end
+
+  # Summarize the requests, highest time first
+  def summary
+    requests.select { |r| r.ms > s2ms(@time_limit) }.sort{ |a, b| b.ms <=> a.ms }
+  end
+
+  def display
+    summary.each do |hit|
+      printf "%04is: %6s %-34s %s (@ %s)\n", ms2s(hit.ms), hit.method, *components(hit.path), hit.time.strftime('%D %T')
+      # [r.method, r.action, r.path, r.controller, r.status, r.time, r.ms, r.params]
+    end
+  end
+
+  def to_csv(file_descriptor = $stdout)
+    CSV(file_descriptor) do |csv|
+      csv << %w[action_time method endpoint arguments date_time status params]
+      summary.each do |hit|
+        csv << [ms2s(hit.ms), hit.method, *components(hit.path), hit.time, hit.status, hit.method, hit.params]
+      end
+    end
+  end
+
+  private
+
+  attr_reader :requests, :time_limit
+
+  def s2ms(seconds)
+    seconds * 1000
+  end
+
+  def ms2s(milliseconds)
+    (milliseconds/1000).round
+  end
+
+  def components(path)
+    pretty_path = URI.decode(path)
+    endpoint = pretty_path[/^.*\?/]
+    return [pretty_path, ""] if endpoint.nil?
+    return [endpoint[0..-2], pretty_path[/\?.*$/]]
+  end
+
+  def add_commas(num)
+    num.to_s.reverse.gsub(/...(?=.)/,'\&,').reverse
+  end
+
+  def ms2s(milliseconds)
+    (milliseconds/1000).round
+  end
+end
+
+options = {}
+command_line = OptionParser.new do |opts|
+  opts.on('-t', '--threshold=SECONDS', Float, 'threshold for deciding if an action has taken too long') do |threshold|
+    options[:threshold] = threshold
+  end
+
+  opts.on('-c', '--csv[=STRING]', String, 'generate a CSV file (to $stderr if no file specified)') do |csv|
+    options[:csv] = csv
+  end
+
+  opts.on('-n', '--nodisplay', 'do not display results') do |no_display|
+    options[:no_display] = no_display
+  end
+
+  opts.on('-h', '--help', 'display this usage message') do
+    puts opts
+    exit 1
+  end
+end
+
+args = command_line.parse!
+options[:threshold] = 10 if options[:threshold].nil?
+
+if args.count == 0 || args.count > 1
+  $stderr.puts "? invalid number of arguments"
+  $stderr.puts command_line.help
+  exit 1
+end
+
+long_actions = FilterForLongActions.new(time_limit: options[:threshold], logs: args.first)
+long_actions.display unless options[:no_display]
+
+exit 0 unless options.key?(:csv)
+
+csv_file = $stderr
+csv_file = File.open(options[:csv], "wb") unless options[:csv].nil?
+long_actions.to_csv(csv_file)
