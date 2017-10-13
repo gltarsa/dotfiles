@@ -137,6 +137,7 @@ function prepend_to() {
 case $(uname) in
   Linux)
     prepend_to PATH "$HOME/.linuxbrew/bin"
+    prepend_to PATH "$HOME/.linuxbrew/sbin"
     prepend_to MANPATH "$HOME/.linuxbrew/share/man"
     prepend_to INFOPATH "$HOME/.linuxbrew/share/info"
     ;;
