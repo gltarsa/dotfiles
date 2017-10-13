@@ -43,7 +43,6 @@ function do_background()
     {
     "$@" &
     }
-
 #
 # executes arg1 as a command after executing the remainder
 # of the line as a command
@@ -57,8 +56,6 @@ function do_after()
 
     "$@" ; $postcmd
     }
-
-
 #++
 # add completion extensions
 for i in ~/.git-completion.bash ~/.hub.bash_completion.sh
@@ -103,7 +100,9 @@ alias gs="git status"
 alias grep='grep -s'  # inhibit "...Is a directory" messages
 alias gvim='gvim 2> /dev/null 1>&2'
 function gvimf() {
-  gvim `fzf -q $*`
+  file=`fzf -q $*`
+  test -z "$file" && { echo 1>&2 "??? No file found with fuzzy search"; return; }
+  test -n "$file" && gvim -p $file
 }
 alias herokup=heroku  # spello preventer
 # CCI WorkFlow 2 aliases
