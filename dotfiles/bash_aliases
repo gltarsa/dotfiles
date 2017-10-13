@@ -102,6 +102,9 @@ alias gs="git status"
 }
 alias grep='grep -s'  # inhibit "...Is a directory" messages
 alias gvim='gvim 2> /dev/null 1>&2'
+function gvimf() {
+  gvim `fzf -q $*`
+}
 alias herokup=heroku  # spello preventer
 # CCI WorkFlow 2 aliases
 test -d ~/src/cci/wf2 && {
