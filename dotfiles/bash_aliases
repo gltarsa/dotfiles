@@ -79,10 +79,10 @@ test `which bundle 2> /dev/null` && {
   alias cucumber="be cucumber"
   alias rails="be rails"
   alias rake="be rake"
-  alias crspec="be rspec --order defined --format doc"  # canonical rspec
-  alias rspec="be rspec --color"
+  alias crspec="be rspec --no-profile --order defined --format doc"  # canonical rspec
+  alias rspec="be rspec --no-profile --color"
   alias spinach="be spinach"
-  alias zspec='zeus rspec --format doc --order defined' # with zeus
+  alias zspec='zeus rspec --no-profile --format doc --order defined' # with zeus
 }
 alias rubocop="bundle exec rubocop -D"
 alias cp="cp -v"
