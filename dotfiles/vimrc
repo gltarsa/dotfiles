@@ -54,8 +54,8 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
     map <Leader>s :up<CR>:call RunNearestSpec()<CR>
     map <Leader>l :call RunLastSpec()<CR>
     map <Leader>a :call RunAllSpecs()<CR>
-    " let g:rspec_command = "rspec --format doc --order defined {spec}"
-    let g:rspec_command = "zeus rspec --format doc --order defined {spec}"
+    " let g:rspec_command = "rspec -fd --order defined --no-profile {spec}"
+    let g:rspec_command = "zeus rspec -fd --order defined --no-profile {spec}"
 
   Plugin 'terryma/vim-multiple-cursors'  " Cool multi-cursor support
   Plugin 'stefanoverna/vim-i18n'    " I18n help in VISUAL mode
