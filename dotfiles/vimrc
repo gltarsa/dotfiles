@@ -33,12 +33,12 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
     let g:easytags_async = 1         " Update tags asynchronously
     set cpoptions+=d                 " make tag file in cwd, not relative to edited file
 
+  Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
   " doc for vim-ruby: https://github.com/vim-ruby/vim-ruby/wiki/VimRubySupport
   Plugin 'vim-ruby/vim-ruby'        " indentation for Ruby
   Plugin 'kana/vim-textobj-user'    " foundation for writing your own text object cmds
   Plugin 'nelstrom/vim-textobj-rubyblock' " indentation for ruby blocks
   Plugin 'slim-template/vim-slim.git' " slim support
-  Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
   Plugin 'tpope/vim-commentary.git' " gc for commenting
   Plugin 'tpope/vim-endwise'        " intelligent 'end' addition for coding
   Plugin 'tpope/vim-rails'          " rails support.  :help rails-
@@ -54,8 +54,8 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
     map <Leader>s :up<CR>:call RunNearestSpec()<CR>
     map <Leader>l :call RunLastSpec()<CR>
     map <Leader>a :call RunAllSpecs()<CR>
-    " let g:rspec_command = "rspec --format doc --order defined {spec}"
-    let g:rspec_command = "zeus rspec --format doc --order defined {spec}"
+    " let g:rspec_command = "rspec -fd --order defined --no-profile {spec}"
+    let g:rspec_command = "zeus rspec -fd --order defined --no-profile {spec}"
 
   Plugin 'terryma/vim-multiple-cursors'  " Cool multi-cursor support
   Plugin 'stefanoverna/vim-i18n'    " I18n help in VISUAL mode
