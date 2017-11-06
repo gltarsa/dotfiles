@@ -1,0 +1,30 @@
+
+-- automatically switch between extended and normal
+\x auto
+
+-- always show how long a query takes
+\timing
+
+-- Set prompt to be show when in a query definition
+\set PROMPT1 '%[%033[33;1m%]%x%[%033[0m%]%[%033[1m%]%/%[%033[0m%]%R%# '
+
+/*
+ Shortcuts
+*/
+-- set name of helper scripts
+\set h '~/bin/psql-helpers'
+
+-- show slow queries
+\set show_slow_queries '\\i :h/show_slow_queries'
+
+-- Display the Cache Hit rate (should be 99% or better)
+\set cache_hit_rate '\\i :h/show_cache_hit_rate'
+
+-- Index Hit Rate (hit rate should be > 95%, where on > 10k rows)
+\set index_hit_rate '\\i :h/show_index_hit_rate'
+
+-- largest DB in cluster
+\set largest_db '\\i :h/show_largest_db_in_cluster'
+
+-- table sizes
+\set table_sizes '\\i :h/show_table_sizes

@@ -1,0 +1,7 @@
+/* from https://speakerdeck.com/craigkerstiens/postgres-performance-for-humans-all-things-open */
+SELECT
+  relname,
+  100 * idx_scan / (seq_scan + idx_scan),
+  n_live_tup
+    FROM pg_stat_user_tables
+    ORDER BY n_live_tup DESC;
