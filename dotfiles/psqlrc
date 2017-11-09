@@ -15,7 +15,7 @@
 \set h '~/bin/psql-helpers'
 
 -- show slow queries
-\set show_slow_queries '\\i :h/show_slow_queries'
+\set slow_queries '\\i :h/show_slow_queries'
 
 -- Display the Cache Hit rate (should be 99% or better)
 \set cache_hit_rate '\\i :h/show_cache_hit_rate'
@@ -27,4 +27,11 @@
 \set largest_db '\\i :h/show_largest_db_in_cluster'
 
 -- table sizes
-\set table_sizes '\\i :h/show_table_sizes
+\set table_sizes '\\i :h/show_table_sizes'
+
+-- show number of current connections
+\set connections '\\i :h/show_number_of_connections'
+\set connections_by_state '\\i :h/show_number_of_connections_by_state'
+
+-- show max transaction age
+\set max_transaction_age '\\i :h/max_transaction_age'
