@@ -98,7 +98,7 @@ alias gd="git diff"
 alias gs="git status"
 }
 alias grep='grep -s'  # inhibit "...Is a directory" messages
-alias gvim='gvim 2> /dev/null 1>&2'
+# alias gvim='gvim 2> /dev/null 1>&2'
 function gvimf() {
   file=`fzf -q $@`
   test -z "$file" && { echo 1>&2 "??? No file found with fuzzy search"; return; }
