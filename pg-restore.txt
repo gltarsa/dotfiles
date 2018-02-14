@@ -1,0 +1,3 @@
+db_name=wf2_dev_prod_copy_nov2017
+# pg_dump -Fc -Z 9 --file=$db_name.dump $db_name
+pg_restore -Fc -j 8  $db_name
