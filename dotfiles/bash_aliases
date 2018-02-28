@@ -43,7 +43,6 @@ function do_background()
     {
     "$@" &
     }
-
 #
 # executes arg1 as a command after executing the remainder
 # of the line as a command
@@ -57,8 +56,6 @@ function do_after()
 
     "$@" ; $postcmd
     }
-
-
 #++
 # add completion extensions
 for i in ~/.git-completion.bash ~/.hub.bash_completion.sh
@@ -82,10 +79,10 @@ test `which bundle 2> /dev/null` && {
   alias cucumber="be cucumber"
   alias rails="be rails"
   alias rake="be rake"
-  alias crspec="be rspec --order defined --format doc"  # canonical rspec
-  alias rspec="be rspec --color"
+  alias crspec="be rspec --no-profile --order defined --format doc"  # canonical rspec
+  alias rspec="be rspec --no-profile --color"
   alias spinach="be spinach"
-  alias zspec='zeus rspec --format doc --order defined' # with zeus
+  alias zspec='zeus rspec --no-profile --format doc --order defined' # with zeus
 }
 alias rubocop="bundle exec rubocop -D"
 alias cp="cp -v"
@@ -101,27 +98,18 @@ alias gd="git diff"
 alias gs="git status"
 }
 alias grep='grep -s'  # inhibit "...Is a directory" messages
-alias gvim='gvim 2> /dev/null 1>&2'
+# alias gvim='gvim 2> /dev/null 1>&2'
+function gvimf() {
+  file=`fzf -q $@`
+  test -z "$file" && { echo 1>&2 "??? No file found with fuzzy search"; return; }
+  test -n "$file" && gvim -p $file
+}
 alias herokup=heroku  # spello preventer
 # CCI WorkFlow 2 aliases
 test -d ~/src/cci/wf2 && {
   alias pconsole="cap production rails:console"
   alias rconsole="cap release rails:console"
 }
-# Mac OS X-only aliases
-case `uname` in
-  Darwin)
-    alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
-    alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
-    alias sync="echo 'This not the command you are looking for.  Move along.'"
-
-    # in El Capitan, the new lowpri_throttle seems to negatively impact
-    # time machine backups.
-    alias tm-status='a=`sysctl debug.lowpri_throttle_enabled`; case `echo "$a" | sed "s/^.*: //"` in *0*) echo "TM is fast.";; *) echo "TM is slow" ;; esac'
-    alias tm-slow='sudo sysctl -w debug.lowpri_throttle_enabled=1'
-    alias tm-fast='sudo sysctl -w debug.lowpri_throttle_enabled=0'
-    ;;
-esac
 alias his='x;history 22'
 alias hist="x;history 44 | sed 's/\[[0-9].*[0-9]\] //' | pr -w`tput cols` -2 -l22 -t"
 # unwinds the dir stack and makes the argument the base directory
@@ -181,5 +169,22 @@ function xicon()  { echo """]1;$@"; }
 function xtitle() { echo """]2;$@         `hostname`"; }
 function xboth()  { xicon $@; xtitle $@; }
 
-# define handy couchdb aliases, if there is a file full of them
-test -f ~/.bash_aliases_couchdb && source ~/.bash_aliases_couchdb
+# OS-specific aliases
+case `uname` in
+  Darwin)  # Mac OS X
+    alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+    alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+    alias sync="echo 'This not the command you are looking for.  Move along.'"
+
+    # in El Capitan, the new lowpri_throttle seems to negatively impact
+    # time machine backups.
+    alias tm-status='a=`sysctl debug.lowpri_throttle_enabled`; case `echo "$a" | sed "s/^.*: //"` in *0*) echo "TM is fast.";; *) echo "TM is slow" ;; esac'
+    alias tm-slow='sudo sysctl -w debug.lowpri_throttle_enabled=1'
+    alias tm-fast='sudo sysctl -w debug.lowpri_throttle_enabled=0'
+    ;;
+
+  Linux)  # Ubuntu/linuxbrew
+    alias pg-start="pg_ctl start -D ~/.linuxbrew/var/postgres/ -l postgres10.log"
+    alias pg-stop="pg_ctl stop -D ~/.linuxbrew/var/postgres"
+    ;;
+esac
