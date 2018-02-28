@@ -54,8 +54,8 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
     map <Leader>s :up<CR>:call RunNearestSpec()<CR>
     map <Leader>l :call RunLastSpec()<CR>
     map <Leader>a :call RunAllSpecs()<CR>
-    " let g:rspec_command = "rspec -fd --order defined --no-profile {spec}"
-    let g:rspec_command = "zeus rspec -fd --order defined --no-profile {spec}"
+    " let g:rspec_command = "time rspec -fd --order defined --no-profile {spec}"
+    let g:rspec_command = "time zeus rspec -fd --order defined --no-profile {spec}"
 
   Plugin 'terryma/vim-multiple-cursors'  " Cool multi-cursor support
   Plugin 'stefanoverna/vim-i18n'    " I18n help in VISUAL mode
@@ -166,7 +166,24 @@ let g:ctrlp_custom_ignore = {
 "" VIMs back up feature prevents write in place and crontab requires it
 autocmd filetype crontab setlocal nobackup nowritebackup
 
-"" Set GVIM to be width 120 by default
+"" Set GVIM for 120 character code lines by default
+"" Also set a color column if we are in a GUI
+" set the window width
+let targetwidth=120
+
 if has("gui_running")
-  set columns=120
+  " set window width to target + 4 for line numbers
+  let &columns=targetwidth + 4
+endif
+
+if v:version >= 703
+  let &colorcolumn=targetwidth
+
+  " use a faint gray color, not too insistent
+  highlight ColorColumn term=reverse ctermbg=253 guibg=#e6e6e6
+
+  " if we're called as '*view', or on a console, turn off the colorcolumn
+  if v:progname =~? 'view' || &term =~? 'linux|console'
+    set colorcolumn=
+  endif
 endif
