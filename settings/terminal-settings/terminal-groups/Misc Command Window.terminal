@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>WindowList</key>
+	<array>
+		<dict>
+			<key>Origin</key>
+			<string>{968, 1004}</string>
+			<key>ScrollerStyle</key>
+			<integer>1</integer>
+			<key>ShowsTabBar</key>
+			<false/>
+			<key>ShowsTabBarInFullScreen</key>
+			<false/>
+			<key>Window Settings</key>
+			<array>
+				<dict>
+					<key>Tab Scrollback Restorable</key>
+					<true/>
+					<key>Tab Session Class ID</key>
+					<string>3BD917E1-4CBD-4CC9-8A8C-30544A548237</string>
+					<key>Tab Settings</key>
+					<dict>
+						<key>ProfileCurrentVersion</key>
+						<real>2.0499999999999998</real>
+						<key>name</key>
+						<string>Basic White, 80x40</string>
+						<key>type</key>
+						<string>Window Settings</string>
+					</dict>
+					<key>Tab Settings Name</key>
+					<string>Basic White, 80x40</string>
+					<key>Tab Subtitle</key>
+					<string>misc bash cmds</string>
+					<key>Tab Title</key>
+					<string>misc bash cmds         l-hr-lhall1.ateb.com</string>
+					<key>Tab Working Directory URL</key>
+					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/</string>
+					<key>Tab Working Directory URL String</key>
+					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa</string>
+					<key>TabSelected</key>
+					<true/>
+				</dict>
+			</array>
+			<key>WindowNumber</key>
+			<integer>9223372036854775807</integer>
+		</dict>
+	</array>
+	<key>name</key>
+	<string>Misc Command Window</string>
+	<key>type</key>
+	<string>Window Group</string>
+</dict>
+</plist>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>WindowList</key>
+	<array>
+		<dict>
+			<key>Origin</key>
+			<string>{853, 1014}</string>
+			<key>ScrollerStyle</key>
+			<integer>1</integer>
+			<key>ShowsTabBar</key>
+			<false/>
+			<key>ShowsTabBarInFullScreen</key>
+			<false/>
+			<key>Window Settings</key>
+			<array>
+				<dict>
+					<key>Tab Column Count</key>
+					<integer>90</integer>
+					<key>Tab Row Count</key>
+					<integer>46</integer>
+					<key>Tab Scrollback Restorable</key>
+					<true/>
+					<key>Tab Session Class ID</key>
+					<string>94EC0EF8-C41B-40D0-B645-75187B1B224D</string>
+					<key>Tab Settings</key>
+					<dict>
+						<key>ProfileCurrentVersion</key>
+						<real>2.0499999999999998</real>
+						<key>name</key>
+						<string>Basic Tan, 90x55</string>
+						<key>type</key>
+						<string>Window Settings</string>
+					</dict>
+					<key>Tab Settings Name</key>
+					<string>Basic Tan, 90x55</string>
+					<key>Tab Subtitle</key>
+					<string>Dev Work</string>
+					<key>Tab Title</key>
+					<string>Dev Work</string>
+					<key>Tab Working Directory URL</key>
+					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/</string>
+					<key>Tab Working Directory URL String</key>
+					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa</string>
+					<key>TabSelected</key>
+					<true/>
+				</dict>
+				<dict>
+					<key>Tab Column Count</key>
+					<integer>90</integer>
+					<key>Tab Row Count</key>
+					<integer>47</integer>
+					<key>Tab Scrollback Restorable</key>
+					<true/>
+					<key>Tab Session Class ID</key>
+					<string>4C47BFB6-06A0-4178-85C0-C65CFE4910B9</string>
+					<key>Tab Settings</key>
+					<dict>
+						<key>ProfileCurrentVersion</key>
+						<real>2.0499999999999998</real>
+						<key>name</key>
+						<string>Basic Tan, 90x55</string>
+						<key>type</key>
+						<string>Window Settings</string>
+					</dict>
+					<key>Tab Settings Name</key>
+					<string>Basic Tan, 90x55</string>
+					<key>Tab Subtitle</key>
+					<string>Dev Server</string>
+					<key>Tab Title</key>
+					<string>Dev Server</string>
+					<key>Tab Working Directory URL</key>
+					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/src/</string>
+					<key>Tab Working Directory URL String</key>
+					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/src</string>
+					<key>TabSelected</key>
+					<false/>
+				</dict>
+				<dict>
+					<key>Tab Scrollback Restorable</key>
+					<true/>
+					<key>Tab Session Class ID</key>
+					<string>B98CB8B9-7720-4CB5-9EE8-483353A00CB4</string>
+					<key>Tab Settings</key>
+					<dict>
+						<key>ProfileCurrentVersion</key>
+						<real>2.0499999999999998</real>
+						<key>name</key>
+						<string>Basic Tan, 90x55</string>
+						<key>type</key>
+						<string>Window Settings</string>
+					</dict>
+					<key>Tab Settings Name</key>
+					<string>Basic Tan, 90x55</string>
+					<key>Tab Subtitle</key>
+					<string>Misc bash cmds</string>
+					<key>Tab Title</key>
+					<string>Misc bash cmds</string>
+					<key>Tab Working Directory URL</key>
+					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/src/</string>
+					<key>Tab Working Directory URL String</key>
+					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/src</string>
+					<key>TabSelected</key>
+					<false/>
+				</dict>
+			</array>
+			<key>WindowNumber</key>
+			<integer>5</integer>
+		</dict>
+	</array>
+	<key>name</key>
+	<string>Generic.3-work win, Tan</string>
+	<key>type</key>
+	<string>Window Group</string>
+</dict>
+</plist>
