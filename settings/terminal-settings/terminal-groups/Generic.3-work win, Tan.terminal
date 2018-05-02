@@ -19,7 +19,7 @@
 					<key>Tab Column Count</key>
 					<integer>90</integer>
 					<key>Tab Row Count</key>
-					<integer>46</integer>
+					<integer>55</integer>
 					<key>Tab Scrollback Restorable</key>
 					<true/>
 					<key>Tab Session Class ID</key>
@@ -39,10 +39,6 @@
 					<string>Dev Work</string>
 					<key>Tab Title</key>
 					<string>Dev Work</string>
-					<key>Tab Working Directory URL</key>
-					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/</string>
-					<key>Tab Working Directory URL String</key>
-					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa</string>
 					<key>TabSelected</key>
 					<true/>
 				</dict>
@@ -50,7 +46,7 @@
 					<key>Tab Column Count</key>
 					<integer>90</integer>
 					<key>Tab Row Count</key>
-					<integer>47</integer>
+					<integer>55</integer>
 					<key>Tab Scrollback Restorable</key>
 					<true/>
 					<key>Tab Session Class ID</key>
@@ -70,10 +66,6 @@
 					<string>Dev Server</string>
 					<key>Tab Title</key>
 					<string>Dev Server</string>
-					<key>Tab Working Directory URL</key>
-					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/src/</string>
-					<key>Tab Working Directory URL String</key>
-					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/src</string>
 					<key>TabSelected</key>
 					<false/>
 				</dict>
@@ -97,10 +89,6 @@
 					<string>Misc bash cmds</string>
 					<key>Tab Title</key>
 					<string>Misc bash cmds</string>
-					<key>Tab Working Directory URL</key>
-					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/src/</string>
-					<key>Tab Working Directory URL String</key>
-					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/src</string>
 					<key>TabSelected</key>
 					<false/>
 				</dict>

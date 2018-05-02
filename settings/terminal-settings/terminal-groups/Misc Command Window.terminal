@@ -34,11 +34,7 @@
 					<key>Tab Subtitle</key>
 					<string>misc bash cmds</string>
 					<key>Tab Title</key>
-					<string>misc bash cmds         l-hr-lhall1.ateb.com</string>
-					<key>Tab Working Directory URL</key>
-					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/</string>
-					<key>Tab Working Directory URL String</key>
-					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa</string>
+					<string>misc bash cmds</string>
 					<key>TabSelected</key>
 					<true/>
 				</dict>
