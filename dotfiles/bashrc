@@ -26,7 +26,7 @@ export VIM_APP_DIR=/Applications  # 4/29: System Macvim is newer than brew versi
 case $HOMEBREW_GITHUB_API_TOKEN in
   "")
     export HOMEBREW_GITHUB_API_TOKEN="not defined"
-    echo >&2 "? Warning: HOMEBREW_GITHUB_API_TOKEN undefined.  Add to ~/.secret_keys"
+    echo >&2 "? Warning: HOMEBREW_GITHUB_API_TOKEN undefined.  Add to $secret_key_file"
     ;;
 esac
 export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
