@@ -34,11 +34,7 @@
 					<key>Tab Subtitle</key>
 					<string>root commmands</string>
 					<key>Tab Title</key>
-					<string>root commmands         l-hr-lhall1.ateb.com</string>
-					<key>Tab Working Directory URL</key>
-					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa/</string>
-					<key>Tab Working Directory URL String</key>
-					<string>file://l-hr-lhall1.ateb.com/Users/gregory.tarsa</string>
+					<string>root commmands</string>
 					<key>TabSelected</key>
 					<true/>
 				</dict>
