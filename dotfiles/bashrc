@@ -20,8 +20,6 @@ test "$PS1" || return
 secret_key_file=~/.secret_key_file
 test -e $secret_key_file && source $secret_key_file
 
-export AXIAL_USER=gtarsa # used for production preferences
-
 export VIM_APP_DIR=/Applications  # 4/29: System Macvim is newer than brew version, so override for now
 case $HOMEBREW_GITHUB_API_TOKEN in
   "")
@@ -175,6 +173,10 @@ case $(uname) in
     export PATH
     test -f $(brew --prefix)/etc/bash_completion &&
       source $(brew --prefix)/etc/bash_completion
+
+    # gt 2018: configure FZF to use Silver Searcher, if it is installed
+    which ag > /dev/null &&
+      export FZF_DEFAULT_COMMAND='ag -g ""'
     ;;
 esac
 
