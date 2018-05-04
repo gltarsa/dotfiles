@@ -1,1 +1,0 @@
-/Users/tarsa/src/cci/helpful_scripts/gregt/get_workflow2_s3_backup.sh
