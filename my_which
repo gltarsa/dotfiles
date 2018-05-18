@@ -5,6 +5,7 @@ for cmd
 do
   found=""
 
+  # Search the PATH
   OFS="$IFS"
   IFS=":"
   for i in $PATH
@@ -17,16 +18,27 @@ do
   done
   IFS="$OFS"
 
+  # Search the aliases
   alias_item=`alias | grep -s "alias\s$cmd="`
   case $alias_item in
     "") ;; # not found
     *) echo "$cmd found as: $alias_item"
        found="y"
        ;;
-  esac 
+  esac
+
+  # Search the functions
+  . ~/.bash_aliases
+  function_item=`declare -f "$cmd"`
+  case $function_item in
+    "") ;; # not found
+    *) echo "$cmd found as: $function_item"
+       found=y
+       ;;
+   esac
 
   case $found in
-    "") echo "$cmd not found in path\n";;
+    "") echo "$cmd not found in path, aliases, or functions";;
   esac
   echo " "
 done
