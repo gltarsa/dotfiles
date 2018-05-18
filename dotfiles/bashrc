@@ -104,6 +104,9 @@ esac
 #
 #-- end Prompt setting code
 
+#++
+# PATH adjustment code
+#
 # {app,pre}pend_to path-var-name dirpath
 # remove_from path-var-name dirpath
 #
@@ -165,6 +168,12 @@ test -d /usr/bin/mh && {
   append_to PATH /usr/bin/mh
 }
 
+test -d /usr/local/nmh && {
+  append_to PATH /usr/local/nmh/bin
+  test $MANPATH || export MANPATH=`man -w` # no manpath? Set to default.
+  append_to MANPATH /usr/local/nmh/share/man
+}
+
 case $(uname) in
   *)
     # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
@@ -183,9 +192,12 @@ esac
 # Added for homebrew
 prepend_to PATH /usr/local/sbin
 
-# hack in Postgresql
-pg="/usr/local/opt/postgresql94/bin"
-which pg_dump > /dev/null || test -d $pg && prepend_to PATH $pg
+# only use RVM if we create the ~/use_rvm file
+test -e ~/use_rvm && {
+  append_to PATH ~/.rvm/bin # Add RVM to PATH for scripting
+  remove_from PATH
+}
+#--
 
 #++
 # Bash history configuration
@@ -214,16 +226,6 @@ PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 #
 #--
 
-test -d /usr/local/nmh && {
-  append_to PATH /usr/local/nmh/bin
-  test $MANPATH || export MANPATH=`man -w` # no manpath? Set to default.
-  append_to MANPATH /usr/local/nmh/share/man
-}
-
-# used by the `stack` package manager (Haskell & friends)
-test -d ~/.local/bin && {
-  append_to PATH ~/.local/bin
-}
 #++
 # Alias definitions.
 # Be sure to put this after all PATH adjustments
