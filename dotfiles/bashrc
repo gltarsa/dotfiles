@@ -233,8 +233,14 @@ test -f ~/.bash_aliases && source ~/.bash_aliases
 #
 #--
 
-# only use RVM if we create the ~/use_rvm file
-test -e ~/use_rvm && {
-  append_to PATH ~/.rvm/bin # Add RVM to PATH for scripting
-  remove_from PATH
-}
+# define default location for DOCKER PMAP loading for Omnicell laptop
+case `hostname` in
+  m-dev-gtarsa*)
+    base_dir=~/src/work/pmap-docker
+    export DOCK_PMAPWEB=~/src/work/pmap-update-ruby2.3+gems
+    export DOCK_COMPONENT=$base_dir/ci-2.0/component
+    export DOCK_DATASETS=$base_dir/datasets-trunk
+    export DOCK_IMPORT_SCRIPTS=$base_dir/messaging-campaign-reports-trunk
+    export DOCK_TOOL=$base_dir/ci-2.0/tool
+    ;;
+esac
