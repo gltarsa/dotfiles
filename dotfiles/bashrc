@@ -17,22 +17,30 @@
 # If not running interactively, don't do anything
 test "$PS1" || return
 
+#++
+# Set any secret keys
 secret_key_file=~/.secret_key_file
 test -e $secret_key_file && source $secret_key_file
 
-export VIM_APP_DIR=/Applications  # 4/29: System Macvim is newer than brew version, so override for now
 case $HOMEBREW_GITHUB_API_TOKEN in
   "")
     export HOMEBREW_GITHUB_API_TOKEN="not defined"
     echo >&2 "? Warning: HOMEBREW_GITHUB_API_TOKEN undefined.  Add to $secret_key_file"
     ;;
 esac
-export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
+#
+#--
 
+#++
+# Global editor info
+export VIM_APP_DIR=/Applications  # 4/29: System Macvim is newer than brew version, so override for now
 export ALTERNATE_EDITOR=""
 # export EDITOR=emacsclient
 export EDITOR=vim
-export CLICOLOR=true
+#
+#--
+
+export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig # Needed for X11/XQuartz
 
 # -s[et] shell options
 #  notify:    print bg job notifications immediately
@@ -50,7 +58,7 @@ umask 007
 
 #++
 # Prompt Setting code
-#
+export CLICOLOR=true
 color_prompt=
 test $force_color_prompt &&
   test -x /usr/bin/tput &&
@@ -81,7 +89,7 @@ function __show_git_branch() {
 #   magenta  5
 #   cyan     6
 #   white    7
-#basic B&W prompt: PS1='-- \u@\h:\w$(__show_git_branch) --\n\!\$ '
+# basic B&W prompt: PS1='-- \u@\h:\w$(__show_git_branch) --\n\!\$ '
 # While potentially nice for basic interaction, this trap causes pipes to hang
 # until CTRL-C is typed
 #trap '[[ -t 1 ]] && tput sgr0' DEBUG  # deactivate all post-command graphics
@@ -180,6 +188,13 @@ case $(uname) in
     which rbenv > /dev/null &&
       eval "$(rbenv  init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
     export PATH
+
+    # gt 2018: Enable shims and autocomplete for java
+    which jenv > /dev/null &&
+      eval "$(jenv init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
+    export PATH
+    export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+
     test -f $(brew --prefix)/etc/bash_completion &&
       source $(brew --prefix)/etc/bash_completion
 
@@ -244,5 +259,7 @@ case `hostname` in
     export DOCK_DATASETS=$base_dir/datasets-trunk
     export DOCK_IMPORT_SCRIPTS=$base_dir/messaging-campaign-reports-trunk
     export DOCK_TOOL=$base_dir/ci-2.0/tool
+    export REPOS='https://subversion.ateb.com/repos'
+    repos=$REPOS
     ;;
 esac
