@@ -17,24 +17,30 @@
 # If not running interactively, don't do anything
 test "$PS1" || return
 
+#++
+# Set any secret keys
 secret_key_file=~/.secret_key_file
 test -e $secret_key_file && source $secret_key_file
 
-export AXIAL_USER=gtarsa # used for production preferences
-
-export VIM_APP_DIR=/Applications  # 4/29: System Macvim is newer than brew version, so override for now
 case $HOMEBREW_GITHUB_API_TOKEN in
   "")
     export HOMEBREW_GITHUB_API_TOKEN="not defined"
     echo >&2 "? Warning: HOMEBREW_GITHUB_API_TOKEN undefined.  Add to $secret_key_file"
     ;;
 esac
-export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
+#
+#--
 
+#++
+# Global editor info
+export VIM_APP_DIR=/Applications  # 4/29: System Macvim is newer than brew version, so override for now
 export ALTERNATE_EDITOR=""
 # export EDITOR=emacsclient
 export EDITOR=vim
-export CLICOLOR=true
+#
+#--
+
+export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig # Needed for X11/XQuartz
 
 # -s[et] shell options
 #  notify:    print bg job notifications immediately
@@ -52,7 +58,7 @@ umask 007
 
 #++
 # Prompt Setting code
-#
+export CLICOLOR=true
 color_prompt=
 test $force_color_prompt &&
   test -x /usr/bin/tput &&
@@ -83,7 +89,7 @@ function __show_git_branch() {
 #   magenta  5
 #   cyan     6
 #   white    7
-#basic B&W prompt: PS1='-- \u@\h:\w$(__show_git_branch) --\n\!\$ '
+# basic B&W prompt: PS1='-- \u@\h:\w$(__show_git_branch) --\n\!\$ '
 # While potentially nice for basic interaction, this trap causes pipes to hang
 # until CTRL-C is typed
 #trap '[[ -t 1 ]] && tput sgr0' DEBUG  # deactivate all post-command graphics
@@ -106,6 +112,9 @@ esac
 #
 #-- end Prompt setting code
 
+#++
+# PATH adjustment code
+#
 # {app,pre}pend_to path-var-name dirpath
 # remove_from path-var-name dirpath
 #
@@ -167,23 +176,43 @@ test -d /usr/bin/mh && {
   append_to PATH /usr/bin/mh
 }
 
+test -d /usr/local/nmh && {
+  append_to PATH /usr/local/nmh/bin
+  test $MANPATH || export MANPATH=`man -w` # no manpath? Set to default.
+  append_to MANPATH /usr/local/nmh/share/man
+}
+
 case $(uname) in
   *)
     # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
     which rbenv > /dev/null &&
       eval "$(rbenv  init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
     export PATH
+
+    # gt 2018: Enable shims and autocomplete for java
+    which jenv > /dev/null &&
+      eval "$(jenv init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
+    export PATH
+    export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+
     test -f $(brew --prefix)/etc/bash_completion &&
       source $(brew --prefix)/etc/bash_completion
+
+    # gt 2018: configure FZF to use Silver Searcher, if it is installed
+    which ag > /dev/null &&
+      export FZF_DEFAULT_COMMAND='ag -g ""'
     ;;
 esac
 
 # Added for homebrew
 prepend_to PATH /usr/local/sbin
 
-# hack in Postgresql
-pg="/usr/local/opt/postgresql94/bin"
-which pg_dump > /dev/null || test -d $pg && prepend_to PATH $pg
+# only use RVM if we create the ~/use_rvm file
+test -e ~/use_rvm && {
+  append_to PATH ~/.rvm/bin # Add RVM to PATH for scripting
+  remove_from PATH
+}
+#--
 
 #++
 # Bash history configuration
@@ -212,16 +241,6 @@ PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 #
 #--
 
-test -d /usr/local/nmh && {
-  append_to PATH /usr/local/nmh/bin
-  test $MANPATH || export MANPATH=`man -w` # no manpath? Set to default.
-  append_to MANPATH /usr/local/nmh/share/man
-}
-
-# used by the `stack` package manager (Haskell & friends)
-test -d ~/.local/bin && {
-  append_to PATH ~/.local/bin
-}
 #++
 # Alias definitions.
 # Be sure to put this after all PATH adjustments
@@ -231,8 +250,16 @@ test -f ~/.bash_aliases && source ~/.bash_aliases
 #
 #--
 
-# only use RVM if we create the ~/use_rvm file
-test -e ~/use_rvm && {
-  append_to PATH ~/.rvm/bin # Add RVM to PATH for scripting
-  remove_from PATH
-}
+# define default location for DOCKER PMAP loading for Omnicell laptop
+case `hostname` in
+  m-dev-gtarsa*)
+    base_dir=~/src/work/pmap-docker
+    export DOCK_PMAPWEB=~/src/work/pmap-update-ruby2.3+gems
+    export DOCK_COMPONENT=$base_dir/ci-2.0/component
+    export DOCK_DATASETS=$base_dir/datasets-trunk
+    export DOCK_IMPORT_SCRIPTS=$base_dir/messaging-campaign-reports-trunk
+    export DOCK_TOOL=$base_dir/ci-2.0/tool
+    export REPOS='https://subversion.ateb.com/repos'
+    repos=$REPOS
+    ;;
+esac
