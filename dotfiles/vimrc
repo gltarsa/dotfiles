@@ -187,3 +187,9 @@ if v:version >= 703
     set colorcolumn=
   endif
 endif
+
+"" Set print conversion options (note: only Courier is only allowed font)
+"" h7 works, also, but is very small.
+set printfont=courier:h8
+set printoptions=portrait:y,left:1pc,right:1pc,top:1pc,bottom:1pc,header:1
+
