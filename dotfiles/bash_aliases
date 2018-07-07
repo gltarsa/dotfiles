@@ -88,16 +88,18 @@ test `which bundle 2> /dev/null` && {
 alias rubocop="bundle exec rubocop -D"
 alias cp="cp -v"
 test `which docker 2> /dev/null` && {
-  alias daliases='alias | egrep "alias dcup|alias de|alias dlog|alias dps|alias drm|alias dstop|alias dalias" && declare -f deb && declare -f drestart'
+  alias daliases='alias | egrep "alias d" | egrep -v " df| du"  && declare -f deb && declare -f drestart'
   alias dalias=daliases
+  alias dc='docker-compose'
   alias dcup='docker-compose up -d'
   alias de='docker exec -it'
   function deb () { docker exec -it $@ sh -c "stty cols `tput cols` && stty rows `tput lines` && /bin/bash"; }
   alias dlog='docker logs -f'
-  alias dps='docker ps -a'
+  alias dps="docker ps -a --format 'table {{.ID}} {{.Names}}\t{{.Image}}\t{{.Ports}}({{.Status}})'"
+  alias dpl="docker ps -a --format '{{.Names}}'"
   function drestart () { docker stop $@; docker rm -f $@; docker-compose up -d $@; }
-  alias drm='docker rm -f'
-  alias dstop='docker stop'
+  alias drm='docker-compose rm -f'
+  alias dstop='docker-compose stop'
 }
 alias du='du -h' # human-readable sizes
 alias df='df -Ph' # human-readable sizes

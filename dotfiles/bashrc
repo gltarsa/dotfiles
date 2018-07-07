@@ -212,7 +212,13 @@ test -e ~/use_rvm && {
   append_to PATH ~/.rvm/bin # Add RVM to PATH for scripting
   remove_from PATH
 }
-#--
+
+# Ensure that QT v5 packags is found first so that the system's V4 package is skipped
+# Technically, the backtick substitution should be run, but it takes > .5s, so assume QT5 present if dir is there.
+# qt5_prefix=$(brew --prefix qt@5.5 > /dev/null)
+qt5_prefix='/usr/local/opt/qt@5.5'
+[ -d $qt5_prefix ] &&  prepend_to PATH $qt5_prefix/bin
+#-- end PATH adjustments
 
 #++
 # Bash history configuration
@@ -255,10 +261,14 @@ case `hostname` in
   m-dev-gtarsa*)
     base_dir=~/src/work/pmap-docker
     export DOCK_PMAPWEB=~/src/work/pmap-update-ruby2.3+gems
+    export DOCK_PMAPWEB=~/src/work/trunk
     export DOCK_COMPONENT=$base_dir/ci-2.0/component
     export DOCK_DATASETS=$base_dir/datasets-trunk
     export DOCK_IMPORT_SCRIPTS=$base_dir/messaging-campaign-reports-trunk
     export DOCK_TOOL=$base_dir/ci-2.0/tool
+
+    export DOCK_MVNREPO=~/.m2/repository
+
     export REPOS='https://subversion.ateb.com/repos'
     repos=$REPOS
     ;;
