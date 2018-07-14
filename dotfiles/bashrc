@@ -190,10 +190,11 @@ case $(uname) in
     export PATH
 
     # gt 2018: Enable shims and autocomplete for java
-    which jenv > /dev/null &&
+    which jenv > /dev/null && {
       eval "$(jenv init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
-    export PATH
-    export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+      export PATH
+      export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+    }
 
     test -f $(brew --prefix)/etc/bash_completion &&
       source $(brew --prefix)/etc/bash_completion
