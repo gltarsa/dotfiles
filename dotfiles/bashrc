@@ -260,7 +260,7 @@ test -f ~/.bash_aliases && source ~/.bash_aliases
 # define default location for DOCKER PMAP loading for Omnicell laptop
 case `hostname` in
   m-dev-gtarsa*)
-    base_dir=~/src/work/pmap-docker
+    base_dir=~/src/work/docker-pmap
     export DOCK_PMAPWEB=~/src/work/pmap-update-ruby2.3+gems
     export DOCK_PMAPWEB=~/src/work/trunk
     export DOCK_COMPONENT=$base_dir/ci-2.0/component

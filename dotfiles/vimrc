@@ -23,6 +23,9 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
       \ 'marker':  ['fg', 'Keyword'],
       \ 'spinner': ['fg', 'Label'],
       \ 'header':  ['fg', 'Comment'] }
+    if executable('ag')             " use ag (the_silver_surfer), if available
+      let g:ackprg = 'ag --vimgrep'
+    endif
 
   Plugin 'xolox/vim-misc'           " base lib for other xolox plugins
   Plugin 'xolox/vim-shell'          " needed for easytags async processing
@@ -38,11 +41,12 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
   Plugin 'vim-ruby/vim-ruby'        " indentation for Ruby
   Plugin 'kana/vim-textobj-user'    " foundation for writing your own text object cmds
   Plugin 'nelstrom/vim-textobj-rubyblock' " indentation for ruby blocks
-  Plugin 'slim-template/vim-slim.git' " slim support
-  Plugin 'tpope/vim-commentary.git' " gc for commenting
+  Plugin 'slim-template/vim-slim' " slim support
+  Plugin 'tpope/vim-commentary' " gc for commenting
   Plugin 'tpope/vim-endwise'        " intelligent 'end' addition for coding
   Plugin 'tpope/vim-rails'          " rails support.  :help rails-
   Plugin 'tpope/vim-eunuch'         " :Rename, :Locate and friends
+  Plugin 'tpope/fugitive'           " :GBlame and other git integrations
   Plugin 'kchmck/vim-coffee-script'
   Plugin 'vim-scripts/camelcasemotion'
   Plugin 'AndrewRadev/splitjoin.vim'
@@ -54,8 +58,8 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
     map <Leader>s :up<CR>:call RunNearestSpec()<CR>
     map <Leader>l :call RunLastSpec()<CR>
     map <Leader>a :call RunAllSpecs()<CR>
-    " let g:rspec_command = "time rspec -fd --order defined --no-profile {spec}"
-    let g:rspec_command = "time zeus rspec -fd --order defined --no-profile {spec}"
+    let g:rspec_command = "rspec -fd --order defined --no-profile {spec}"
+    " let g:rspec_command = "time zeus rspec -fd --order defined --no-profile {spec}"
 
   Plugin 'terryma/vim-multiple-cursors'  " Cool multi-cursor support
   Plugin 'stefanoverna/vim-i18n'    " I18n help in VISUAL mode
@@ -114,6 +118,12 @@ set nohlsearch    " do not highlight matches
 set noincsearch   " do not incremental search
 set ignorecase    " be case-insensitive...set
 set smartcase     "... unless first letter is capitalized
+
+"" Set print conversion options (note: only Courier is only allowed font)
+"" h7 works, also, but is very small.
+set printfont=courier:10
+set printoptions=left:1pc,right:1pc,top:1pc,bottom:1pc,header:1
+set popt+=portrait:n
 
 "" colors and fonts
 if has('gui_running')
@@ -187,9 +197,3 @@ if v:version >= 703
     set colorcolumn=
   endif
 endif
-
-"" Set print conversion options (note: only Courier is only allowed font)
-"" h7 works, also, but is very small.
-set printfont=courier:h8
-set printoptions=portrait:y,left:1pc,right:1pc,top:1pc,bottom:1pc,header:1
-
