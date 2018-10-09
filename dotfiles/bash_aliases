@@ -166,6 +166,7 @@ test `uname` = Linux && {
   alias open="exo-open"
   alias pkgupdate="do_background gksudo synaptic"
 }
+alias ping='ping -c 5'
 alias rcp="echo_and_do /bin/rcp"
 alias reload='xrdb -load ~/.Xdefaults'
 alias ss='svn status'
