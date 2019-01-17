@@ -69,12 +69,12 @@ alias ls="$lscmd"
 ls --color /tmp > /dev/null 2>&1 &&
   alias ls="$lscmd --color"
 
-alias ack='echo "using ag instead"; ag'  # use ag
+which ag > /dev/null 2>&1 && alias ack='ag'
 #alias ffm='defaults write com.apple.Terminal FocusFollowsMouse -bool '
 alias cd='pushd'
 alias bk='popd'
 # convenience aliases if we are using bundle
-test `which bundle 2> /dev/null` && {
+which bundle > /dev/null 2>&1 && {
   alias be='bundle exec'
   alias cap="be cap"
   alias cucumber="be cucumber"
@@ -88,7 +88,7 @@ test `which bundle 2> /dev/null` && {
 }
 alias rubocop="bundle exec rubocop -D"
 alias cp="cp -v"
-test `which docker 2> /dev/null` && {
+which docker > /dev/null 2>&1 && {
   alias daliases='alias | egrep "alias d" | egrep -v " df| du"  && declare -f deb && declare -f drestart && declare -f container_id'
   alias dalias=daliases
   alias dc='docker-compose'
@@ -113,6 +113,8 @@ test `which docker 2> /dev/null` && {
   alias dcstop='docker-compose stop'
   alias drm='docker rm -f'
   alias dstop='docker stop'
+  alias dlerrors="dlog dataloader 2>&1  | egrep --line-buffered -i 'warning|error|sleeping forever' | grep -v --line-buffered Octopus | grep -v --line-buffered 'Errors Count: 0'"
+
 }
 alias du='du -h' # human-readable sizes
 alias df='df -Ph' # human-readable sizes
@@ -120,10 +122,10 @@ alias ecco="wine '/Users/tarsa/.wine/drive_c/Program Files/ECCO/eccoext' 2> /tmp
 # on Mac OS X, we prefer to use Emacs in the terminal window
 alias emacs='\ec -nw --quiet'
 alias xemacs='do_background ~/bin/ec --quiet'
-test `which git 2> /dev/null` && {
-test `uname` = Darwin && alias git=hub
-alias gd="git diff"
-alias gs="git status"
+which git > /dev/null 2>&1 && {
+  test `uname` = Darwin && alias git=hub
+  alias gd="git diff"
+  alias gs="git status"
 }
 alias grep='grep -s'  # inhibit "...Is a directory" messages
 # alias gvim='gvim 2> /dev/null 1>&2'
@@ -148,7 +150,7 @@ alias ip=aws_asg_to_ip.sh
 alias load=uptime
 alias mar='sed "s/^/	/" '
 # NMH aliases
-test `which next 2> /dev/null` && {
+which next > /dev/null 2>&1 && {
 	alias n="next"
 	alias rs="rmm;next"
 	alias rp="rmm;prev"

@@ -55,6 +55,8 @@ shopt -s checkwinsize
 # umask 027
 # set default file protection to 770
 umask 007
+# for Omnicell, set default file protestion to 775
+umask 002
 
 #++
 # Prompt Setting code
@@ -185,22 +187,23 @@ test -d /usr/local/nmh && {
 case $(uname) in
   *)
     # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
-    which rbenv > /dev/null &&
+    which rbenv > /dev/null 2>&1 &&
       eval "$(rbenv  init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
     export PATH
 
     # gt 2018: Enable shims and autocomplete for java
-    which jenv > /dev/null && {
+    which jenv > /dev/null 2>&1 && {
       eval "$(jenv init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
       export PATH
       export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
     }
 
-    test -f $(brew --prefix)/etc/bash_completion &&
-      source $(brew --prefix)/etc/bash_completion
+    which brew > /dev/null 2>&1 &&
+      test -f $(brew --prefix)/etc/bash_completion &&
+        source $(brew --prefix)/etc/bash_completion
 
     # gt 2018: configure FZF to use Silver Searcher, if it is installed
-    which ag > /dev/null &&
+    which ag > /dev/null 2>&1 &&
       export FZF_DEFAULT_COMMAND='ag -g ""'
     ;;
 esac
@@ -261,7 +264,6 @@ test -f ~/.bash_aliases && source ~/.bash_aliases
 case `hostname` in
   m-dev-gtarsa*)
     base_dir=~/src/work/docker-pmap
-    export DOCK_PMAPWEB=~/src/work/pmap-update-ruby2.3+gems
     export DOCK_PMAPWEB=~/src/work/trunk
     export DOCK_COMPONENT=$base_dir/ci-2.0/component
     export DOCK_DATASETS=$base_dir/datasets-trunk
