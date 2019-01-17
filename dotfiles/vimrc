@@ -174,7 +174,7 @@ let g:ctrlp_custom_ignore = {
  \ }
 
 "" VIMs back up feature prevents write in place and crontab requires it
-autocmd filetype crontab setlocal nobackup nowritebackup
+autocmd FileType crontab setlocal nobackup nowritebackup
 
 "" Set GVIM for 120 character code lines by default
 "" Also set a color column if we are in a GUI

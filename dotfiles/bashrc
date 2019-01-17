@@ -22,12 +22,14 @@ test "$PS1" || return
 secret_key_file=~/.secret_key_file
 test -e $secret_key_file && source $secret_key_file
 
-case $HOMEBREW_GITHUB_API_TOKEN in
-  "")
-    export HOMEBREW_GITHUB_API_TOKEN="not defined"
-    echo >&2 "? Warning: HOMEBREW_GITHUB_API_TOKEN undefined.  Add to $secret_key_file"
-    ;;
-esac
+which brew > /dev/null 2>&1 && {
+  case $HOMEBREW_GITHUB_API_TOKEN in
+    "")
+      export HOMEBREW_GITHUB_API_TOKEN="not defined"
+      echo >&2 "? Warning: HOMEBREW_GITHUB_API_TOKEN undefined.  Add to $secret_key_file"
+      ;;
+  esac
+}
 #
 #--
 
