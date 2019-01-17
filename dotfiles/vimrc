@@ -181,6 +181,9 @@ autocmd filetype crontab setlocal nobackup nowritebackup
 " set the window width
 let targetwidth=120
 
+"" set width for wrapping to 90 characters
+set textwidth=90
+
 if has("gui_running")
   " set window width to target + 4 for line numbers
   let &columns=targetwidth + 4
