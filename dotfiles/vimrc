@@ -1,59 +1,60 @@
 set nocompatible " no compatibility with legacy vi (also req'd for Vundle)
-if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
-  filetype off     " Vundle needs this off for initialization
-  "" Intialize Vundle and load plugins.  See ":h vundle" for more info.
-  set runtimepath+=~/.vim/bundle/Vundle.vim
-  call vundle#begin()
-  Plugin 'gmarik/Vundle.vim'
-  "" my plugins
-  Plugin 'junegunn/fzf'             " fuzzy file search (see color customizations later)
+if has("gui_running")
+  if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
+    filetype off     " Vundle needs this off for initialization
+    "" Intialize Vundle and load plugins.  See ":h vundle" for more info.
+    set runtimepath+=~/.vim/bundle/Vundle.vim
+    call vundle#begin()
+    Plugin 'gmarik/Vundle.vim'
+    "" my plugins
+    Plugin 'junegunn/fzf'             " fuzzy file search (see color customizations later)
     map <c-p> :FZF<CR>
     map <c-p><cr> +
     "" fzf colors (make them match the current color scheme)
     let g:fzf_colors =
-    \ { 'fg':      ['fg', 'Normal'],
-      \ 'bg':      ['bg', 'Normal'],
-      \ 'hl':      ['fg', 'Comment'],
-      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-      \ 'hl+':     ['fg', 'Statement'],
-      \ 'info':    ['fg', 'PreProc'],
-      \ 'prompt':  ['fg', 'Conditional'],
-      \ 'pointer': ['fg', 'Exception'],
-      \ 'marker':  ['fg', 'Keyword'],
-      \ 'spinner': ['fg', 'Label'],
-      \ 'header':  ['fg', 'Comment'] }
+          \ { 'fg':      ['fg', 'Normal'],
+          \ 'bg':      ['bg', 'Normal'],
+          \ 'hl':      ['fg', 'Comment'],
+          \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+          \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+          \ 'hl+':     ['fg', 'Statement'],
+          \ 'info':    ['fg', 'PreProc'],
+          \ 'prompt':  ['fg', 'Conditional'],
+          \ 'pointer': ['fg', 'Exception'],
+          \ 'marker':  ['fg', 'Keyword'],
+          \ 'spinner': ['fg', 'Label'],
+          \ 'header':  ['fg', 'Comment'] }
     if executable('ag')             " use ag (the_silver_surfer), if available
       let g:ackprg = 'ag --vimgrep'
     endif
 
-  Plugin 'xolox/vim-misc'           " base lib for other xolox plugins
-  Plugin 'xolox/vim-shell'          " needed for easytags async processing
-  Plugin 'xolox/vim-easytags'       " automatic tag file management
+    Plugin 'xolox/vim-misc'           " base lib for other xolox plugins
+    Plugin 'xolox/vim-shell'          " needed for easytags async processing
+    Plugin 'xolox/vim-easytags'       " automatic tag file management
     "" ctags processing (from https://github.com/xolox/vim-easytags)
     set tags=tags
     let g:easytags_dynamic_files = 1 " use the first project-specific tag file found
     let g:easytags_async = 1         " Update tags asynchronously
     set cpoptions+=d                 " make tag file in cwd, not relative to edited file
 
-  Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
-  " doc for vim-ruby: https://github.com/vim-ruby/vim-ruby/wiki/VimRubySupport
-  Plugin 'vim-ruby/vim-ruby'        " indentation for Ruby
-  Plugin 'kana/vim-textobj-user'    " foundation for writing your own text object cmds
-  Plugin 'nelstrom/vim-textobj-rubyblock' " indentation for ruby blocks
-  Plugin 'slim-template/vim-slim' " slim support
-  Plugin 'tpope/vim-commentary' " gc for commenting
-  Plugin 'tpope/vim-endwise'        " intelligent 'end' addition for coding
-  Plugin 'tpope/vim-rails'          " rails support.  :help rails-
-  Plugin 'tpope/vim-eunuch'         " :Rename, :Locate and friends
-  Plugin 'tpope/fugitive'           " :GBlame and other git integrations
-  Plugin 'kchmck/vim-coffee-script'
-  Plugin 'vim-scripts/camelcasemotion'
-  Plugin 'AndrewRadev/splitjoin.vim'
-  Plugin 'sheerun/vim-polyglot'     " Lots of on-demand language support
-  "Plugin 'mustache/vim-mustache-handlebars' " {{ support for emberjs & friends
-  Plugin 'mileszs/ack.vim'          " :ack support
-  Plugin 'thoughtbot/vim-rspec'     " :rspec support
+    Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
+    " doc for vim-ruby: https://github.com/vim-ruby/vim-ruby/wiki/VimRubySupport
+    Plugin 'vim-ruby/vim-ruby'        " indentation for Ruby
+    Plugin 'kana/vim-textobj-user'    " foundation for writing your own text object cmds
+    Plugin 'nelstrom/vim-textobj-rubyblock' " indentation for ruby blocks
+    Plugin 'slim-template/vim-slim' " slim support
+    Plugin 'tpope/vim-commentary' " gc for commenting
+    Plugin 'tpope/vim-endwise'        " intelligent 'end' addition for coding
+    Plugin 'tpope/vim-rails'          " rails support.  :help rails-
+    Plugin 'tpope/vim-eunuch'         " :Rename, :Locate and friends
+    Plugin 'tpope/fugitive'           " :GBlame and other git integrations
+    Plugin 'kchmck/vim-coffee-script'
+    Plugin 'vim-scripts/camelcasemotion'
+    Plugin 'AndrewRadev/splitjoin.vim'
+    Plugin 'sheerun/vim-polyglot'     " Lots of on-demand language support
+    "Plugin 'mustache/vim-mustache-handlebars' " {{ support for emberjs & friends
+    Plugin 'mileszs/ack.vim'          " :ack support
+    Plugin 'thoughtbot/vim-rspec'     " :rspec support
     map <Leader>t :up<CR>:call RunCurrentSpecFile()<CR>
     map <Leader>s :up<CR>:call RunNearestSpec()<CR>
     map <Leader>l :call RunLastSpec()<CR>
@@ -61,74 +62,90 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
     let g:rspec_command = "rspec -fd --order defined --no-profile {spec}"
     " let g:rspec_command = "time zeus rspec -fd --order defined --no-profile {spec}"
 
-  Plugin 'terryma/vim-multiple-cursors'  " Cool multi-cursor support
-  if executable('ruby')
-    Plugin 'stefanoverna/vim-i18n'    " I18n help in VISUAL mode
-    vmap <Leader>z :call I18nTranslateString()<CR>
-    vmap <Leader>Z :call I18nDisplayTranslation()<CR>
+    Plugin 'terryma/vim-multiple-cursors'  " Cool multi-cursor support
+    if executable('ruby')
+      Plugin 'stefanoverna/vim-i18n'    " I18n help in VISUAL mode
+      vmap <Leader>z :call I18nTranslateString()<CR>
+      vmap <Leader>Z :call I18nDisplayTranslation()<CR>
+    endif
+
+    call vundle#end() " end of Vundle plugin list
+    filetype plugin on " required by Vundle
+    filetype indent on " required by Vundle
   endif
 
-  call vundle#end() " end of Vundle plugin list
-  filetype plugin on " required by Vundle
-  filetype indent on " required by Vundle
-endif
+  "" Setup builtin plugin netrw to look like NERDtree
+  let g:netrw_liststyle = 3     " Use tree-style listing format
+  "let g:netrw_banner = 0 " Don't display heading with cmd summaries
+  let g:netrw_browse_split = 1  " Open files in new H-split
+  let g:netrw_winsize = 25      " Use 25% of width for listing
+  map <leader>n :Vexplore .     " explore the project directory<CR>
+  map <leader>d :Vexplore       " explore the dir of the current file<CR>
 
-"" Setup builtin plugin netrw to look like NERDtree
-let g:netrw_liststyle = 3     " Use tree-style listing format
-"let g:netrw_banner = 0 " Don't display heading with cmd summaries
-let g:netrw_browse_split = 1  " Open files in new H-split
-let g:netrw_winsize = 25      " Use 25% of width for listing
-map <leader>n :Vexplore .     " explore the project directory<CR>
-map <leader>d :Vexplore       " explore the dir of the current file<CR>
+  "" General settings for GUI mode
+  autocmd BufWritePre * :%s/\s\+$//e  " remove trailing whitespace on buffer write
+  syntax on		        " enable syntax sensitivity
+  filetype indent on	" enable filetype-specific indentation
+  set mouse=a         " enable mouse interaction with non-gui vim
 
+  "" Status line customizations
+  set laststatus=2	" always show the status line
+  set statusline=
+  set statusline+=%-3.3n\      " buffer number
+  set statusline+=%f\           " filename
+  set statusline+=%h%m%r%w      " status flags
 
-"" General settings
-autocmd BufWritePre * :%s/\s\+$//e  " remove trailing whitespace on buffer write
-set encoding=utf-8
-set showcmd		" display incomplete cmds
-set number    " turn line numbering on
-syntax on		" enable syntax sensitivity
-filetype on		" enable filetype detection
-set mouse=a   " enable mouse interaction with non-gui vim
+  "" Tab Management, Indentation, tabbing, and whitespace
+  set smartindent
+  set tabstop=2
+  set shiftwidth=2
+  set expandtab
+  if !empty(glob("~/.vim/_partials/tab_mgt*"))
+    source ~/.vim/_partials/tab_mgt.vim
+  endif
 
-"" Highlighting & cursor
-if has("gui_running")  "match brackets w/ lighter bg
-  highlight MatchParen guibg=HoneyDew gui=bold,underline
-else
-  highlight MatchParen ctermbg=LightGrey cterm=bold,reverse,underline
-endif
+  "" status line settings
+  set laststatus=2  " always maintain a status line
+  if version >= 700
+    au InsertEnter * hi StatusLine term=reverse ctermbg=5 gui=undercurl guisp=Magenta
+    au InsertLeave * hi StatusLine term=reverse ctermfg=0 ctermbg=2 gui=bold,reverse
+    " au InsertEnter * hi StatusLine term=reverse ctermbg=5           guibg=Pink2     gui=bold,reverse
+    " au InsertLeave * hi StatusLine term=reverse ctermfg=0 ctermbg=2 guifg=PaleGreen gui=bold,reverse
+  endif
 
-"" Status line customizations
-set laststatus=2	" always show the status line
-set statusline=
-set statusline+=%-3.3n\      " buffer number
-set statusline+=%f\           " filename
-set statusline+=%h%m%r%w      " status flags
+  " XML folding
+  let g:xml_syntax_folding=1
+  au FileType xml setlocal foldmethod=syntax
 
-"" Tab Management, Indentation, tabbing, and whitespace
-filetype indent on	" enable filetype-specific indentation
-set smartindent
-set tabstop=2
-set shiftwidth=2
-set expandtab
-if !empty(glob("~/.vim/_partials/tab_mgt*"))
-  source ~/.vim/_partials/tab_mgt.vim
-endif
+  " CtrlP directives to ignore (per ctrlp docs)
+  let g:ctrlp_custom_ignore = {
+        \ 'dir': '\v(bower_components|node_modules)$',
+        \ }
 
-"" Searching
-set nohlsearch    " do not highlight matches
-set noincsearch   " do not incremental search
-set ignorecase    " be case-insensitive...set
-set smartcase     "... unless first letter is capitalized
+  "" VIMs back up feature prevents write in place and crontab requires it
+  autocmd FileType crontab setlocal nobackup nowritebackup
 
-"" Set print conversion options (note: only Courier is only allowed font)
-"" h7 works, also, but is very small.
-set printfont=courier:10
-set printoptions=left:1pc,right:1pc,top:1pc,bottom:1pc,header:1
-set popt+=portrait:n
+  "" Set GVIM for 120 character code lines by default
+  "" Also set a color column if we are in a GUI
+  " set the window width
+  let targetwidth=120
 
-"" colors and fonts
-if has('gui_running')
+  " set window width to target + 4 for line numbers
+  let &columns=targetwidth + 4
+
+  if v:version >= 703
+    let &colorcolumn=targetwidth
+
+    " use a faint gray color, not too insistent
+    highlight ColorColumn term=reverse ctermbg=253 guibg=#e6e6e6
+
+    " if we're called as '*view', or on a console, turn off the colorcolumn
+    if v:progname =~? 'view' || &term =~? 'linux|console'
+      set colorcolumn=
+    endif
+  endif
+
+  "" colors and fonts
   set background=light
   colorscheme solarized
   if has("macunix")
@@ -144,17 +161,38 @@ if has('gui_running')
   endif
 endif
 
+"" Highlighting & cursor
+if has("gui_running")  "match brackets w/ lighter bg
+  highlight MatchParen guibg=HoneyDew gui=bold,underline
+else
+  highlight MatchParen ctermbg=LightGrey cterm=bold,reverse,underline
+endif
+
+if has("gui_running") " set wrapping target column
+  set textwidth=90
+else
+  set textwidth=72
+endif
+
+"" General settings for all modes
+set encoding=utf-8
+set showcmd		" display incomplete cmds
+set number    " turn line numbering on
+
+"" Searching
+set nohlsearch    " do not highlight matches
+set noincsearch   " do not incremental search
+set ignorecase    " be case-insensitive...set
+set smartcase     "... unless first letter is capitalized
+
+"" Set print conversion options (note: only Courier is only allowed font)
+"" h7 works, also, but is very small.
+set printfont=courier:10
+set printoptions=left:1pc,right:1pc,top:1pc,bottom:1pc,header:1
+set popt+=portrait:n
+
 "" Session options
 set sessionoptions-=options " don't save options when making sessions
-
-"" status line settings
-set laststatus=2  " always maintain a status line
-if version >= 700
-  au InsertEnter * hi StatusLine term=reverse ctermbg=5 gui=undercurl guisp=Magenta
-  au InsertLeave * hi StatusLine term=reverse ctermfg=0 ctermbg=2 gui=bold,reverse
-  " au InsertEnter * hi StatusLine term=reverse ctermbg=5           guibg=Pink2     gui=bold,reverse
-  " au InsertLeave * hi StatusLine term=reverse ctermfg=0 ctermbg=2 guifg=PaleGreen gui=bold,reverse
-endif
 
 "" swap files
 set directory=/tmp,~/.vim/tmp,/var/tmp,.
@@ -162,43 +200,3 @@ set directory=/tmp,~/.vim/tmp,/var/tmp,.
 "" Window management
 set splitbelow	" these defaults feel more natural
 set splitright
-
-"" Favorite Macros
-let @w='?:wd$jdd:w'  " search back for ':w' delete to EOL, delete next line, write the file
-
-" XML folding
-let g:xml_syntax_folding=1
-au FileType xml setlocal foldmethod=syntax
-
-" CtrlP directives to ignore (per ctrlp docs)
-let g:ctrlp_custom_ignore = {
- \ 'dir': '\v(bower_components|node_modules)$',
- \ }
-
-"" VIMs back up feature prevents write in place and crontab requires it
-autocmd FileType crontab setlocal nobackup nowritebackup
-
-"" Set GVIM for 120 character code lines by default
-"" Also set a color column if we are in a GUI
-" set the window width
-let targetwidth=120
-
-"" set width for wrapping to 90 characters
-set textwidth=90
-
-if has("gui_running")
-  " set window width to target + 4 for line numbers
-  let &columns=targetwidth + 4
-endif
-
-if v:version >= 703
-  let &colorcolumn=targetwidth
-
-  " use a faint gray color, not too insistent
-  highlight ColorColumn term=reverse ctermbg=253 guibg=#e6e6e6
-
-  " if we're called as '*view', or on a console, turn off the colorcolumn
-  if v:progname =~? 'view' || &term =~? 'linux|console'
-    set colorcolumn=
-  endif
-endif
