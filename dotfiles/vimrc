@@ -63,11 +63,11 @@ if has("gui_running")
     " let g:rspec_command = "time zeus rspec -fd --order defined --no-profile {spec}"
 
     Plugin 'terryma/vim-multiple-cursors'  " Cool multi-cursor support
-    if executable('ruby')
-      Plugin 'stefanoverna/vim-i18n'    " I18n help in VISUAL mode
-      vmap <Leader>z :call I18nTranslateString()<CR>
-      vmap <Leader>Z :call I18nDisplayTranslation()<CR>
-    endif
+    " if executable('ruby')
+    "   Plugin 'stefanoverna/vim-i18n'    " I18n help in VISUAL mode
+    "   vmap <Leader>z :call I18nTranslateString()<CR>
+    "   vmap <Leader>Z :call I18nDisplayTranslation()<CR>
+    " endif
 
     call vundle#end() " end of Vundle plugin list
     filetype plugin on " required by Vundle
