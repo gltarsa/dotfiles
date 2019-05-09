@@ -229,10 +229,12 @@ arguments, START, END and ARG."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector ["black" "dark red" "forest green" "orange2" "blue" "magenta" "dark cyan" "dark gray"])
+ '(ansi-color-names-vector
+   ["black" "dark red" "forest green" "orange2" "blue" "magenta" "dark cyan" "dark gray"])
  '(css-indent-offset 2)
  '(inhibit-startup-screen t)
- '(scss-compile-at-save nil))
+ '(scss-compile-at-save nil)
+ '(send-mail-function (quote mailclient-send-it)))
 
  ;; Note: height is approx 10x point size, so 120 is about 12pt
 (custom-set-faces
@@ -245,3 +247,29 @@ arguments, START, END and ARG."
 ;; rather than start with an "instructional buffer" let's just create an
 ;; empty buffer called "newbuf"
 ;(switch-to-buffer "newbuf")
+
+;;Configure Outbound Mail
+
+;;Tell the program who you are
+
+(setq user-full-name "Greg Tarsa")
+(setq user-mail-address "gltarsa@gmail.com")
+
+;;Tell Emacs to use GNUTLS instead of STARTTLS
+;;to authenticate when sending mail.
+
+(setq starttls-use-gnutls t)
+
+;;Tell Emacs about your mail server and credentials
+
+(setq send-mail-function 'smtpmail-send-it
+message-send-mail-function 'smtpmail-send-it
+smtpmail-starttls-credentials
+'(("smtp.gmail.com" 587 nil nil))
+smtpmail-auth-credentials
+(expand-file-name "~/.authinfo")
+smtpmail-default-smtp-server "smtp.gmail.com"
+smtpmail-smtp-server "smtp.gmail.com"
+smtpmail-smtp-service 587
+smtpmail-debug-info t)
+(require 'smtpmail)
