@@ -1,0 +1,4 @@
+set hlsearch
+set ignorecase smartcase
+set showmode
+multiple-cursors
