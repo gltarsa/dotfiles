@@ -94,7 +94,7 @@
 ### '*' matches leading dots, e.g. '*.rej' matches '.foo.rej'.
 # global-ignores = *.o *.lo *.la *.al .libs *.so *.so.[0-9]* *.a *.pyc *.pyo __pycache__
 #   *.rej *~ #*# .#* .*.swp .DS_Store [Tt]humbs.db
-global-ignores = .git .ruby-version coverage tmp.* tmp docker-compose.yml public/public
+global-ignores = .git .ruby-version coverage tmp.* tmp docker-compose.yml public/public .idea
 
 ### Set log-encoding to the default encoding for log messages
 # log-encoding = latin1

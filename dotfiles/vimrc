@@ -46,7 +46,7 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
   Plugin 'tpope/vim-endwise'        " intelligent 'end' addition for coding
   Plugin 'tpope/vim-rails'          " rails support.  :help rails-
   Plugin 'tpope/vim-eunuch'         " :Rename, :Locate and friends
-  Plugin 'tpope/fugitive'           " :GBlame and other git integrations
+  Plugin 'tpope/vim-fugitive'           " :GBlame and other git integrations
   Plugin 'kchmck/vim-coffee-script'
   Plugin 'vim-scripts/camelcasemotion'
   Plugin 'AndrewRadev/splitjoin.vim'
@@ -62,11 +62,12 @@ if !empty(glob("~/.vim/bundle/Vundle.vim/*"))
     " let g:rspec_command = "time zeus rspec -fd --order defined --no-profile {spec}"
 
   Plugin 'terryma/vim-multiple-cursors'  " Cool multi-cursor support
-  if executable('ruby')
-    Plugin 'stefanoverna/vim-i18n'    " I18n help in VISUAL mode
-    vmap <Leader>z :call I18nTranslateString()<CR>
-    vmap <Leader>Z :call I18nDisplayTranslation()<CR>
-  endif
+  "" Getting E448: Could not load lib function rb_ary_detransient.
+  " if executable('ruby')
+  "   Plugin 'stefanoverna/vim-i18n'    " I18n help in VISUAL mode
+  "   vmap <Leader>z :call I18nTranslateString()<CR>
+  "   vmap <Leader>Z :call I18nDisplayTranslation()<CR>
+  " endif
 
   call vundle#end() " end of Vundle plugin list
   filetype plugin on " required by Vundle
@@ -118,7 +119,7 @@ endif
 "" Searching
 set nohlsearch    " do not highlight matches
 set noincsearch   " do not incremental search
-set ignorecase    " be case-insensitive...set
+set ignorecase    " be case-insensitive...
 set smartcase     "... unless first letter is capitalized
 
 "" Set print conversion options (note: only Courier is only allowed font)

@@ -79,6 +79,7 @@ which bundle > /dev/null 2>&1 && {
   alias cap="be cap"
   alias cucumber="be cucumber"
   alias rackup="be rackup"
+  alias erackup="be rackup -o 0.0.0.0"  # enable server to be seen external to the local box
   alias rails="be rails"
   alias rake="be rake"
   alias crspec="be rspec --no-profile --order defined --format doc"  # canonical rspec
