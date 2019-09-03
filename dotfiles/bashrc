@@ -190,7 +190,7 @@ case $(uname) in
   *)
     # gt 2013: Enable shims and autocomplete for Ruby and completion for Brew
     which rbenv > /dev/null 2>&1 &&
-      eval "$(rbenv  init - | sed 's/export PATH=/prepend_to PATH /;s/:.*/"/')"
+      eval "$(rbenv  init - )"
     export PATH
 
     # gt 2018: Enable shims and autocomplete for java
