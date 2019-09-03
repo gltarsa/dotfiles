@@ -89,6 +89,7 @@ which bundle > /dev/null 2>&1 && {
 }
 alias rubocop="bundle exec rubocop -D"
 alias cp="cp -v"
+which colordiff > /dev/null 2>&1 && alias diff=colordiff
 which docker > /dev/null 2>&1 && {
   alias daliases='alias | egrep "alias d" | egrep -v " df| du"  && declare -f deb && declare -f drestart && declare -f container_id'
   alias dalias=daliases
@@ -100,7 +101,8 @@ which docker > /dev/null 2>&1 && {
     echo "docker exec -it $@ sh -c 'stty cols `tput cols` && stty rows `tput lines` && /bin/bash'";
     docker exec -it $@ sh -c "stty cols `tput cols` && stty rows `tput lines` && /bin/bash";
   }
-  alias dlog='docker logs -f'
+  alias dlog='docker logs'
+  alias dlogf='docker logs -f'
   alias dps="docker ps -a --format 'table {{.Names}}\t{{.Status}} {{.Ports}}' | cut -c 1-`tput cols`"
   alias dpss="docker ps -a --format 'table {{.ID}} {{.Names}}\t{{.Image}}\t{{.Ports}}({{.Status}})'"
   alias dpsl="docker ps -a --format '{{.Names}}'"
@@ -147,6 +149,7 @@ alias hist="x;history 44 | sed 's/\[[0-9].*[0-9]\] //' | pr -w`tput cols` -2 -l2
 function home() { pushd $1; while : true; do pushd 2> /dev/null || break; popd; done }
 alias nhist="his | sed 's/^.*:[0-9][0-9]] //'"  # "naked history" - for saving history for scripts
 alias iostat='iostat -h' # human-readable sizes
+alias ireport='~/src/tools/iReport-3.0.0/ireport.sh 2> /dev/null &'
 alias ip=aws_asg_to_ip.sh
 alias load=uptime
 alias mar='sed "s/^/	/" '
