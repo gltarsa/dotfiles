@@ -153,6 +153,7 @@ alias ireport='~/src/tools/iReport-3.0.0/ireport.sh 2> /dev/null &'
 alias ip=aws_asg_to_ip.sh
 alias load=uptime
 alias mar='sed "s/^/	/" '
+alias myxstat='curl -S localhost:18181/cxf/api/pmap/ping'
 # NMH aliases
 which next > /dev/null 2>&1 && {
 	alias n="next"
