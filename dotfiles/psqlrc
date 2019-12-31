@@ -3,7 +3,7 @@
 \x auto
 
 -- always show how long a query takes
-\timing
+-- \timing
 
 -- Set prompt to be show when in a query definition
 \set PROMPT1 '%[%033[33;1m%]%x%[%033[0m%]%[%033[1m%]%/%[%033[0m%]%R%# '

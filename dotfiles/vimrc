@@ -30,12 +30,75 @@ if has("gui_running")
 
     Plugin 'xolox/vim-misc'           " base lib for other xolox plugins
     Plugin 'xolox/vim-shell'          " needed for easytags async processing
-    Plugin 'xolox/vim-easytags'       " automatic tag file management
-    "" ctags processing (from https://github.com/xolox/vim-easytags)
-    set tags=tags
-    let g:easytags_dynamic_files = 1 " use the first project-specific tag file found
-    let g:easytags_async = 1         " Update tags asynchronously
-    set cpoptions+=d                 " make tag file in cwd, not relative to edited file
+    Plugin 'ludovicchabant/vim-gutentags' " automatic tags management
+    Plugin 'skywind3000/gutentags_plus'   " automatiic tag project-file management
+    "++
+    " gutentags options
+    "   (from https://www.reddit.com/r/vim/comments/d77t6j/guide_how_to_setup_ctags_with_gutentags_properly/)
+    let g:gutentags_gtags_executable = 'ctags'          " use Exuberant CTAGS for indexing
+    let g:gutentags_modules = ['ctags', 'gtags_cscope'] " enable gtags module
+    let g:gutentags_project_root = ['package.json', '.git']  " config extra project root markers (def includes '.git')
+    let g:gutentags_cache_dir = expand('~/.cache/vim/tags')  " generate DBs in cache directory, centralize gtags files
+    let g:gutentags_plus_switch = 1                          " change focus to quickfix window after search (optional).
+    " Let gutentags generate tags under most circumstances
+    let g:gutentags_generate_on_new = 1
+    let g:gutentags_generate_on_missing = 1
+    let g:gutentags_generate_on_write = 1
+    let g:gutentags_generate_on_empty_buffer = 0
+    " Generate extra tag info
+    "   a: Access (or export) of class members; i: Inheritance information; l: Language of input file containing tag
+    "   m: Implementation information; n: Line number of tag definition;
+    "   S: Signature of routine (e.g. prototype or parameter list)
+    let g:gutentags_ctags_extra_args = [ '--tag-relative=yes', '--fields=+ailmnS', ]
+    " Speed things up by not indexing this kinds of files/dirs
+    let g:gutentags_ctags_exclude = [
+          \ '*.git', '*.svg', '*.hg',
+          \ '*/tests/*',
+          \ 'build',
+          \ 'dist',
+          \ '*sites/*/files/*',
+          \ 'bin',
+          \ 'node_modules',
+          \ 'bower_components',
+          \ 'cache',
+          \ 'compiled',
+          \ 'docs',
+          \ 'example',
+          \ 'bundle',
+          \ 'vendor',
+          \ '*.md',
+          \ '*-lock.json',
+          \ '*.lock',
+          \ '*bundle*.js',
+          \ '*build*.js',
+          \ '.*rc*',
+          \ '*.json',
+          \ '*.min.*',
+          \ '*.map',
+          \ '*.bak',
+          \ '*.zip',
+          \ '*.pyc',
+          \ '*.class',
+          \ '*.sln',
+          \ '*.Master',
+          \ '*.csproj',
+          \ '*.tmp',
+          \ '*.csproj.user',
+          \ '*.cache',
+          \ '*.pdb',
+          \ 'tags*',
+          \ 'cscope.*',
+          \ '*.css',
+          \ '*.less',
+          \ '*.scss',
+          \ '*.exe', '*.dll',
+          \ '*.mp3', '*.ogg', '*.flac',
+          \ '*.swp', '*.swo',
+          \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
+          \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
+          \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
+          \ ]
+    "-- End options
 
     Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
     " doc for vim-ruby: https://github.com/vim-ruby/vim-ruby/wiki/VimRubySupport
@@ -47,7 +110,7 @@ if has("gui_running")
     Plugin 'tpope/vim-endwise'        " intelligent 'end' addition for coding
     Plugin 'tpope/vim-rails'          " rails support.  :help rails-
     Plugin 'tpope/vim-eunuch'         " :Rename, :Locate and friends
-    Plugin 'tpope/fugitive'           " :GBlame and other git integrations
+    Plugin 'tpope/vim-fugitive'       " :GBlame and other git integrations
     Plugin 'kchmck/vim-coffee-script'
     Plugin 'vim-scripts/camelcasemotion'
     Plugin 'AndrewRadev/splitjoin.vim'
