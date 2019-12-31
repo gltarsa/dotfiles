@@ -5,6 +5,8 @@ dc_filename_prefix=docker-compose.
 dc_filename_suffix=.yml
 myxtmpfile=/tmp/start-myx$$
 debug=false
+nl='
+'
 
 trap "test -f $myxtmpfile && rm $myxtmpfile" 0
 
@@ -16,8 +18,12 @@ Usage="$0 [--help] [-c|--container container-list] [version-string]
 
     Default filename is ${dc_filename_default}
 
+    A 'docker-compose pull' command will be executed if it is more than 24 hrs since the
+    last pull.
+
     Options:
       --help       display this message
+      --debug      run in debug mode
       --container  restart the given container list, typically just 'myx'.  This
                    option is not fully implemented.  Stick with just 'myx'.
 "
@@ -26,10 +32,15 @@ Usage="$0 [--help] [-c|--container container-list] [version-string]
 # but this way works consistently
 containers=`docker ps -a --format '{{.Names}}'`
 case $1 in
+  --debug)
+    debug=true
+    shift
+    ;;
+
   --help)
     echo 1>&2 "? ${Usage}"
     filespec=${docker_compose_home}/${dc_filename_prefix}
-    echo 1>&2 "    Known suffixes are:" $(echo ${filespec}* | sed "s=${filespec}==g;s=.yml==g")
+    echo 1>&2 "-----${nl}    Known suffixes are:" $(echo ${filespec}* | sed "s=${filespec}==g;s=.yml==g")
     exit 2
     ;;
 
@@ -64,7 +75,91 @@ esac
 
 say "${version:-"default"}"  # if version is not set, say "default"
 
+function docker_pull_if_needed {
+  timestamp_file="/tmp/last_docker_pull.timestamp"
+  a_day=$((24*60*60))
+  now=$(date +'%s')
+
+  if test -e $timestamp_file
+  then
+    last_pull=$(stat -f '%m' $timestamp_file)
+    age=$(($now - $last_pull))
+    if test $age -le $a_day
+    then
+      return
+    fi
+  fi
+
+  touch $timestamp_file
+  docker-compose pull
+}
+
+#++ define functions
+function block_until_dataloader_is_done {
+  last_msg="Sleeping forever to keep this container alive..."
+  seconds=0
+  pause=15
+
+  echo "Waiting for dataloader startup to finish. . ."
+  while true
+  do
+    test "$(docker logs --tail 1 dataloader 2>&1)" = "$last_msg" && break
+    seconds=$((seconds + $pause))
+    sleep $pause
+    echo -ne "$(($seconds / 60)) min, $(($seconds % 60)) seconds  \r"
+  done
+}
+
+function block_until_myx_is_up {
+  last_msg="Sleeping forever to keep this container alive..."
+  seconds=0
+  pause=15
+
+  say "mix restart" # mispelled for correct pronunciation
+  echo "Waiting for myx startup to finish. . ."
+  while true
+  do
+    test "$(docker logs --tail 1 myx 2>&1)" = "$last_msg" && break
+    seconds=$((seconds + $pause))
+    sleep $pause
+    echo -ne "$(($seconds / 60)) min, $(($seconds % 60)) seconds  \r"
+  done
+  echo ""
+  echo "Myx container has booted"
+
+  # Once started, it takes time for myx to be ready for business.
+  # So, this code waits for the "open" sign to appear
+  ping_count=0
+  while true
+  do
+    curl -S localhost:18181/cxf/api/pmap/ping > $myxtmpfile 2>&1
+    case $? in
+      0)   # success...we are up and running
+        break ;;
+      52)  # empty reply from server...try again
+          count=$(($count + 1))
+          test $count -ge 20 && {
+          echo 1>&2 "?Myx does not seem to have come up properly"
+          say "Mix not started"
+          exit 2
+          }
+          ;;
+      *)
+        echo 1>&2 "? Unexpected return from curl/ping:"
+        cat 1>&2 $myxtmpfile
+        break ;;
+    esac
+    seconds=$((seconds + $pause))
+    sleep $pause
+    echo -ne "$(($seconds / 60)) min, $(($seconds % 60)) seconds  \r"
+  done
+  echo ""
+}
+#--
+
 echo "Restarting [#{containers}] using $docker_compose_home/$docker_compose_filename"
+
+docker_pull_if_needed
 
 echo `date +'%D %I:%M%p'`: Operating on these containers: $containers
 test -z "$containers" || {
@@ -101,75 +196,14 @@ test -z "$containers" || {
 
 case $containers in
   *dataloader*)
-    echo "Waiting for dataloader startup to finish. . ."
-    last_msg="Sleeping forever to keep this container alive..."
-    seconds=0
-    pause=15
-    # NOTE: consider changing code to spawn N bkg jobs that exit when $last_msg is displayed and do a wait on the result
-    while true
-    do
-      test "$(docker logs --tail 1 dataloader 2>&1)" = "$last_msg" && break
-      seconds=$((seconds + $pause))
-      sleep $pause
-      echo -ne "$(($seconds / 60)) min, $(($seconds % 60)) seconds  \r"
-    done
-
-    # grep '00_prod_ddl.sqitch sqitch runner failed:' && {
-    #   say 'Failed due to skitch problem. Restarting'
-    #   exec $0 $@
-    # }
-
+    block_until_dataloader_is_done
     echo ""
     say "Data loaded"
     exit 0
     ;;
 
   myx)
-    say "mix restart" # mispelled for correct pronunciation
-    echo "Waiting for myx startup to finish. . ."
-    last_msg="Sleeping forever to keep this container alive..."
-    seconds=0
-    pause=15
-    while true
-    do
-      test "$(docker logs --tail 1 myx 2>&1)" = "$last_msg" && break
-      seconds=$((seconds + $pause))
-      sleep $pause
-      echo -ne "$(($seconds / 60)) min, $(($seconds % 60)) seconds  \r"
-    done
-    echo ""
-    echo "Myx container has booted"
-
-    # Once started, it takes time for myx to be ready for business.
-    # So, this code waits for the "open" sign to appear
-    ping_count=0
-    while true
-    do
-      curl -S localhost:18181/cxf/api/pmap/ping > $myxtmpfile 2>&1
-      case $? in
-        0)   # success...we are up and running
-          break ;;
-        52)  # empty reply from server...try again
-          count=$(($count + 1))
-          test $count -ge 20 && {
-            echo 1>&2 "?Myx does not seem to have come up properly"
-            say "Mix not started"
-            exit 2
-          }
-          ;;
-        *)
-          echo 1>&2 "? Unexpected return from curl/ping:"
-          cat 1>&2 $myxtmpfile
-          break ;;
-      esac
-      seconds=$((seconds + $pause))
-      sleep $pause
-      echo -ne "$(($seconds / 60)) min, $(($seconds % 60)) seconds  \r"
-    done
-    echo ""
-
-    say "Mix service restarted"
-    exit 0
+    block_until_myx_is_up
     ;;
 
   "obcgui myx ateb-amq identity")
