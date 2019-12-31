@@ -91,18 +91,19 @@ alias rubocop="bundle exec rubocop -D"
 alias cp="cp -v"
 which colordiff > /dev/null 2>&1 && alias diff=colordiff
 which docker > /dev/null 2>&1 && {
-  alias daliases='alias | egrep "alias d" | egrep -v " df| du"  && declare -f deb && declare -f drestart && declare -f container_id'
+  alias daliases='alias | egrep "alias d" | egrep -v " df| du"  && declare -f deb && declare -f drestart && declare -f dlog'
   alias dalias=daliases
   alias dc='docker-compose'
-  function container_id() { docker ps | grep $@ | grep -v POD | awk '{print $1}' ;}
   alias dcup='docker-compose up -d'
   alias de='docker exec -it'
   function deb () {
     echo "docker exec -it $@ sh -c 'stty cols `tput cols` && stty rows `tput lines` && /bin/bash'";
     docker exec -it $@ sh -c "stty cols `tput cols` && stty rows `tput lines` && /bin/bash";
   }
-  alias dlog='docker logs'
-  alias dlogf='docker logs -f'
+  function dlog() {
+    docker logs $@ 2>&1
+  }
+  alias dlogf='docker logs -f 2>&1'
   alias dps="docker ps -a --format 'table {{.Names}}\t{{.Status}} {{.Ports}}' | cut -c 1-`tput cols`"
   alias dpss="docker ps -a --format 'table {{.ID}} {{.Names}}\t{{.Image}}\t{{.Ports}}({{.Status}})'"
   alias dpsl="docker ps -a --format '{{.Names}}'"
