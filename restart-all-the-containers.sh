@@ -31,6 +31,12 @@ Usage="$0 [--help] [-c|--container container-list] [version-string]
 # This restarts all of my local containers.  There may be more efficient ways to do this
 # but this way works consistently
 containers=`docker ps -a --format '{{.Names}}'`
+
+#
+# Show some DOCK_variables that occasionally change so we can be subtly reminded of differences
+echo "Representative DOCK_ variable values:"
+printenv | egrep "DATASETS|COMPONENT|MVNREPO" | sed 's/^/  /'
+
 case $1 in
   --debug)
     debug=true
@@ -157,7 +163,7 @@ function block_until_myx_is_up {
 }
 #--
 
-echo "Restarting [#{containers}] using $docker_compose_home/$docker_compose_filename"
+echo "Restarting [${containers}] using $docker_compose_home/$docker_compose_filename"
 
 docker_pull_if_needed
 
