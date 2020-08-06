@@ -274,6 +274,9 @@ case `hostname` in
 
     export DOCK_MVNREPO=~/.m2/repository
 
+    # DOCK_DATABASE is a restart-all-the-containers.sh convention
+    export DOCK_DATASET=demo-dev-pmapwebcore
+
     export REPOS='https://subversion.ateb.com/repos'
     repos=$REPOS
     ;;
