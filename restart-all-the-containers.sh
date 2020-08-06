@@ -1,8 +1,10 @@
 #!/bin/bash
-docker_compose_home=~/src/work/dc
+dc_home=~/src/work/dc
 dc_filename_default=docker-compose.yml
 dc_filename_prefix=docker-compose.
 dc_filename_suffix=.yml
+dc_dataset=$DOCK_DATASET
+test -z $dc_dataset && dc_dataset=demo-dev-pmapwebcore
 myxtmpfile=/tmp/start-myx$$
 debug=false
 nl='
@@ -10,76 +12,101 @@ nl='
 
 trap "test -f $myxtmpfile && rm $myxtmpfile" 0
 
-Usage="$0 [--help] [-c|--container container-list] [version-string]
-
-    version-string is an optional string used to specify a different docker-compose file.
-    It will be used to generate a file name of the form:
-              ${dc_filename_prefix}'version-string'${dc_filename_suffix}
-
-    Default filename is ${dc_filename_default}
+Usage="$0 [--help] [--debug] [--dataset index-json-tag] [--only container-list] [--style style-string]
 
     A 'docker-compose pull' command will be executed if it is more than 24 hrs since the
     last pull.
 
     Options:
       --help       display this message
-      --debug      run in debug mode
-      --container  restart the given container list, typically just 'myx'.  This
-                   option is not fully implemented.  Stick with just 'myx'.
+      --debug      display, but do not execute, docker-compose commands
+      --dataset <index.json-tag>
+                name of dataset tag in index.json to use overrides the DOCK_DATASET
+                envar and defaults to 'demo-dev-pmapwebcore' if none set.
+      --only <container-name(s)>
+                restart the given container list, typically just 'myx' or 'ateb-db'.
+      --style <style-string>
+                is an optional string used to specify a different docker-compose file.
+                It will be used to generate a file name of the form:
+                        ${dc_filename_prefix}'style-string'${dc_filename_suffix}
+
+                Default filename is ${dc_filename_default}
 "
 #
 # This restarts all of my local containers.  There may be more efficient ways to do this
 # but this way works consistently
 containers=`docker ps -a --format '{{.Names}}'`
+case $containers in
+  "") containers=" obcgui myx ateb-amq identity dataloader ateb-db" ;;
+esac
 
 #
 # Show some DOCK_variables that occasionally change so we can be subtly reminded of differences
 echo "Representative DOCK_ variable values:"
-printenv | egrep "DATASETS|COMPONENT|MVNREPO" | sed 's/^/  /'
+printenv | egrep "DATASETS|COMPONENT|DATASET|MVNREPO" | sed 's/^/  /'
 
-case $1 in
-  --debug)
-    debug=true
-    shift
-    ;;
+while true
+do
+  case $1 in
+    --debug|--deb*|-d)
+      debug=true
+      ;;
 
-  --help)
-    echo 1>&2 "? ${Usage}"
-    filespec=${docker_compose_home}/${dc_filename_prefix}
-    echo 1>&2 "-----${nl}    Known suffixes are:" $(echo ${filespec}* | sed "s=${filespec}==g;s=.yml==g")
-    exit 2
-    ;;
+    --help|--he*|-h)
+      echo 1>&2 "? ${Usage}"
+      filespec=${dc_home}/${dc_filename_prefix}
+      echo 1>&2 "-----${nl}    Known styles are:" $(echo ${filespec}* | sed "s=${filespec}==g;s=.yml==g")
+      exit 2
+      ;;
 
-    # Simplistic processing.  If we have this flag, we assume we are not asking for help
-    # as well.
-  -c|--co*)
-    shift
-    containers=$1
-    shift
-esac
+    --only|--o*|-o)
+      shift
+      containers=$1
+      ;;
 
-version=$1
-case $# in
-  0) docker_compose_filename=$dc_filename_default ;;
-  1) docker_compose_filename=${dc_filename_prefix}$version${dc_filename_suffix}
-     full_name=${docker_compose_home}/${docker_compose_filename}
-     test -r ${full_name} ||
-       {
-         echo 1>&2 "? docker-compose file not found: ${full_name}${Usage}"
-         exit 1
-       }
-     ;;
+    --dataset|--data*)
+      shift
+      dc_dataset=$1
+      ;;
 
-  *) echo 1>&2 "? ${Usage}"
-     exit 2
-     ;;
-esac
+    --style|--st*|-s)
+      shift
+      style=$1
+      ;;
+
+    -*)
+      echo 1>&2 "?Unknown option: $1"
+      exit 3
+      ;;
+
+    *)
+      break;
+  esac
+  shift
+done
+
+dc_filename=${dc_filename_prefix}$style${dc_filename_suffix}
+
+dc_full_name=${dc_home}/${dc_filename}
+test -r ${dc_full_name} ||
+  {
+    echo 1>&2 "? docker-compose file not found: ${dc_full_name}${Usage}"
+    exit 1
+  }
+
+docker_compose_cmd="docker-compose -f $dc_filename"
 
 case $debug in
   true) say 'Debugging' ;;
 esac
 
-say "${version:-"default"}"  # if version is not set, say "default"
+say "${style:-"default"}"  # if style is not set, say "default"
+say dataset $dc_dataset
+
+#++ define functions
+function debug_log {
+  echo "  Debugging, so not executing: '$@'"
+}
 
 function docker_pull_if_needed {
   timestamp_file="/tmp/last_docker_pull.timestamp"
@@ -90,23 +117,37 @@ function docker_pull_if_needed {
   then
     last_pull=$(stat -f '%m' $timestamp_file)
     age=$(($now - $last_pull))
-    if test $age -le $a_day
+
+    # always pull if a --style was provided
+    if test -z "$style" && test $age -le $a_day
     then
+      echo "-- pull not needed"
       return
     fi
   fi
 
-  touch $timestamp_file
-  docker-compose pull
+  case $debug in
+    true)
+      debug_log "pushd $dc_home && $docker_compose_cmd pull"
+      ;;
+
+    *)
+      pushd $dc_home && $docker_compose_cmd pull || {
+        echo 1>&2 "?docker-compose pull failed"
+        exit 2
+      }
+      popd
+      touch $timestamp_file
+      ;;
+  esac
 }
 
-#++ define functions
 function block_until_dataloader_is_done {
   last_msg="Sleeping forever to keep this container alive..."
   seconds=0
   pause=15
 
-  echo "Waiting for dataloader startup to finish. . ."
+  echo "${nl}Waiting for dataloader startup to finish. . ."
   while true
   do
     test "$(docker logs --tail 1 dataloader 2>&1)" = "$last_msg" && break
@@ -114,6 +155,8 @@ function block_until_dataloader_is_done {
     sleep $pause
     echo -ne "$(($seconds / 60)) min, $(($seconds % 60)) seconds  \r"
   done
+
+  echo "${nl}Dataloader has run to completion"
 }
 
 function block_until_myx_is_up {
@@ -122,7 +165,7 @@ function block_until_myx_is_up {
   pause=15
 
   say "mix restart" # mispelled for correct pronunciation
-  echo "Waiting for myx startup to finish. . ."
+  echo "${nl}Waiting for myx startup to finish. . ."
   while true
   do
     test "$(docker logs --tail 1 myx 2>&1)" = "$last_msg" && break
@@ -130,8 +173,7 @@ function block_until_myx_is_up {
     sleep $pause
     echo -ne "$(($seconds / 60)) min, $(($seconds % 60)) seconds  \r"
   done
-  echo ""
-  echo "Myx container has booted"
+  echo "Myx container has booted. Waiting for ready signal. . ."
 
   # Once started, it takes time for myx to be ready for business.
   # So, this code waits for the "open" sign to appear
@@ -145,25 +187,77 @@ function block_until_myx_is_up {
       52)  # empty reply from server...try again
           count=$(($count + 1))
           test $count -ge 20 && {
-          echo 1>&2 "?Myx does not seem to have come up properly"
-          say "Mix not started"
+          echo 1>&2 "${nl}?Myx does not seem to have come up properly"
+          say "Mix did not start"
           exit 2
           }
           ;;
       *)
         echo 1>&2 "? Unexpected return from curl/ping:"
-        cat 1>&2 $myxtmpfile
+        cat 1>&2 "${nl}$myxtmpfile"
         break ;;
     esac
+
     seconds=$((seconds + $pause))
     sleep $pause
     echo -ne "$(($seconds / 60)) min, $(($seconds % 60)) seconds  \r"
   done
   echo ""
 }
+
+function start_containers_in_list {
+  list=$@
+
+  for container in $list
+  do
+    case $debug in
+      true)
+        debug_log "$docker_compose_cmd up -d $container"
+        ;;
+
+      *)
+        set -x
+        ( cd $dc_home
+          export DOCK_DATASET=$dc_dataset
+          $docker_compose_cmd up -d $container
+        )
+        set +x
+        ;;
+    esac
+  done
+}
+
+function verify_these_containers_are_running {
+  containers=$@
+
+  error=0 missing_containers=""
+  for container in $containers
+  do
+    echo
+    docker ps -a --format 'table {{.Names}}\t{{.Status}} {{.Ports}}'| grep -s $container || {
+      echo 2>&1 "$container is not running"
+          error=$((error + 1))
+          missing_containers="$missing_containers $container"
+        }
+  done
+
+  case $error in
+    0)
+      echo 1>&2 "Restart completed for '$containers'."
+      say "Restart completed for $containers"
+      ;;
+
+    *)
+      echo 1>&2 "? Container $missing_containers not started"
+      say "Restart failure. $missing_containers not started"
+      exit $error
+      ;;
+  esac
+}
+
 #--
 
-echo "Restarting [${containers}] using $docker_compose_home/$docker_compose_filename"
+echo "${nl}Restarting [${containers}] using $dc_home/$dc_filename"
 
 docker_pull_if_needed
 
@@ -171,56 +265,38 @@ echo `date +'%D %I:%M%p'`: Operating on these containers: $containers
 test -z "$containers" || {
   echo "docker rm -r $containers"
   case $debug in
-    false)
-      docker rm -f $containers
+    true)
+      debug_log "docker rm -f $containers"
       ;;
 
     *)
-    echo "Debugging, so not executing 'docker rm -r $containers'"
-    ;;
+      docker rm -f $containers
+      ;;
   esac
 }
-(
-  cd $docker_compose_home
-  case $debug in
-    false)
-      set -x
-      docker-compose -f $docker_compose_filename up -d dataloader
-      docker-compose -f $docker_compose_filename up -d myx
-      docker-compose -f $docker_compose_filename up -d obcgui
-      set +x
-      ;;
 
-    true)
-      echo "Debugging, so not executing"
-      echo "'docker-compose -f $docker_compose_filename up -d dataloader'"
-      echo "'docker-compose -f $docker_compose_filename up -d myx'"
-      echo "'docker-compose -f $docker_compose_filename up -d obcgui'"
-      ;;
-  esac
-)
+start_containers_in_list $containers
 
 case $containers in
   *dataloader*)
     block_until_dataloader_is_done
-    echo ""
-    say "Data loaded"
-    exit 0
     ;;
 
+  ## TODO: is this still needed?
   myx)
-    block_until_myx_is_up
     ;;
 
   "obcgui myx ateb-amq identity")
     echo 1>&2 "== restarting with 'quick' db"
-    echo 1>&2 "Wait for a bit to see if the db comes up properly"
-    echo 1>&2 "When a pattern is clear, add a check to this code."
     ;;
 
   *)
-    echo 1>&2 "?? Unexpected value for containers list: '$containers'"
-    exit 1
+    verify_these_containers_are_running $containers
     ;;
+esac
 
-  esac
+block_until_myx_is_up
+
+echo "Data ready"
+say "Data ready"
+exit 0
