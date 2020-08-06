@@ -80,8 +80,10 @@ which bundle > /dev/null 2>&1 && {
   alias cucumber="be cucumber"
   alias rackup="be rackup"
   alias erackup="be rackup -o 0.0.0.0"  # enable server to be seen external to the local box
+  alias pry="be pry"
   alias rails="be rails"
   alias rake="be rake"
+  alias ruby="be ruby"
   alias crspec="be rspec --no-profile --order defined --format doc"  # canonical rspec
   alias rspec="be rspec --no-profile --color"
   alias spinach="be spinach"
@@ -107,11 +109,12 @@ which docker > /dev/null 2>&1 && {
   alias dps="docker ps -a --format 'table {{.Names}}\t{{.Status}} {{.Ports}}' | cut -c 1-`tput cols`"
   alias dpss="docker ps -a --format 'table {{.ID}} {{.Names}}\t{{.Image}}\t{{.Ports}}({{.Status}})'"
   alias dpsl="docker ps -a --format '{{.Names}}'"
-  function drestart () {
+  function drestart () { (
+    echo "cd ~/src/work/dc";        \cd ~/src/work/dc;
     echo "docker stop $@";          docker stop $@;
     echo "docker rm -f $@";         docker rm -f $@;
     echo "docker-compose up -d $@"; docker-compose up -d $@;
-  }
+  ) }
   alias dcrms='docker-compose rm -s -f'
   alias dcrm='dcrms'
   alias dcstop='docker-compose stop'
