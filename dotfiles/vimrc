@@ -34,9 +34,8 @@ if has("gui_running")
     Plugin 'skywind3000/gutentags_plus'   " automatiic tag project-file management
     "++
     " gutentags options
-    "   (from https://www.reddit.com/r/vim/comments/d77t6j/guide_how_to_setup_ctags_with_gutentags_properly/)
-    let g:gutentags_gtags_executable = 'ctags'          " use Exuberant CTAGS for indexing
-    let g:gutentags_modules = ['ctags', 'gtags_cscope'] " enable gtags module
+    "   (from https://vimawesome.com/plugin/gutentags-plus)
+    let g:gutentags_modules = ['ctags', 'gtags_cscope']      " enable gtags module
     let g:gutentags_project_root = ['package.json', '.git']  " config extra project root markers (def includes '.git')
     let g:gutentags_cache_dir = expand('~/.cache/vim/tags')  " generate DBs in cache directory, centralize gtags files
     let g:gutentags_plus_switch = 1                          " change focus to quickfix window after search (optional).
@@ -98,6 +97,9 @@ if has("gui_running")
           \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
           \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
           \ ]
+    " (from https://vimawesome.com/plugin/gutentags-plus Troubleshooting section.  Troubleshoot cscope failure)
+    let g:gutentags_define_advanced_commands = 1
+    " then use "GutentagsToggleTrace; :GutentagsUpdate; and :messages to debug
     "-- End options
 
     Plugin 'michaeljsmith/vim-indent-object'  " indent according to tab level
