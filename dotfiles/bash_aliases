@@ -106,7 +106,7 @@ which docker > /dev/null 2>&1 && {
     docker logs $@ 2>&1
   }
   alias dlogf='docker logs -f 2>&1'
-  alias dps="docker ps -a --format 'table {{.Names}}\t{{.Status}} {{.Ports}}' | cut -c 1-`tput cols`"
+  alias dps="docker ps -a --format 'table {{.Names}}\t{{.Status}} {{.Ports}}' | cut -c 1-"'`tput cols`'
   alias dpss="docker ps -a --format 'table {{.ID}} {{.Names}}\t{{.Image}}\t{{.Ports}}({{.Status}})'"
   alias dpsl="docker ps -a --format '{{.Names}}'"
   function drestart () { (
