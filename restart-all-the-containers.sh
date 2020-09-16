@@ -297,6 +297,14 @@ esac
 
 block_until_myx_is_up
 
+case $style in
+  quick)
+    echo "Workaround for Quick style: refresh materialized views. . ."
+    psql -U ateb -d ateb -h localhost -c 'refresh materialized view medispan.ndc;' &&
+      psql -U ateb -d ateb -h localhost -c 'refresh materialized view medispan.drug_name;'
+    ;;
+esac
+
 echo "Data ready"
 say "Data ready"
 exit 0
