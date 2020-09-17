@@ -35,7 +35,7 @@
 [alias]
   # Log Line (color)
   lll = log --graph --decorate --oneline --all --color --pretty=colorful --date=relative
-  ll  = log --graph --decorate --oneline --all --color --pretty=colorful --date=relative --max-count=15
+  ll  = log --graph --decorate --oneline --all --color --pretty=colorful --date=relative --max-count=25
   #
   # shorthand and spellos
   dif = diff
