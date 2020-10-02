@@ -145,6 +145,9 @@ if has("gui_running")
     filetype indent on " required by Vundle
   endif
 
+  "" Set to save named files when focus leaves the GUI
+  autocmd FocusLost * silent! wa
+
   "" Setup builtin plugin netrw to look like NERDtree
   let g:netrw_liststyle = 3     " Use tree-style listing format
   "let g:netrw_banner = 0 " Don't display heading with cmd summaries
