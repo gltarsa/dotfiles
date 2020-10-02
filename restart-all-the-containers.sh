@@ -1,9 +1,9 @@
 #!/bin/bash
 dc_home=~/src/work/dc
-dc_filename_default=docker-compose.yml
 dc_filename_prefix=docker-compose.
 dc_filename_suffix=.yml
 dc_dataset=$DOCK_DATASET
+default_style="quick"
 test -z $dc_dataset && dc_dataset=demo-dev-pmapwebcore
 myxtmpfile=/tmp/start-myx$$
 debug=false
@@ -30,7 +30,7 @@ Usage="$0 [--help] [--debug] [--dataset index-json-tag] [--only container-list] 
                 It will be used to generate a file name of the form:
                         ${dc_filename_prefix}'style-string'${dc_filename_suffix}
 
-                Default filename is ${dc_filename_default}
+                Default style is ${default_style}
 "
 #
 # This restarts all of my local containers.  There may be more efficient ways to do this
@@ -42,9 +42,12 @@ esac
 
 #
 # Show some DOCK_variables that occasionally change so we can be subtly reminded of differences
-echo "Representative DOCK_ variable values:"
-printenv | egrep "DATASETS|COMPONENT|DATASET|MVNREPO" | sed 's/^/  /'
+echo "
+Representative DOCK_ variable values:
+  $(printenv | egrep 'DATASETS|COMPONENT|DATASET|MVNREPO' | sed '2,$s/^/  /')
+-----"
 
+style=$default_style
 while true
 do
   case $1 in
@@ -90,7 +93,7 @@ dc_filename=${dc_filename_prefix}$style${dc_filename_suffix}
 dc_full_name=${dc_home}/${dc_filename}
 test -r ${dc_full_name} ||
   {
-    echo 1>&2 "? docker-compose file not found: ${dc_full_name}${Usage}"
+    echo 1>&2 "? docker-compose file not found: ${dc_full_name}${nl}-----${nl}${Usage}"
     exit 1
   }
 
