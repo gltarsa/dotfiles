@@ -1,6 +1,7 @@
 # .bashrc
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
+# Mar-2014 glt Put under git control, commit history = modification history
 # Feb-16 glt    Add .secret_key inclusion
 # Apr-15 glt    Add "eternal history" (from Stackoverflow 9457233/unlimited-bash-history)
 # Nov-14 glt    Change "exit" to "return" in interactivity test

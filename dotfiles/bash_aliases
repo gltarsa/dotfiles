@@ -1,6 +1,7 @@
 # .bash_aliases
 # Modification History
 # ~~~~~~~~~~~~~~~~~~~~
+# Mar-2014 glt Put under git control, commit history = modification history
 # Jul-16 glt  Add alias for 'sync' which, unlike other unices, take minutes to run instead of seconds.
 # Jan-16 glt	Cleanup unused and os-specific aliases and added shutdown/startup md aliases
 # Aug-14 glt  Remove ancient 'print' and other older, unused aliases.
@@ -189,6 +190,18 @@ case `uname` in
   *)     alias rm="rm -v" ;;
 esac
 alias SU=/usr/local/SU
+# to install an "off-brand" JDK:
+#   brew cask install adoptopenjdk/openjdk/adoptopenjdk{8, 11, 14}
+function usejava () {
+  version=$1
+  [ $version = 8 ] && version="1.8"
+  remove_from PATH $JAVA_HOME/bin
+  export  JAVA_HOME="$(/usr/libexec/java_home -v$version)"
+  prepend_to PATH ${JAVA_HOME}/bin
+}
+alias usejava8='usejava 8'
+alias usejava11='usejava 11'
+alias usejava14='usejava 14'
 alias vim_tags='ctags -R --tag-relative=yes -f ~/.vimtags ' \
   '--exclude="*.vim" ' \
   '--exclude=".#?*" ' \
