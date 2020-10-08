@@ -5,12 +5,14 @@ tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
 tap "homebrew/services"
-tap "mas-cli/tap", pin: true
+tap "koekeishiya/formulae"
 
 #
 # Install our favorite commands
 #
 brew "ack"
+brew "cask"
+brew "colordiff"
 brew "ctags"
 brew "curl"
 brew "emacs"
@@ -49,11 +51,13 @@ brew "wireshark"
 cask "android-platform-tools"
 cask "dbeaver-community"
 cask "disk-inventory-x"
+cask "docker"
 cask "emacs"
 cask "gimp"
 cask "java"
 cask "macdown"
 cask "macvim"
+cask "virtualbox"
 
 #
 # Install the Apple Store apps that we love
