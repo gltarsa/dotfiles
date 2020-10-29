@@ -13,10 +13,11 @@ assume that you do not have a `~/.bin` directory currently.  If you do, then
 merging your contents with this is left as an exercise for the reader. :-)
 
 ```
-git clone https://github.com/gltarsa/homedir.git
-bash ~/bin/.link_dotfiles ~/bin/dotfiles/*
-cd ~/.vim/bundle
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+git clone https://github.com/gltarsa/dotfiles.git
+mv dotfiles bin
+cd bin
+bash ~/bin/homedir --help
+bash ~/bin/homedir --all
 ```
 Finally, start `vim` and execute the following comamnd to install all the vim
 plugins:
