@@ -236,6 +236,14 @@ case `uname` in
     alias tm-status='a=`sysctl debug.lowpri_throttle_enabled`; case `echo "$a" | sed "s/^.*: //"` in *0*) echo "TM is fast.";; *) echo "TM is slow" ;; esac'
     alias tm-slow='sudo sysctl -w debug.lowpri_throttle_enabled=1'
     alias tm-fast='sudo sysctl -w debug.lowpri_throttle_enabled=0'
+
+    function terminal_ffm() {
+      case $(defaults read com.apple.terminal FocusFollowsMouse) in
+        0|false) defaults write com.apple.terminal FocusFollowsMouse -string 1 ;;
+        1|true) defaults write com.apple.terminal FocusFollowsMouse -string 0 ;;
+      esac
+      echo "Set default to $(defaults read com.apple.terminal FocusFollowsMouse). Restart terminal app to see effect."
+    }
     ;;
 
   Linux)  # Ubuntu/linuxbrew
