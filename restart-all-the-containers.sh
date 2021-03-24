@@ -310,4 +310,5 @@ esac
 
 echo "Data ready"
 say "Data ready"
+date
 exit 0
