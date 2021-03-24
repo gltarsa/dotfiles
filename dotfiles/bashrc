@@ -280,5 +280,8 @@ case `hostname` in
 
     export REPOS='https://subversion.ateb.com/repos'
     repos=$REPOS
+
+    # Needed for brew installed groovy to run
+    export GROOVY_HOME=/usr/local/opt/groovy/libexec
     ;;
 esac

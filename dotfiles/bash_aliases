@@ -84,13 +84,12 @@ which bundle > /dev/null 2>&1 && {
   alias pry="be pry"
   alias rails="be rails"
   alias rake="be rake"
-  alias ruby="be ruby"
   alias crspec="be rspec --no-profile --order defined --format doc"  # canonical rspec
   alias rspec="be rspec --no-profile --color"
+  alias rubocop="bundle exec rubocop -D"
   alias spinach="be spinach"
   alias zspec='zeus rspec --no-profile --format doc --order defined' # with zeus
 }
-alias rubocop="bundle exec rubocop -D"
 alias cp="cp -v"
 which colordiff > /dev/null 2>&1 && alias diff=colordiff
 which docker > /dev/null 2>&1 && {
