@@ -145,8 +145,12 @@ if has("gui_running")
     filetype indent on " required by Vundle
   endif
 
+  " Make CMD-click like RubyMine/etc (not yet working)
+  nnoremap <D-LeftMouse> :tag <CR>
+
   "" Set to save named files when focus leaves the GUI
-  autocmd FocusLost * silent! wa
+  " autocmd FocusLost * silent! wa
+  autocmd FocusLost *.* silent! stopinsert | wa
 
   "" Setup builtin plugin netrw to look like NERDtree
   let g:netrw_liststyle = 3     " Use tree-style listing format
@@ -170,13 +174,15 @@ if has("gui_running")
   set statusline+=%h%m%r%w      " status flags
 
   "" Tab Management, Indentation, tabbing, and whitespace
-  set smartindent
-  set tabstop=2
-  set shiftwidth=2
-  set expandtab
+  set smartindent tabstop=2 shiftwidth=2 expandtab
+
   if !empty(glob("~/.vim/_partials/tab_mgt*"))
     source ~/.vim/_partials/tab_mgt.vim
   endif
+
+  "" indentation by language type (i.e. Typescript convention at OMCL wants 4 spaces)
+  autocmd Filetype typescript setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4 smartindent
+  
 
   "" status line settings
   set laststatus=2  " always maintain a status line
