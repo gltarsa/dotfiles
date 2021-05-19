@@ -281,6 +281,10 @@ case `hostname` in
     export REPOS='https://subversion.ateb.com/repos'
     repos=$REPOS
 
+    # update timestamp on PBIs alias
+    pbi_dir="~/Downloads/PBIs"
+    [ -L $pbi_dir ] && touch -h $pbi_dir
+
     # Needed for brew installed groovy to run
     export GROOVY_HOME=/usr/local/opt/groovy/libexec
     ;;
