@@ -41,6 +41,7 @@
   dif = diff
   co  = checkout
   s = status
+  sw = switch
   dif = diff
   #
   # handy features
