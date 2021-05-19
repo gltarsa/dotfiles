@@ -1,0 +1,13 @@
+# General patterns that ag should ignore when searching
+
+# manufactured map and min files
+*.min.css.map
+*.min.js.map
+*.min.js
+*.min.css
+
+# JS assets
+/src/assets/*.js
+
+# Node packages
+/node_modules
