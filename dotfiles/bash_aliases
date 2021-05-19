@@ -59,7 +59,9 @@ function do_after()
     }
 #++
 # add completion extensions
-for i in ~/.git-completion.bash ~/.hub.bash_completion.sh
+git_completion="/usr/local/etc/bash_completion.d/git-completion.bash"
+test -f $git_completion || git_completion="~/.git-completion.bash"
+for i in $git_completion ~/.hub.bash_completion.sh
 do
   test -f $i && source $i
 done
